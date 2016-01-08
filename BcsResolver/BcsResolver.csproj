@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AB389380-F87C-4488-881E-B92169E6BABB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BcsResolver</RootNamespace>
+    <AssemblyName>BcsResolver</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Extensions\BcsExpressionNodeVisitor.cs" />
+    <Compile Include="Extensions\BcsExpressionTokenExtensions.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\TextExtensions.cs" />
+    <Compile Include="File\BcsDefinitionFile.cs" />
+    <Compile Include="File\BcsEntity.cs" />
+    <Compile Include="File\BcsExpressionAdapter.cs" />
+    <Compile Include="File\BcsDefinitionFileReader.cs" />
+    <Compile Include="File\BcsFileHandler.cs" />
+    <Compile Include="File\BcsFileRecord.cs" />
+    <Compile Include="File\BcsRule.cs" />
+    <Compile Include="File\SemanticAnalysisVisitor.cs" />
+    <Compile Include="Parser\BcsAgentStateNode.cs" />
+    <Compile Include="Parser\BcsAtomicAgentNode.cs" />
+    <Compile Include="Parser\BcsComponentNode.cs" />
+    <Compile Include="Parser\BcsComplexNode.cs" />
+    <Compile Include="Parser\BcsEntityNode.cs" />
+    <Compile Include="Parser\BcsExpression.cs" />
+    <Compile Include="Parser\BcsLocationNode.cs" />
+    <Compile Include="Parser\BcsParser.cs" />
+    <Compile Include="Parser\BcsReactantNode.cs" />
+    <Compile Include="Parser\BcsReactionNode.cs" />
+    <Compile Include="Parser\NodeError.cs" />
+    <Compile Include="Parser\ParentResolvingVisitor.cs" />
+    <Compile Include="Parser\ParserBase.cs" />
+    <Compile Include="Parser\ReactionDirectionType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SemanticModel\BcsStateEntity.cs" />
+    <Compile Include="Tokenizer\BcsExpresionTokenizer.cs" />
+    <Compile Include="Errors\BeginWithLastTokenOfTypeTokenError.cs" />
+    <Compile Include="Tokenizer\BcsExpresionToken.cs" />
+    <Compile Include="Tokenizer\BcsExpresionTokenType.cs" />
+    <Compile Include="Common\IReader.cs" />
+    <Compile Include="Errors\NullTokenError.cs" />
+    <Compile Include="Parser\ParserException.cs" />
+    <Compile Include="Errors\SimpleTokenError.cs" />
+    <Compile Include="Common\StringReader.cs" />
+    <Compile Include="Tokenizer\TextRange.cs" />
+    <Compile Include="Tokenizer\TokenBase.cs" />
+    <Compile Include="Errors\TokenError.cs" />
+    <Compile Include="Tokenizer\TokenizerBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
