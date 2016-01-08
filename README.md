@@ -17,12 +17,13 @@ Usage
 -----
 
 1) Reference BcsResolver.dll from your project
+
 2) Use BcsResolver.File namespace
 
-Sample C# code
---------------
+Sample code
+-----------
 
-```
+```C#
 BcsDefinitionFile document;
 
 using (var bcsHandler = new BcsFileHandler())
