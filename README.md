@@ -1,17 +1,17 @@
-Parser for Biochemical Space language expressions and definhition files
+Parser for Biochemical Space language expressions and definition files
 =======================================================================
 
-This project contains two main parts that combined together are capable of loading bcs format files. As en output iy produces semantic model of the file along with syntaktic trees for expressions defined in the file.
+This project contains two main parts. Combined together, they are capable of loading BCS files. As an output it produces semantic model of the file along with syntactic trees for expressions defined in the file.
 
-**BCS expresion parser and tokenizer** - Tokenizer creates tokens from bcs an expresions, parser then processes these tokens and builds syntax tree for the expression. 
+**BCS expression parser and tokenizer** - Tokenizer creates tokens from BCS expresion, parser then proceeds to read these tokens and builds syntax tree for the expression. 
 
-**BCS file reader** - Loads rulse and entities from BCS format files
+**BCS file reader** - Loads rules and entities from BCS files
 
-**BCS file handler** - Used BCS reader to read a bcs file, then creates used states, agents, somplexes and locations from entities. Then using BCS Pareser builds syntax trees for equations and modifiers in rules. Lastly it checks semantic corectnes of rules against entity definitions and fills semantic data from entities into the syntax tree.
+**BCS file handler** - Uses BCS reader to read a BCS file, then creates lists of states, agents, complexes and locations used in the file. Then, using BCS Parser, it builds syntax trees for equations and modifiers contained in rules. Finally, it checks semantic correctnes of rules against entity definitions and fills semantic data from entities into the syntax tree.
 
-Repository also contains sample console application and Sample WFP aplication.
-Console aplication is inteneded for usage reference.
-WPF aplication loads .bcs file and draws equations from rules in the file.
+Repository also contains sample console application and sample WPF application.
+Console application is inteneded solely for usage reference.
+WPF aplication loads BCS file and draws equations from rules in the file.
 
 Usage
 -----
@@ -28,7 +28,7 @@ BcsDefinitionFile document;
 
 using (var bcsHandler = new BcsFileHandler())
 {
-    bcsHandler.ProcessDefinitionFile("yamada.txt");
+    bcsHandler.ProcessDefinitionFile("yamada.bcs");
     document = bcsHandler.DefinitionFile;
 }
 ```
