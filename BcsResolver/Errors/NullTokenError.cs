@@ -1,4 +1,4 @@
-using BcsResolver.Tokenizer;
+using BcsResolver.Syntax.Tokenizer;
 
 namespace BcsResolver.Errors
 {

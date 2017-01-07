@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BcsResolver.Parser;
 using System.Collections.ObjectModel;
+using BcsResolver.Syntax.Parser;
 
 namespace BcsExplorerDemo
 {
@@ -72,7 +72,7 @@ namespace BcsExplorerDemo
             Root = item;
         }
 
-        protected override void VisitLocation(BcsLocationNode locationNode)
+        protected override void VisitIdentifier(BcsLocationNode locationNode)
         {
             var item = new MenuItem() { Title = $"Location: {locationNode.Name}" };
             AddToTree(locationNode, item);

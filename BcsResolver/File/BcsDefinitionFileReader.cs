@@ -1,6 +1,4 @@
 ﻿using BcsResolver.Extensions;
-using BcsResolver.Parser;
-using BcsResolver.Tokenizer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BcsResolver.SemanticModel;
 
 namespace BcsResolver.File
 {
@@ -115,15 +114,31 @@ namespace BcsResolver.File
             }
             else if (name.CaselessEquals("states"))
             {
-                entity.States.SourceText = value;
+                var stateNames = SplitNames(value, ',');
+                entity.States.AddRange(stateNames);
+                if (stateNames.Any())
+                {
+                    entity.Type = BcsEntityType.Agent;
+                }
             }
             else if (name.CaselessEquals("locations"))
             {
-                entity.Locations.Add(value);
+                var names = SplitNames(value, ',');
+                entity.Locations.AddRange(names);
             }
             else if (name.CaselessEquals("composition"))
             {
-                entity.Composition.SourceText = value;
+                char separator = '\n';
+                if (value.Contains("."))
+                {
+                    separator = '.';
+                    entity.Type = BcsEntityType.Complex;
+                }
+                else if (value.Contains("|"))
+                {
+                    entity.Type = BcsEntityType.Component;
+                }
+                entity.Composition.AddRange(SplitNames(value,separator));
             }
             else if (name.CaselessEquals("entityname"))
             {
@@ -136,6 +151,11 @@ namespace BcsResolver.File
             return true;
         }
 
+        private static string[] SplitNames(string value, char separator)
+        {
+            return value.Split(separator).Select(s => s.Trim()).ToArray();
+        }
+
         private bool AssignRuleProperties(BcsFileRecord record, string name, string value)
         {
             var rule = record as BcsRule;
@@ -146,11 +166,11 @@ namespace BcsResolver.File
             }
             else if (name.CaselessEquals("ruleequation"))
             {
-                rule.Equation.SourceText = value;
+                rule.Equation = value;
             }
             else if (name.CaselessEquals("modifier"))
             {
-                rule.Modifier.SourceText = value;
+                rule.Modifier = value;
             }
             else if (name.CaselessEquals("rulename"))
             {

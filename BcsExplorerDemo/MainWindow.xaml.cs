@@ -1,6 +1,5 @@
 ﻿using BcsExplorerDemo.Controls;
 using BcsResolver.File;
-using BcsResolver.Parser;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BcsResolver.Syntax.Parser;
 
 namespace BcsExplorerDemo
 {
@@ -55,7 +55,7 @@ namespace BcsExplorerDemo
         {
             BcsDefinitionFile document;
 
-            using (var bcsHandler = new BcsFileHandler())
+            using (var bcsHandler = new BcsWorkspace())
             {
                 bcsHandler.ProcessDefinitionFile("yamada.txt");
                 document = bcsHandler.DefinitionFile;

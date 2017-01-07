@@ -1,5 +1,4 @@
-﻿using BcsResolver.Parser;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using BcsResolver.Syntax.Parser;
 
 namespace BcsExplorerDemo.Controls
 {
@@ -88,7 +88,7 @@ namespace BcsExplorerDemo.Controls
             return grid;
         }
 
-        public static Grid CreateEntityGrid(BcsEntityNode entity)
+        public static Grid CreateEntityGrid(BcsIdentifierNode identifier)
         {
             var grid = new Grid
             {
@@ -96,16 +96,16 @@ namespace BcsExplorerDemo.Controls
                 Margin = new Thickness(10, 10, 10, 10)
             };
 
-            if (entity is BcsLocationNode)
+            if (identifier is BcsLocationNode)
             {
-                var location = entity as BcsLocationNode;
+                var location = identifier as BcsLocationNode;
                 AddRowControlToGrid(grid, new Label { Content = $"Location: {location.Name}" });
                 AddRowControlToGrid(grid, CreateEntityGrid(location.Resident));
             }
-            else if (entity is BcsComponentNode)
+            else if (identifier is BcsComponentNode)
             {
                 int componentRowIndex = 1;
-                var component = entity as BcsComponentNode;
+                var component = identifier as BcsComponentNode;
                 AddRowControlToGrid(grid, new Label { Content = $"Component: {component.Name}" });
 
                 AddEmptyRow(grid);

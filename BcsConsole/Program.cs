@@ -1,8 +1,6 @@
 ﻿using BcsResolver.Common;
 using BcsResolver.Extensions;
 using BcsResolver.File;
-using BcsResolver.Parser;
-using BcsResolver.Tokenizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +15,7 @@ namespace BcsConsole
         {
             BcsDefinitionFile document;
 
-            using (var bcsHandler = new BcsFileHandler())
+            using (var bcsHandler = new BcsWorkspace())
             {
                 bcsHandler.ProcessDefinitionFile("yamada.txt");
                 document = bcsHandler.DefinitionFile;
