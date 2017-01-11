@@ -36,6 +36,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -50,10 +51,13 @@
   <ItemGroup>
     <Compile Include="Extensions\BcsEntityExtensions.cs" />
     <Compile Include="File\BcsEntityType.cs" />
+    <Compile Include="SemanticModel\BcsBoundSymbol.cs" />
     <Compile Include="SemanticModel\BcsRuleBinder.cs" />
+    <Compile Include="SemanticModel\BcsRuleSymbol.cs" />
     <Compile Include="SemanticModel\Exceptions\UnsupportedEntityException.cs" />
     <Compile Include="SemanticModel\IBcsRuleMetadataProvider.cs" />
     <Compile Include="Syntax\BcsSyntaxFactory.cs" />
+    <Compile Include="Syntax\Parser\BcsNamedEntityReferenceNode.cs" />
     <Compile Include="Syntax\Parser\BcsExpressionNodeVisitor.cs" />
     <Compile Include="Extensions\BcsExpressionTokenExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
@@ -75,18 +79,19 @@
     <Compile Include="SemanticModel\Exceptions\EntityTypeException.cs" />
     <Compile Include="SemanticModel\Exceptions\EntityNotFoundException.cs" />
     <Compile Include="SemanticModel\SemanticAnalysisVisitor.cs" />
-    <Compile Include="Syntax\Parser\BcsAccessorNode.cs" />
+    <Compile Include="Syntax\Parser\BcsContentAccessNode.cs" />
     <Compile Include="Syntax\Parser\BcsComposedEntity.cs" />
-    <Compile Include="Syntax\Parser\BcsNamedEntitySyntax.cs" />
+    <Compile Include="Syntax\Parser\BcsNamedEntityNode.cs" />
     <Compile Include="Syntax\Parser\BcsAgentStateNode.cs" />
     <Compile Include="Syntax\Parser\BcsAtomicAgentNode.cs" />
-    <Compile Include="Syntax\Parser\BcsComponentNode.cs" />
+    <Compile Include="Syntax\Parser\BcsStructuralAgentNode.cs" />
     <Compile Include="Syntax\Parser\BcsComplexNode.cs" />
     <Compile Include="Syntax\Parser\BcsIdentifierNode.cs" />
-    <Compile Include="Syntax\Parser\BcsExpression.cs" />
+    <Compile Include="Syntax\Parser\BcsExpressionNode.cs" />
     <Compile Include="Syntax\Parser\BcsParser.cs" />
     <Compile Include="Syntax\Parser\BcsReactantNode.cs" />
     <Compile Include="Syntax\Parser\BcsReactionNode.cs" />
+    <Compile Include="Common\IBcsTreeNode.cs" />
     <Compile Include="Syntax\Parser\NodeError.cs" />
     <Compile Include="Syntax\Parser\ParentResolvingVisitor.cs" />
     <Compile Include="Syntax\Parser\ParserBase.cs" />

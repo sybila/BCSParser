@@ -17,9 +17,9 @@
             ResolveFromParent(bcsComplex);
         }
 
-        protected override void VisitComponent(BcsComponentNode bcsComponent)
+        protected override void VisitComponent(BcsStructuralAgentNode bcsStructuralAgent)
         {
-            ResolveFromParent(bcsComponent);
+            ResolveFromParent(bcsStructuralAgent);
         }
 
         protected override void VisitDefault(BcsExpressionNode node)
@@ -50,7 +50,7 @@
             }
         }
 
-        protected override void VisitAccessor(BcsAccessorNode node)
+        protected override void VisitAccessor(BcsContentAccessNode node)
         {
             ResolveFromParent(node);
         }

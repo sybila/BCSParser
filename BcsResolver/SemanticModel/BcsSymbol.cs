@@ -1,13 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using BcsResolver.Common;
 using BcsResolver.Syntax.Parser;
 
 namespace BcsResolver.SemanticModel
 {
-    public abstract class BcsSymbol
+    public abstract class BcsSymbol : IBcsTreeNode<BcsSymbol>
     {
-        public BcsSymbolType Type { get; set; } = BcsSymbolType.Unknown;
-        public BcsExpressionNode Syntax { get; set; }
-        public List<SemanticError> Errors { get; } = new List<SemanticError>();
+        public BcsSymbolType Type { get; protected set; } = BcsSymbolType.Unknown;
         public BcsSymbol Parent { get; set; }
+
+        public virtual IEnumerable<BcsSymbol> EnumerateChildNodes()
+        {
+            return new List<BcsSymbol>();
+        }
     }
 }

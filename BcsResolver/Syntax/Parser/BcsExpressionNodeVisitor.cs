@@ -14,9 +14,9 @@ namespace BcsResolver.Syntax.Parser
             {
                 VisitAgentState(node as BcsAgentStateNode);
             }
-            else if (node is BcsComponentNode)
+            else if (node is BcsStructuralAgentNode)
             {
-                VisitComponent(node as BcsComponentNode);
+                VisitComponent(node as BcsStructuralAgentNode);
             }
             else if (node is BcsComplexNode)
             {
@@ -34,9 +34,9 @@ namespace BcsResolver.Syntax.Parser
             {
                 VisitIdentifier(node as BcsIdentifierNode);
             }
-            else if (node is BcsAccessorNode)
+            else if (node is BcsContentAccessNode)
             {
-                VisitAccessor(node as BcsAccessorNode);
+                VisitAccessor(node as BcsContentAccessNode);
             }
             else
             {
@@ -56,7 +56,7 @@ namespace BcsResolver.Syntax.Parser
 
         protected abstract void VisitComplex(BcsComplexNode bcsComplex);
 
-        protected abstract void VisitComponent(BcsComponentNode bcsComponent);
+        protected abstract void VisitComponent(BcsStructuralAgentNode bcsStructuralAgent);
 
         protected abstract void VisitAgentState(BcsAgentStateNode bcsAgentState);
 
@@ -66,6 +66,6 @@ namespace BcsResolver.Syntax.Parser
 
         protected abstract void VisitDefault(BcsExpressionNode node);
 
-        protected abstract void VisitAccessor(BcsAccessorNode node);
+        protected abstract void VisitAccessor(BcsContentAccessNode node);
     }
 }

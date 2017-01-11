@@ -21,20 +21,20 @@ namespace BcsResolver.Tests
         {
             var tree = BcsSyntaxFactory.ParseModifier("FRS(Thr{p},Tyr{u})::cyt");
 
-            var componentNode = tree.AssertCast<BcsAccessorNode>().Target
-                .AssertCast<BcsComponentNode>();
+            var componentNode = tree.AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsStructuralAgentNode>();
 
             var pStateName = componentNode.Parts.AssertCount(2).ElementAt(0)
                 .AssertCast<BcsAtomicAgentNode>().Parts.AssertCount(1).ElementAt(0)
-                .AssertCast<BcsAgentStateNode>().Name.AssertCast<BcsIdentifierNode>();
+                .AssertCast<BcsAgentStateNode>().Identifier;
             Assert.AreEqual("p", pStateName.Name);
 
             var uStateName = componentNode.Parts.AssertCount(2).ElementAt(1)
                 .AssertCast<BcsAtomicAgentNode>().Parts.AssertCount(1).ElementAt(0)
-                .AssertCast<BcsAgentStateNode>().Name.AssertCast<BcsIdentifierNode>();
+                .AssertCast<BcsAgentStateNode>().Identifier;
             Assert.AreEqual("u", uStateName.Name);
 
-            var cytName = tree.AssertCast<BcsAccessorNode>().Name.AssertCast<BcsIdentifierNode>();
+            var cytName = tree.AssertCast<BcsContentAccessNode>().Container.AssertCast<BcsNamedEntityReferenceNode>().Identifier;
             Assert.AreEqual("cyt", cytName.Name);
             Assert.AreEqual(new TextRange(3,1), componentNode.BeginBrace);
             Assert.AreEqual(new TextRange(17, 1), componentNode.EndBrace);
@@ -49,7 +49,7 @@ namespace BcsResolver.Tests
                 .AssertCast<BcsAtomicAgentNode>();
 
             var pStateName = agentNode.Parts.AssertCount(1).ElementAt(0)
-               .AssertCast<BcsAgentStateNode>().Name.AssertCast<BcsIdentifierNode>();
+               .AssertCast<BcsAgentStateNode>().Identifier.AssertCast<BcsIdentifierNode>();
             Assert.AreEqual("p", pStateName.Name);
             Assert.AreEqual(new TextRange(3,1), agentNode.BeginBrace);
             Assert.AreEqual(new TextRange(5, 1), agentNode.EndBrace);
@@ -61,10 +61,10 @@ namespace BcsResolver.Tests
             var tree = BcsSyntaxFactory.ParseModifier("Thr{u}::GS::cyt");
 
             var stateNameId = tree
-                .AssertCast<BcsAccessorNode>().Target
-                .AssertCast<BcsAccessorNode>().Target
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Target
                 .AssertCast<BcsAtomicAgentNode>().Parts.AssertCount(1)[0]
-                .AssertCast<BcsAgentStateNode>().Name;
+                .AssertCast<BcsAgentStateNode>().Identifier;
 
             Assert.AreEqual("u", stateNameId.Name);
         }
@@ -75,25 +75,26 @@ namespace BcsResolver.Tests
             var tree = BcsSyntaxFactory.ParseModifier("FRS(Thr{p}).M(Tyr{u})::cyt");
 
             var complex = 
-                tree.AssertCast<BcsAccessorNode>().Target
+                tree.AssertCast<BcsContentAccessNode>().Target
                 .AssertCast<BcsComplexNode>();
 
-            var frs = complex.Parts.AssertCount(2).ElementAt(0).AssertCast<BcsComponentNode>();
-            var m = complex.Parts.ElementAt(1).AssertCast<BcsComponentNode>();
+            var frs = complex.Parts.AssertCount(2).ElementAt(0).AssertCast<BcsStructuralAgentNode>();
+            var m = complex.Parts.ElementAt(1).AssertCast<BcsStructuralAgentNode>();
 
-            var tyrP = frs.Parts.AssertCount(1).ElementAt(0).AssertCast<BcsAtomicAgentNode>();
+            var thrP = frs.Parts.AssertCount(1).ElementAt(0).AssertCast<BcsAtomicAgentNode>();
             var tyrU = m.Parts.AssertCount(1).ElementAt(0).AssertCast<BcsAtomicAgentNode>();
 
-            var p = tyrP.Parts.Single().AssertCast<BcsAgentStateNode>();
+            var p = thrP.Parts.Single().AssertCast<BcsAgentStateNode>();
             var u = tyrU.Parts.Single().AssertCast<BcsAgentStateNode>();
 
-            Assert.AreEqual("FRS", frs.Name.Name);
-            Assert.AreEqual("M", m.Name.Name);
+            Assert.AreEqual("FRS", frs.Identifier.Name);
+            Assert.AreEqual("M", m.Identifier.Name);
 
-            Assert.AreEqual("Tyr", tyrP.Name.Name);
-            Assert.AreEqual("Tyr", tyrU.Name.Name);
+            Assert.AreEqual("Thr", thrP.Identifier.Name);
+            Assert.AreEqual("Tyr", tyrU.Identifier.Name);
 
-
+            Assert.AreEqual("p", p.Identifier.Name);
+            Assert.AreEqual("u", u.Identifier.Name);
         }
 
         [TestMethod]
@@ -109,13 +110,13 @@ namespace BcsResolver.Tests
             Assert.AreEqual(4, secondReactantLeft.Coeficient);
             Assert.AreEqual(1.55, reactantRight.Coeficient);
 
-            var r1Name = firstReactantLeft.Complex.AssertCast<BcsAccessorNode>().Target.AssertCast<BcsIdentifierNode>().Name;
-            var r2Name = secondReactantLeft.Complex.AssertCast<BcsAccessorNode>().Target.AssertCast<BcsIdentifierNode>().Name;
-            var l1Name = reactantRight.Complex.AssertCast<BcsAccessorNode>().Target.AssertCast<BcsIdentifierNode>().Name;
+            var r1Identifier = firstReactantLeft.Complex.AssertCast<BcsContentAccessNode>().Target.AssertCast<BcsNamedEntityReferenceNode>().Identifier;
+            var r2Identifier = secondReactantLeft.Complex.AssertCast<BcsContentAccessNode>().Target.AssertCast<BcsNamedEntityReferenceNode>().Identifier;
+            var l1Identifier = reactantRight.Complex.AssertCast<BcsContentAccessNode>().Target.AssertCast<BcsNamedEntityReferenceNode>().Identifier;
 
-            Assert.AreEqual("FRS",r1Name);
-            Assert.AreEqual("R", r2Name);
-            Assert.AreEqual("FRSR", l1Name);
+            Assert.AreEqual("FRS",r1Identifier.Name);
+            Assert.AreEqual("R", r2Identifier.Name);
+            Assert.AreEqual("FRSR", l1Identifier.Name);
         }
 
         [TestMethod]
@@ -125,8 +126,8 @@ namespace BcsResolver.Tests
             var reactantLeft = tree.AssertCast<BcsReactionNode>().LeftSideReactants.AssertCount(1).ElementAt(0);
             var reactantRight = tree.AssertCast<BcsReactionNode>().RightSideReactants.AssertCount(1).ElementAt(0);
 
-            Assert.AreEqual("FRS", reactantLeft.Complex.AssertCast<BcsIdentifierNode>().Name);
-            Assert.AreEqual("FRSR", reactantRight.Complex.AssertCast<BcsIdentifierNode>().Name);
+            Assert.AreEqual("FRS", reactantLeft.Complex.AssertCast<BcsNamedEntityReferenceNode>().Identifier.Name);
+            Assert.AreEqual("FRSR", reactantRight.Complex.AssertCast<BcsNamedEntityReferenceNode>().Identifier.Name);
         }
 
         [TestMethod]
@@ -134,6 +135,7 @@ namespace BcsResolver.Tests
         {
             var tree = BcsSyntaxFactory.ParseModifier("FRS   (   Thr  { p } )  .  Tyr { u  }   ::  M   ::  cyt");
            
+
         }
     }
 }

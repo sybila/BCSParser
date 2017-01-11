@@ -2,8 +2,8 @@
 
 namespace BcsResolver.Syntax.Parser
 {
-    [DebuggerDisplay("[S: {Name}]")]
-    public sealed class BcsAgentStateNode : BcsNamedEntitySyntax
+    [DebuggerDisplay("[S: {Identifier}]")]
+    public sealed class BcsAgentStateNode : BcsNamedEntityNode
     {
     }
 }

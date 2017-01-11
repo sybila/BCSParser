@@ -12,7 +12,7 @@ namespace BcsResolver.Syntax.Parser
 
         public override IEnumerable<BcsExpressionNode> EnumerateChildNodes()
         {
-            return new BcsExpressionNode[] { Complex };
+            return new [] { Complex };
         }
     }
 }

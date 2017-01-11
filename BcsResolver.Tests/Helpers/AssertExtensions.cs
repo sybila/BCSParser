@@ -11,7 +11,7 @@ namespace BcsResolver.Tests.Helpers
         {
             if (!(source is TTarget))
             {
-                throw new AssertFailedException($"Source object is not of expected type {typeof(TTarget).FullName}.");
+                throw new AssertFailedException($"Source object ({source.GetType().FullName}) is not of expected type {typeof(TTarget).FullName}.");
             }
             return (TTarget) source;
         }

@@ -3,18 +3,18 @@ using System.Diagnostics;
 
 namespace BcsResolver.Syntax.Parser
 {
-    [DebuggerDisplay("[S: {Name}]")]
-    public abstract class BcsNamedEntitySyntax : BcsExpressionNode
+    [DebuggerDisplay("[S: {Identifier}]")]
+    public abstract class BcsNamedEntityNode : BcsExpressionNode
     {
-        public BcsIdentifierNode Name { get; set; }
+        public BcsIdentifierNode Identifier { get; set; }
 
         public override IEnumerable<BcsExpressionNode> EnumerateChildNodes()
         {
-            if (Name == null)
+            if (Identifier == null)
             {
                 return new BcsExpressionNode[] {};
             }
-            return new BcsExpressionNode[] { Name };
+            return new BcsExpressionNode[] { Identifier };
         }
     }
 }

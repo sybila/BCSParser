@@ -3,7 +3,7 @@ using BcsResolver.Syntax.Tokenizer;
 
 namespace BcsResolver.Syntax.Parser
 {
-    [DebuggerDisplay("[A: {Name}...]")]
+    [DebuggerDisplay("[A: {Identifier}...]")]
     public sealed class BcsAtomicAgentNode : BcsComposedEntity
     {
         public TextRange BeginBrace { get; set; }
