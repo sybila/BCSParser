@@ -2,8 +2,10 @@
 
 namespace BcsResolver.Syntax.Parser
 {
-    [DebuggerDisplay("[S: {Identifier}]")]
+    [DebuggerDisplay("[AS: {ToDisplayString()}]")]
     public sealed class BcsAgentStateNode : BcsNamedEntityNode
     {
+        public override string ToDisplayString() => Identifier.ToDisplayString();
+
     }
 }

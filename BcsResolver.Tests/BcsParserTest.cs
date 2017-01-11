@@ -38,6 +38,8 @@ namespace BcsResolver.Tests
             Assert.AreEqual("cyt", cytName.Name);
             Assert.AreEqual(new TextRange(3,1), componentNode.BeginBrace);
             Assert.AreEqual(new TextRange(17, 1), componentNode.EndBrace);
+
+            Assert.AreEqual("FRS(Thr{p},Tyr{u})::cyt", tree.ToDisplayString());
         }
 
         [TestMethod]
@@ -53,6 +55,7 @@ namespace BcsResolver.Tests
             Assert.AreEqual("p", pStateName.Name);
             Assert.AreEqual(new TextRange(3,1), agentNode.BeginBrace);
             Assert.AreEqual(new TextRange(5, 1), agentNode.EndBrace);
+            Assert.AreEqual("Tyr{p}",tree.ToDisplayString());
         }
 
         [TestMethod]
@@ -67,6 +70,7 @@ namespace BcsResolver.Tests
                 .AssertCast<BcsAgentStateNode>().Identifier;
 
             Assert.AreEqual("u", stateNameId.Name);
+            Assert.AreEqual("Thr{u}::GS::cyt",tree.ToDisplayString());
         }
 
         [TestMethod]
@@ -95,6 +99,8 @@ namespace BcsResolver.Tests
 
             Assert.AreEqual("p", p.Identifier.Name);
             Assert.AreEqual("u", u.Identifier.Name);
+            
+            Assert.AreEqual("FRS(Thr{p}).M(Tyr{u})::cyt", tree.ToDisplayString());
         }
 
         [TestMethod]
@@ -117,6 +123,8 @@ namespace BcsResolver.Tests
             Assert.AreEqual("FRS",r1Identifier.Name);
             Assert.AreEqual("R", r2Identifier.Name);
             Assert.AreEqual("FRSR", l1Identifier.Name);
+
+            Assert.AreEqual("2FRS::cyt+4R::cyt<=>1.55FRSR::cyt", tree.ToDisplayString());
         }
 
         [TestMethod]
@@ -128,6 +136,8 @@ namespace BcsResolver.Tests
 
             Assert.AreEqual("FRS", reactantLeft.Complex.AssertCast<BcsNamedEntityReferenceNode>().Identifier.Name);
             Assert.AreEqual("FRSR", reactantRight.Complex.AssertCast<BcsNamedEntityReferenceNode>().Identifier.Name);
+
+            Assert.AreEqual("1FRS<=1FRSR", tree.ToDisplayString());
         }
 
         [TestMethod]

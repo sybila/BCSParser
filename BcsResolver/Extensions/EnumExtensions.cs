@@ -5,11 +5,27 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using BcsResolver.Syntax.Parser;
 
 namespace BcsResolver.Extensions
 {
     public static class EnumExtensions
     {
+        public static string ToDisplayString(this ReactionDirectionType type)
+        {
+            switch (type)
+            {
+                case ReactionDirectionType.Both:
+                    return "<=>";
+                case ReactionDirectionType.Left:
+                    return "<=";
+                case ReactionDirectionType.Right:
+                    return "=>";
+                default:
+                    throw new InvalidOperationException($"Unsupported {nameof(ReactionDirectionType)}.");
+            }
+        }
+
         public static string GetDescription<T>(this T enumerationValue)
             where T : struct
         {

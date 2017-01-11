@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using BcsResolver.Syntax.Tokenizer;
 
 namespace BcsResolver.Syntax.Parser
 {
+    [DebuggerDisplay("[Rct: {ToDisplayString()}]")]
     public class BcsReactantNode : BcsExpressionNode
     {
         public double Coeficient { get; set; } = 1.0;
@@ -13,6 +15,11 @@ namespace BcsResolver.Syntax.Parser
         public override IEnumerable<BcsExpressionNode> EnumerateChildNodes()
         {
             return new [] { Complex };
+        }
+
+        public override string ToDisplayString()
+        {
+            return $"{Coeficient}{Complex.ToDisplayString()}";
         }
     }
 }

@@ -5,7 +5,6 @@ using BcsResolver.Syntax.Tokenizer;
 
 namespace BcsResolver.Syntax.Parser
 {
-    [DebuggerDisplay("[S: {Identifier}]")]
     public abstract class BcsComposedEntity : BcsNamedEntityNode
     {
         public List<BcsExpressionNode> Parts { get; } = new List<BcsExpressionNode>();

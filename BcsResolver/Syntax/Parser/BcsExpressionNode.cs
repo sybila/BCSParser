@@ -18,5 +18,7 @@ namespace BcsResolver.Syntax.Parser
         {
             return new List<BcsExpressionNode>();
         }
+
+        public abstract string ToDisplayString();
     }
 }
