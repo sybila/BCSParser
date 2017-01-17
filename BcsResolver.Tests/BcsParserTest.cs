@@ -17,7 +17,7 @@ namespace BcsResolver.Tests
     public class BcsParserTest
     {
         [TestMethod]
-        public void Parser_SimpleComposition_Valid()
+        public void Parser_StructuralAgentTwoAtomicAgentsInAccessor_Valid()
         {
             var tree = BcsSyntaxFactory.ParseModifier("FRS(Thr{p},Tyr{u})::cyt");
 
@@ -59,7 +59,30 @@ namespace BcsResolver.Tests
         }
 
         [TestMethod]
-        public void Parser_QualifiedName_Valid()
+        public void Parser_StructuralAgentCompositionInAtomicAgentAccessor_Valid()
+        {
+            var tree = BcsSyntaxFactory.ParseModifier("A{i}::K(B{u})::c");
+
+            var i = tree
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsAtomicAgentNode>().Parts.AssertCount(1)[0]
+                .AssertCast<BcsAgentStateNode>();
+
+            var u = tree
+               .AssertCast<BcsContentAccessNode>().Target
+               .AssertCast<BcsContentAccessNode>().Container
+               .AssertCast<BcsStructuralAgentNode>().Parts.AssertCount(1)[0]
+               .AssertCast<BcsAtomicAgentNode>().Parts.AssertCount(1)[0]
+               .AssertCast<BcsAgentStateNode>();
+
+            Assert.AreEqual("i", i.Identifier.Name);
+            Assert.AreEqual("u", u.Identifier.Name);
+            Assert.AreEqual("A{i}::K(B{u})::c", tree.ToDisplayString());
+        }
+
+        [TestMethod]
+        public void Parser_AtomicAgentInAccessor_Valid()
         {
             var tree = BcsSyntaxFactory.ParseModifier("Thr{u}::GS::cyt");
 
@@ -70,11 +93,11 @@ namespace BcsResolver.Tests
                 .AssertCast<BcsAgentStateNode>().Identifier;
 
             Assert.AreEqual("u", stateNameId.Name);
-            Assert.AreEqual("Thr{u}::GS::cyt",tree.ToDisplayString());
+            Assert.AreEqual("Thr{u}::GS::cyt", tree.ToDisplayString());
         }
 
         [TestMethod]
-        public void Parser_SimpleComplex_Valid()
+        public void Parser_TwoStructuralAgentsInComplexAccessor_Valid()
         {
             var tree = BcsSyntaxFactory.ParseModifier("FRS(Thr{p}).M(Tyr{u})::cyt");
 
@@ -128,7 +151,7 @@ namespace BcsResolver.Tests
         }
 
         [TestMethod]
-        public void Parser_SimpleReaction_Valid()
+        public void Parser_SimpleReactionLeft_Valid()
         {
             var tree = BcsSyntaxFactory.ParseReaction("FRS<=FRSR");
             var reactantLeft = tree.AssertCast<BcsReactionNode>().LeftSideReactants.AssertCount(1).ElementAt(0);
@@ -138,6 +161,86 @@ namespace BcsResolver.Tests
             Assert.AreEqual("FRSR", reactantRight.Complex.AssertCast<BcsNamedEntityReferenceNode>().Identifier.Name);
 
             Assert.AreEqual("1FRS<=1FRSR", tree.ToDisplayString());
+        }
+
+        [TestMethod]
+        public void Parser_ComplexFullySpecifiedInAtomicAgentComplexAccessor_Valid()
+        {
+            var tree = BcsSyntaxFactory.ParseModifier("B{p}::M::K.M.N::c");
+            var p = tree
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsAtomicAgentNode>().Parts.AssertCount(1)[0]
+                .AssertCast<BcsAgentStateNode>();
+
+            var kmn = tree
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Container
+                .AssertCast<BcsComplexNode>().Parts.AssertCount(3);
+
+            var k = kmn[0].AssertCast<BcsNamedEntityReferenceNode>();
+            var m = kmn[1].AssertCast<BcsNamedEntityReferenceNode>();
+            var n = kmn[2].AssertCast<BcsNamedEntityReferenceNode>();
+
+            Assert.AreEqual("p", p.Identifier.Name);
+            Assert.AreEqual("K", k.Identifier.Name);
+            Assert.AreEqual("M", m.Identifier.Name);
+            Assert.AreEqual("N", n.Identifier.Name);
+            Assert.AreEqual("B{p}::M::K.M.N::c", tree.ToDisplayString());
+        }
+
+        [TestMethod]
+        public void Parser_AtomicAgentComplexAccessor_Valid()
+        {
+            var tree = BcsSyntaxFactory.ParseModifier("B{p}::M::X::c");
+            var p = tree
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsAtomicAgentNode>().Parts.AssertCount(1)[0]
+                .AssertCast<BcsAgentStateNode>();
+
+            Assert.AreEqual("p", p.Identifier.Name);
+            Assert.AreEqual("B{p}::M::X::c", tree.ToDisplayString());
+        }
+
+        [TestMethod]
+        public void Parser_EmptyBracketsInAccessor_Valid()
+        {
+            var tree = BcsSyntaxFactory.ParseModifier("A::B()::C.D.E::F");
+            var a = tree
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsNamedEntityReferenceNode>();
+
+            Assert.AreEqual("A", a.Identifier.Name);
+            Assert.AreEqual("A::B()::C.D.E::F", tree.ToDisplayString());
+        }
+
+        [TestMethod]
+        public void Parser_AtomicAgentStateSpecifiedInComplexInAtomicAgentAccessor_Valid()
+        {
+            var tree = BcsSyntaxFactory.ParseModifier("B{p}::M::K.M.N(C{a})::c");
+            var p = tree
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsAtomicAgentNode>().Parts.AssertCount(1)[0]
+                .AssertCast<BcsAgentStateNode>();
+
+            var a = tree
+                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Container
+                .AssertCast<BcsComplexNode>().Parts.AssertCount(3)[2]
+                .AssertCast<BcsStructuralAgentNode>().Parts.AssertCount(1)[0]
+                .AssertCast<BcsAtomicAgentNode>().Parts.AssertCount(1)[0]
+                .AssertCast<BcsAgentStateNode>();
+
+            Assert.AreEqual("p", p.Identifier.Name);
+            Assert.AreEqual("a", a.Identifier.Name);
+            Assert.AreEqual("B{p}::M::K.M.N(C{a})::c", tree.ToDisplayString());
         }
 
         [TestMethod]

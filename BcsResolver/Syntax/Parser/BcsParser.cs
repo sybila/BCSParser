@@ -11,8 +11,6 @@ namespace BcsResolver.Syntax.Parser
     {
         protected override BcsExpresionTokenType WhiteSpaceToken => BcsExpresionTokenType.Whitespace;
 
-        private Random randomizer = new Random();
-
         public BcsReactionNode ParseReaction(List<BcsExpresionToken> tokens)
         {
             if (tokens.Count < 1) { return null; }
@@ -178,10 +176,16 @@ namespace BcsResolver.Syntax.Parser
             {
                 var component = new BcsStructuralAgentNode { Identifier = identifier };
                 component.BeginBrace = Read().ToTextRange();
-                component.Parts.Add(ReadAtomicAgent());
 
+                //case B()
+                if (IsPeekType(BcsExpresionTokenType.Identifier))
+                {
+                    //case B(I)
+                    component.Parts.Add(ReadAtomicAgent());
+                }
                 while (IsPeekType(BcsExpresionTokenType.Comma))
                 {
+                    //case B(I,I,...,I)
                     component.Separators.Add(Read().ToTextRange());
                     component.Parts.Add(ReadAtomicAgent());
                 }

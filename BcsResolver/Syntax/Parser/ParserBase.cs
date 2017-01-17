@@ -12,7 +12,7 @@ namespace BcsResolver.Syntax.Parser
         /// </summary>
         protected IEnumerable<TToken> GetTokensFrom(int startIndex)
         {
-            return Enumerable.Skip<TToken>(Tokens, startIndex).Take(CurrentIndex - startIndex);
+            return Tokens.Skip(startIndex).Take(CurrentIndex - startIndex);
         }
 
         protected abstract TTokenType WhiteSpaceToken { get; }
