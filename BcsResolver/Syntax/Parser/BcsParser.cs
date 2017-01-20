@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using BcsResolver.Extensions;
 using BcsResolver.Syntax.Tokenizer;
 using Microsoft.Build.Utilities;
@@ -11,14 +12,14 @@ namespace BcsResolver.Syntax.Parser
     {
         protected override BcsExpresionTokenType WhiteSpaceToken => BcsExpresionTokenType.Whitespace;
 
-        public BcsReactionNode ParseReaction(List<BcsExpresionToken> tokens)
+        public BcsExpressionNode ParseReaction(List<BcsExpresionToken> tokens)
         {
             if (tokens.Count < 1) { return null; }
             //whitespace tokens are never  significant, leave then out.
             Tokens = tokens.Where(t => t.Type != BcsExpresionTokenType.Whitespace).ToList();
             CurrentIndex = 0;
 
-            var reaction = ReadReaction();
+            var reaction = ParseVariableDefinition();
 
             PostProcessTree(reaction);
 
@@ -35,10 +36,45 @@ namespace BcsResolver.Syntax.Parser
             return ReadComponentAccess();
         }
 
-        private static void PostProcessTree(BcsReactionNode reaction)
+        private static void PostProcessTree(BcsExpressionNode reaction)
         {
             var visitor = new ParentResolvingVisitor();
             visitor.Visit(reaction);
+        }
+
+        private BcsExpressionNode ParseVariableDefinition()
+        {
+            var reaction = ReadReaction();
+            if (IsPeekType(BcsExpresionTokenType.QuestionMark))
+            {
+                var variableExpression = new BcsVariableExpresssioNode
+                {
+                    QuestionMarkOperator = Read().ToTextRange(),
+                    TargetExpression = reaction
+                };
+
+                variableExpression.VariableName = ReadIdentifier();
+                //TODO: Add Error if not
+
+                if (IsPeekType(BcsExpresionTokenType.Assignment))
+                {
+                    variableExpression.AssignmentOperator = Read().ToTextRange();
+                    var reference = new BcsNamedEntityReferenceNode {Identifier = ReadIdentifier()};
+                    variableExpression.References.Add(reference);
+                    while (IsPeekType(BcsExpresionTokenType.Comma))
+                    {
+                        variableExpression.ReferenceSeparators.Add(Read().ToTextRange());
+                        reference = new BcsNamedEntityReferenceNode {Identifier = ReadIdentifier()};
+                        variableExpression.References.Add(reference);
+                    }
+                }
+                else
+                {
+                    variableExpression.Errors.Add(new NodeError("Expected assigmmennt of variable.",Peek()?.ToTextRange()?? default(TextRange)));
+                }
+                return variableExpression;;
+            }
+            return reaction;
         }
 
         private BcsReactionNode ReadReaction()
@@ -91,7 +127,7 @@ namespace BcsResolver.Syntax.Parser
 
         private void ReadReactionRightSide(BcsReactionNode reaction)
         {
-            while (Peek() != null)
+            while (IsPeekType(BcsExpresionTokenType.Identifier) || IsPeekType(BcsExpresionTokenType.ReactionCoeficient))
             {
                 reaction.RightSideReactants.Add(ReadReactant());
 

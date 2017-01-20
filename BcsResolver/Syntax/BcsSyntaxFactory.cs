@@ -11,7 +11,7 @@ namespace BcsResolver.Syntax
 {
     public static class BcsSyntaxFactory
     {
-        public static BcsReactionNode ParseReaction(string text)
+        public static BcsExpressionNode ParseReaction(string text)
         {
             return CreateParser().ParseReaction(CreateTokens(text));
         }

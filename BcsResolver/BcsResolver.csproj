@@ -105,6 +105,7 @@
     <Compile Include="SemanticModel\IBcsEntityMetadataProvider.cs" />
     <Compile Include="SemanticModel\SemanticErrorSeverity.cs" />
     <Compile Include="SemanticModel\SemanticError.cs" />
+    <Compile Include="Syntax\Parser\BcsVariableExpresssioNode.cs" />
     <Compile Include="Syntax\Tokenizer\BcsExpresionTokenizer.cs" />
     <Compile Include="Errors\BeginWithLastTokenOfTypeTokenError.cs" />
     <Compile Include="Syntax\Tokenizer\BcsExpresionToken.cs" />

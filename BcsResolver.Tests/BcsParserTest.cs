@@ -244,6 +244,32 @@ namespace BcsResolver.Tests
         }
 
         [TestMethod]
+        public void Parser_SimmplestReactionWithVariable()
+        {
+            var tree = BcsSyntaxFactory.ParseReaction("A<=>Var?Var=B,C,D");
+
+            var variableExpression = tree.AssertCast<BcsVariableExpresssioNode>();
+            variableExpression.ReferenceSeparators.AssertCount(2);
+
+            var a = variableExpression.TargetExpression
+                .AssertCast<BcsReactionNode>().LeftSideReactants.AssertCount(1)[0]
+                .AssertCast<BcsReactantNode>().Complex
+                .AssertCast<BcsNamedEntityReferenceNode>();
+
+            var b =variableExpression.References.AssertCount(3)[0].AssertCast<BcsNamedEntityReferenceNode>();
+            var varDef = variableExpression.VariableName;
+
+            Assert.AreEqual("A", a.Identifier.Name);
+            Assert.AreEqual("B", b.Identifier.Name);
+            Assert.AreEqual("Var", varDef.Name);
+            Assert.AreEqual("1A<=>1Var?Var=B,C,D", tree.ToDisplayString());
+
+            Assert.AreEqual(new TextRange(7,1),variableExpression.QuestionMarkOperator);
+            Assert.AreEqual(new TextRange(11, 1), variableExpression.AssignmentOperator);
+            Assert.AreEqual(new TextRange(13, 1), variableExpression.ReferenceSeparators[0]);
+        }
+
+        [TestMethod]
         public void Parser_SimpleComplexWhitespaced_Valid()
         {
             var tree = BcsSyntaxFactory.ParseModifier("FRS   (   Thr  { p } )  .  Tyr { u  }   ::  M   ::  cyt");

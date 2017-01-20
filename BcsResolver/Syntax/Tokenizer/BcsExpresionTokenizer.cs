@@ -105,8 +105,13 @@ namespace BcsResolver.Syntax.Tokenizer
                         }
                         else
                         {
-                            EnsureUnsupportedOperator(BcsExpresionTokenType.Invalid);
+                            EnsureUnsupportedOperator(BcsExpresionTokenType.Assignment);
                         }
+                        break;
+                    case '?':
+                        FinishIncompleteIdentifier();
+                        Read();
+                        EnsureUnsupportedOperator(BcsExpresionTokenType.QuestionMark);
                         break;
                     case '|':
                         FinishIncompleteIdentifier();

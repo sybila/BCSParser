@@ -36,7 +36,12 @@ namespace BcsResolver.Syntax.Tokenizer
         VariableDefinitionSeparator,//;
         [Description("::")]
         FourDot, //::
+        [Description("?")]
+        QuestionMark,
+        [Description("=")]
+        Assignment,
         [Description("Inv")]
         Invalid
+            
     }
 }
