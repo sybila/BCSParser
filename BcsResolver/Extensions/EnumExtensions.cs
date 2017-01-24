@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using BcsResolver.Syntax.Parser;
+using BcsResolver.Syntax.Tokenizer;
 
 namespace BcsResolver.Extensions
 {
@@ -25,6 +26,17 @@ namespace BcsResolver.Extensions
                     throw new InvalidOperationException($"Unsupported {nameof(ReactionDirectionType)}.");
             }
         }
+
+        public static string ToDisplayString(this BcsExpresionTokenType tt)
+        {
+            return tt.GetDescription();
+        }
+
+        public static string ToDisplayString(this BcsExpresionToken tt)
+        {
+            return tt == null ? "" : tt.Type.GetDescription();
+        }
+
 
         public static string GetDescription<T>(this T enumerationValue)
             where T : struct

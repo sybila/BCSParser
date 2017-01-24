@@ -5,13 +5,13 @@ using BcsResolver.Syntax.Tokenizer;
 
 namespace BcsResolver.Syntax.Parser
 {
-    public abstract class BcsComposedEntity : BcsNamedEntityNode
+    public abstract class BcsComposedEntity<TComponent> : BcsNamedEntityNode
+        where TComponent : BcsNamedEntityNode
     {
-        public List<BcsExpressionNode> Parts { get; } = new List<BcsExpressionNode>();
-        public List<TextRange> Separators { get; } = new List<TextRange>();
+        public BcsSet<TComponent> Parts { get; set; }
         public override IEnumerable<BcsExpressionNode> EnumerateChildNodes()
         {
-            return base.EnumerateChildNodes().Concat(Parts);
+            return base.EnumerateChildNodes().Concat(new []{ Parts });
         }
     }
 }

@@ -4,9 +4,8 @@ using System.Linq;
 namespace BcsResolver.Syntax.Parser
 {
     [DebuggerDisplay("[C: {ToDisplayString()}]")]
-    public sealed class BcsComplexNode : BcsComposedEntity
+    public sealed class BcsComplexNode : BcsComposedEntity<BcsNamedEntityNode>
     {
-        public override string ToDisplayString() =>
-            $"{string.Join(".", Parts.Select(p => p.ToDisplayString()))}";
+        public override string ToDisplayString() => Parts.ToDisplayString();
     }
 }

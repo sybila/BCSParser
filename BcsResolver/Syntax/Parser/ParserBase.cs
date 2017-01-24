@@ -26,7 +26,7 @@ namespace BcsResolver.Syntax.Parser
         /// </summary>
         protected List<TToken> SkipWhiteSpace()
         {
-            return Enumerable.ToList<TToken>(ReadMultiple(t => t.Type.Equals(WhiteSpaceToken)));
+            return ReadMultiple(t => t.Type.Equals(WhiteSpaceToken)).ToList();
         }
 
         /// <summary>

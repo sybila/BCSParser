@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\BcsEntityExtensions.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="File\BcsEntityType.cs" />
     <Compile Include="SemanticModel\BcsBoundSymbol.cs" />
     <Compile Include="SemanticModel\BcsRuleBinder.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Syntax\Parser\BcsNamedEntityNode.cs" />
     <Compile Include="Syntax\Parser\BcsAgentStateNode.cs" />
     <Compile Include="Syntax\Parser\BcsAtomicAgentNode.cs" />
+    <Compile Include="Syntax\Parser\BcsSet.cs" />
     <Compile Include="Syntax\Parser\BcsStructuralAgentNode.cs" />
     <Compile Include="Syntax\Parser\BcsComplexNode.cs" />
     <Compile Include="Syntax\Parser\BcsIdentifierNode.cs" />

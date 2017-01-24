@@ -17,13 +17,11 @@ namespace BcsResolver.Syntax.Tokenizer
 
         public TokenError Error { get; set; }
 
-        public bool HasError
-        {
-            get { return Error != null; }
-        }
+        public bool HasError => Error != null;
+
         public override string ToString()
         {
-            return string.Format("Token ({0}:{1}): {2}", StartPosition, Length, Text);
+            return $"Token ({StartPosition}:{Length}): {Text}";
         }
     }
 
@@ -34,7 +32,7 @@ namespace BcsResolver.Syntax.Tokenizer
 
         public override string ToString()
         {
-            return string.Format("{0} ({1}:{2}): {3}", Type, StartPosition, Length, Text);
+            return $"{Type} ({StartPosition}:{Length}): {Text}";
         }
     }
 }

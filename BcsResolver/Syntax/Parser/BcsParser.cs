@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using BcsResolver.Extensions;
 using BcsResolver.Syntax.Tokenizer;
 using Microsoft.Build.Utilities;
@@ -14,7 +16,10 @@ namespace BcsResolver.Syntax.Parser
 
         public BcsExpressionNode ParseReaction(List<BcsExpresionToken> tokens)
         {
-            if (tokens.Count < 1) { return null; }
+            if (tokens.Count < 1)
+            {
+                return null;
+            }
             //whitespace tokens are never  significant, leave then out.
             Tokens = tokens.Where(t => t.Type != BcsExpresionTokenType.Whitespace).ToList();
             CurrentIndex = 0;
@@ -28,7 +33,10 @@ namespace BcsResolver.Syntax.Parser
 
         public BcsExpressionNode ParseComplex(List<BcsExpresionToken> tokens)
         {
-            if (tokens.Count < 1) { return null; }
+            if (tokens.Count < 1)
+            {
+                return null;
+            }
             //whitespace tokens are never  significant, leave then out.
             Tokens = tokens.Where(t => t.Type != BcsExpresionTokenType.Whitespace).ToList();
             CurrentIndex = 0;
@@ -45,11 +53,11 @@ namespace BcsResolver.Syntax.Parser
         private BcsExpressionNode ParseVariableDefinition()
         {
             var reaction = ReadReaction();
-            if (IsPeekType(BcsExpresionTokenType.QuestionMark))
+            if (IsPeekType(BcsExpresionTokenType.Semicolon))
             {
                 var variableExpression = new BcsVariableExpresssioNode
                 {
-                    QuestionMarkOperator = Read().ToTextRange(),
+                    DefinitionSeparator = Read().ToTextRange(),
                     TargetExpression = reaction
                 };
 
@@ -59,20 +67,20 @@ namespace BcsResolver.Syntax.Parser
                 if (IsPeekType(BcsExpresionTokenType.Assignment))
                 {
                     variableExpression.AssignmentOperator = Read().ToTextRange();
-                    var reference = new BcsNamedEntityReferenceNode {Identifier = ReadIdentifier()};
-                    variableExpression.References.Add(reference);
-                    while (IsPeekType(BcsExpresionTokenType.Comma))
-                    {
-                        variableExpression.ReferenceSeparators.Add(Read().ToTextRange());
-                        reference = new BcsNamedEntityReferenceNode {Identifier = ReadIdentifier()};
-                        variableExpression.References.Add(reference);
-                    }
+
+                    var set = ReadSet(
+                        BcsExpresionTokenType.Comma,
+                        ReadComplex,
+                        BcsExpresionTokenType.SetBegin,
+                        BcsExpresionTokenType.SetEnd);
+                    variableExpression.References = set;
                 }
                 else
                 {
-                    variableExpression.Errors.Add(new NodeError("Expected assigmmennt of variable.",Peek()?.ToTextRange()?? default(TextRange)));
+                    variableExpression.Errors.Add(new NodeError("Expected assigmmennt of variable.",
+                        Peek()?.ToTextRange() ?? default(TextRange)));
                 }
-                return variableExpression;;
+                return variableExpression;
             }
             return reaction;
         }
@@ -113,30 +121,37 @@ namespace BcsResolver.Syntax.Parser
 
         private void ReadReactionLeftSide(BcsReactionNode reaction)
         {
-            while (Peek() != null && !IsPeekReactionDirection())
-            {
-                reaction.LeftSideReactants.Add(ReadReactant());
-
-                if (IsPeekType(BcsExpresionTokenType.Interaction))
+            SafeLoop(
+                () => Peek() != null
+                && !IsPeekReactionDirection(),
+                () =>
                 {
-                    reaction.InteractionSeparatorRanges.Add(Peek().ToTextRange());
-                    Read();
-                }
-            }
+                    reaction.LeftSideReactants.Add(ReadReactant());
+
+                    if (IsPeekType(BcsExpresionTokenType.Interaction))
+                    {
+                        reaction.InteractionSeparatorRanges.Add(Peek().ToTextRange());
+                        Read();
+                    }
+                });
         }
 
         private void ReadReactionRightSide(BcsReactionNode reaction)
         {
-            while (IsPeekType(BcsExpresionTokenType.Identifier) || IsPeekType(BcsExpresionTokenType.ReactionCoeficient))
-            {
-                reaction.RightSideReactants.Add(ReadReactant());
-
-                if (IsPeekType(BcsExpresionTokenType.Interaction))
+            SafeLoop(
+                () => IsPeekType(BcsExpresionTokenType.Identifier)
+                      || IsPeekType(BcsExpresionTokenType.ReactionCoeficient)
+                      || IsPeekType(BcsExpresionTokenType.QuestionMark),
+                () =>
                 {
-                    reaction.InteractionSeparatorRanges.Add(Peek().ToTextRange());
-                    Read();
-                }
-            }
+                    reaction.RightSideReactants.Add(ReadReactant());
+
+                    if (IsPeekType(BcsExpresionTokenType.Interaction))
+                    {
+                        reaction.InteractionSeparatorRanges.Add(Peek().ToTextRange());
+                        Read();
+                    }
+                });
         }
 
         private BcsReactantNode ReadReactant()
@@ -154,15 +169,17 @@ namespace BcsResolver.Syntax.Parser
         {
             BcsExpressionNode target = ReadComplex();
 
-            while (IsPeekType(BcsExpresionTokenType.FourDot))
-            {
-                target = new BcsContentAccessNode
+            SafeLoop(
+                () => IsPeekType(BcsExpresionTokenType.FourDot),
+                () =>
                 {
-                    Operator = Read().ToTextRange(),
-                    Target = target,
-                    Container = ReadComplex()
-                };
-            }
+                    target = new BcsContentAccessNode
+                    {
+                        Operator = Read().ToTextRange(),
+                        Target = target,
+                        Container = ReadComplex()
+                    };
+                });
             return target;
         }
 
@@ -172,14 +189,11 @@ namespace BcsResolver.Syntax.Parser
 
             if (IsPeekType(BcsExpresionTokenType.Dot))
             {
-                var complex = new BcsComplexNode { Identifier = null };
-                complex.Parts.Add(component);
-
-                while (IsPeekType(BcsExpresionTokenType.Dot))
+                var complex = new BcsComplexNode
                 {
-                    complex.Separators.Add(Read().ToTextRange());
-                    complex.Parts.Add(ReadComponent());
-                }
+                    Identifier = null,
+                    Parts = ReadSet(BcsExpresionTokenType.Dot, ReadComponent, firstElement: component)
+                };
                 return complex;
             }
             return component;
@@ -187,99 +201,76 @@ namespace BcsResolver.Syntax.Parser
 
         private BcsNamedEntityNode ReadComponentOrAgentOrReference()
         {
-            var identifier = ReadIdentifier();
-
-            if (IsPeekType(BcsExpresionTokenType.ComponentBegin))
+            return ReadVariableOrEntity(() =>
             {
-                return ReadComponent(identifier);
-            }
-            if (IsPeekType(BcsExpresionTokenType.AgentBegin))
-            {
-                return ReadAtomicAgent(identifier);
-            }
-            return new BcsNamedEntityReferenceNode { Identifier = identifier }; ;
+                var identifier = ReadIdentifier();
+                if (IsPeekType(BcsExpresionTokenType.BracketBegin))
+                {
+                    return ReadComponent(identifier);
+                }
+                if (IsPeekType(BcsExpresionTokenType.SetBegin))
+                {
+                    return ReadAtomicAgent(identifier);
+                }
+                return new BcsNamedEntityReferenceNode { Identifier = identifier };
+            });
         }
 
-        private BcsExpressionNode ReadComponent()
+        private BcsNamedEntityNode ReadComponent()
         {
-            var identifier = ReadIdentifier();
-            return ReadComponent(identifier);
+            return ReadVariableOrEntity(() =>
+            {
+                var identifier = ReadIdentifier();
+                return ReadComponent(identifier);
+            });
         }
 
         private BcsNamedEntityNode ReadComponent(BcsIdentifierNode identifier)
         {
-            if (IsPeekType(BcsExpresionTokenType.ComponentBegin))
+            if (IsPeekType(BcsExpresionTokenType.BracketBegin))
             {
-                var component = new BcsStructuralAgentNode { Identifier = identifier };
-                component.BeginBrace = Read().ToTextRange();
-
-                //case B()
-                if (IsPeekType(BcsExpresionTokenType.Identifier))
+                var component = new BcsStructuralAgentNode
                 {
-                    //case B(I)
-                    component.Parts.Add(ReadAtomicAgent());
-                }
-                while (IsPeekType(BcsExpresionTokenType.Comma))
-                {
-                    //case B(I,I,...,I)
-                    component.Separators.Add(Read().ToTextRange());
-                    component.Parts.Add(ReadAtomicAgent());
-                }
-                component.EndBrace =
-                    CheckedRead(BcsExpresionTokenType.ComponentEnd, component)
-                    .ToTextRange();
+                    Identifier = identifier,
+                    Parts = ReadSet(
+                        BcsExpresionTokenType.Comma,
+                        ReadAtomicAgent, BcsExpresionTokenType.BracketBegin,
+                        BcsExpresionTokenType.BracketEnd,
+                        allowEmpty: true)
+                };
 
                 return component;
             }
             return new BcsNamedEntityReferenceNode { Identifier = identifier };
         }
 
-        private BcsExpressionNode ReadAtomicAgent()
+        private BcsNamedEntityNode ReadAtomicAgent()
         {
-            var identifier = ReadIdentifier();
-            return ReadAtomicAgent(identifier);
+            return ReadVariableOrEntity(() =>
+            {
+                var identifier = ReadIdentifier();
+                return ReadAtomicAgent(identifier);
+            });
         }
 
         private BcsNamedEntityNode ReadAtomicAgent(BcsIdentifierNode identifier)
         {
-            if (IsPeekType(BcsExpresionTokenType.AgentBegin))
+            if (IsPeekType(BcsExpresionTokenType.SetBegin))
             {
-                var agent = new BcsAtomicAgentNode { Identifier = identifier };
-                agent.BeginBrace = Read().ToTextRange();
-                agent.Parts.Add(ReadState());
-
-                while (IsPeekType(BcsExpresionTokenType.Comma))
+                var agent = new BcsAtomicAgentNode
                 {
-                    agent.Separators.Add(Read().ToTextRange());
-                    agent.Parts.Add(ReadState());
-                }
-
-                agent.EndBrace =
-                    CheckedRead(BcsExpresionTokenType.AgentEnd, agent)
-                    .ToTextRange();
+                    Identifier = identifier,
+                    Parts = ReadSet(BcsExpresionTokenType.Comma, ReadState, BcsExpresionTokenType.SetBegin, BcsExpresionTokenType.SetEnd, allowEmpty: true)
+                };
 
                 return agent;
             }
             return new BcsNamedEntityReferenceNode { Identifier = identifier };
         }
 
-        private BcsAgentStateNode ReadState()
+        private BcsNamedEntityNode ReadState()
         {
-            return new BcsAgentStateNode { Identifier = ReadIdentifier() };
-        }
-
-        private BcsIdentifierNode ReadIdentifier()
-        {
-            var identifier = new BcsIdentifierNode { };
-            var wsBefore = SkipWhiteSpace();
-            var identifierToken = CheckedRead(BcsExpresionTokenType.Identifier, identifier);
-            var wsAfter = SkipWhiteSpace();
-
-            identifier.Name = identifierToken.Text;
-            identifier.NameRange = identifierToken.ToTextRange();
-            identifier.WhiteSpacesBefore.AddRange(wsBefore.Select(t => t.ToTextRange()));
-            identifier.WhiteSpacesAfter.AddRange(wsAfter.Select(t => t.ToTextRange()));
-            return identifier;
+            return ReadVariableOrEntity(() => new BcsAgentStateNode { Identifier = ReadIdentifier() });
         }
 
         private void ReadCoeficient(BcsReactantNode reactant)
@@ -300,7 +291,99 @@ namespace BcsResolver.Syntax.Parser
             }
         }
 
-        private BcsExpresionToken CheckedRead(BcsExpresionTokenType type, BcsExpressionNode expression, bool throwException = false)
+        private BcsIdentifierNode ReadIdentifier()
+        {
+            var identifier = new BcsIdentifierNode { };
+            var identifierToken = CheckedRead(BcsExpresionTokenType.Identifier, identifier.Errors);
+            if (identifierToken == null)
+            {
+                return null;
+            }
+
+            identifier.Name = identifierToken?.Text;
+            identifier.NameRange = identifierToken?.ToTextRange() ?? default(TextRange);
+            return identifier;
+        }
+
+        private BcsNamedEntityNode ReadVariableOrEntity<TEntity>(Func<TEntity> entityReadFunc)
+            where TEntity : BcsNamedEntityNode
+        {
+            if (IsPeekType(BcsExpresionTokenType.QuestionMark))
+            {
+                return new BcsNamedEntityReferenceNode
+                {
+                    QuestionMark = Read(),
+                    Identifier = ReadIdentifier()
+                };
+            }
+
+            return entityReadFunc();
+        }
+
+        private BcsSet<TElementNode> ReadSet<TElementNode>(
+            BcsExpresionTokenType separatorTokenType,
+            Func<TElementNode> elementReadFunc,
+            BcsExpresionTokenType? openingTokenType = null,
+            BcsExpresionTokenType? closingTokenType = null,
+            TElementNode firstElement = null,
+            bool allowEmpty = false)
+            where TElementNode : BcsExpressionNode
+        {
+            var set = new BcsSet<TElementNode>();
+
+            if (openingTokenType.HasValue)
+            {
+                set.OpeningToken = CheckedRead(openingTokenType.Value, set.Errors);
+                if (set.OpeningToken == null)
+                {
+                    return set;
+                }
+            }
+
+            if (IsPeekType(BcsExpresionTokenType.Identifier) || IsPeekType(BcsExpresionTokenType.QuestionMark))
+            {
+                firstElement = firstElement ?? elementReadFunc();
+            }
+
+            if (!allowEmpty && firstElement == null)
+            {
+                set.Errors.Add(
+                    new NodeError("Element identifier expected.",
+                        Peek()?.ToTextRange()
+                        ?? new TextRange(Tokens.LastOrDefault()?.StartPosition ?? 0, 0)));
+            }
+            set.Elements.Add(firstElement);
+
+            SafeLoop(() => IsPeekType(separatorTokenType), () =>
+            {
+                set.SeparatorTokens.Add(Read());
+                set.Elements.Add(elementReadFunc());
+            });
+
+            if (closingTokenType.HasValue)
+            {
+                set.ClosingToken = CheckedRead(closingTokenType.Value, set.Errors);
+            }
+            return set;
+        }
+
+        private void SafeLoop(Func<bool> loopCondition, Action loopAction)
+        {
+            var lastLoopIndex = CurrentIndex;
+            while (loopCondition())
+            {
+                loopAction();
+
+                if (lastLoopIndex >= CurrentIndex)
+                {
+                    break;
+                }
+                lastLoopIndex = CurrentIndex;
+            }
+        }
+
+        private BcsExpresionToken CheckedRead(BcsExpresionTokenType type, List<NodeError> errors,
+            bool throwException = false)
         {
             if (IsPeekType(type))
             {
@@ -308,7 +391,7 @@ namespace BcsResolver.Syntax.Parser
             }
             else
             {
-                expression.Errors.Add(new NodeError("Unexpected token type.", Peek().ToTextRange(), Peek()));
+                errors.Add(new NodeError("Unexpected token type.", Peek().ToTextRange(), Peek()));
                 if (throwException)
                 {
                     throw new ParserException($"Unexpected token type: {Peek()?.Type} index: {CurrentIndex}");

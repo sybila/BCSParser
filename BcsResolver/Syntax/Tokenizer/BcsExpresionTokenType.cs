@@ -8,40 +8,39 @@ namespace BcsResolver.Syntax.Tokenizer
         Identifier,
         [Description("WS")]
         Whitespace,
-        [Description("AgB")]
-        AgentBegin, //{
-        [Description("AgE")]
-        AgentEnd, //}
-        [Description("AgStSep")]
-        AgentSeparator, // |
-        [Description("CoB")]
-        ComponentBegin, //(
-        [Description("CoE")]
-        ComponentEnd, //)
+        [Description("{")]
+        SetBegin,
+        [Description("}")]
+        SetEnd,
+        [Description("|")]
+        AgentSeparator, 
+        [Description("(")]
+        BracketBegin, 
+        [Description(")")]
+        BracketEnd, 
         [Description(".")]
-        Dot, //.
+        Dot,
         [Description(",")]
-        Comma, //,
-        [Description("In")]
-        Interaction, //+
-        [Description("ReDL")]
-        ReactionDirectionLeft, //<=
-        [Description("ReDR")]
-        ReactionDirectionRight, //=>
-        [Description("ReDB")]
-        ReactionDirectionBoth, //<=>
+        Comma,
+        [Description("+")]
+        Interaction,
+        [Description("<=")]
+        ReactionDirectionLeft,
+        [Description("=>")]
+        ReactionDirectionRight,
+        [Description("<=>")]
+        ReactionDirectionBoth,
         [Description("ReCo")]
-        ReactionCoeficient, //number
-        [Description("VDeSep")]
-        VariableDefinitionSeparator,//;
+        ReactionCoeficient,
         [Description("::")]
-        FourDot, //::
+        FourDot,
         [Description("?")]
         QuestionMark,
+        [Description(";")]
+        Semicolon,
         [Description("=")]
         Assignment,
         [Description("Inv")]
         Invalid
-            
     }
 }

@@ -57,29 +57,34 @@ namespace BcsResolver.Syntax.Tokenizer
                     case '(':
                         FinishIncompleteIdentifier();
                         Read();
-                        CreateToken(BcsExpresionTokenType.ComponentBegin);
+                        CreateToken(BcsExpresionTokenType.BracketBegin);
                         break;
 
                     case ')':
                         FinishIncompleteIdentifier();
                         Read();
-                        CreateToken(BcsExpresionTokenType.ComponentEnd);
+                        CreateToken(BcsExpresionTokenType.BracketEnd);
                         break;
                     case '{':
                         FinishIncompleteIdentifier();
                         Read();
-                        CreateToken(BcsExpresionTokenType.AgentBegin);
+                        CreateToken(BcsExpresionTokenType.SetBegin);
                         break;
 
                     case '}':
                         FinishIncompleteIdentifier();
                         Read();
-                        CreateToken(BcsExpresionTokenType.AgentEnd);
+                        CreateToken(BcsExpresionTokenType.SetEnd);
                         break;
                     case '+':
                         FinishIncompleteIdentifier();
                         Read();
                         EnsureUnsupportedOperator(BcsExpresionTokenType.Interaction);
+                        break;
+                    case ';':
+                        FinishIncompleteIdentifier();
+                        Read();
+                        EnsureUnsupportedOperator(BcsExpresionTokenType.Semicolon);
                         break;
                     case ':':
                         FinishIncompleteIdentifier();
