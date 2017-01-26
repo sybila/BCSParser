@@ -351,7 +351,10 @@ namespace BcsResolver.Syntax.Parser
                         Peek()?.ToTextRange()
                         ?? new TextRange(Tokens.LastOrDefault()?.StartPosition ?? 0, 0)));
             }
-            set.Elements.Add(firstElement);
+            if (firstElement!=null)
+            {
+                set.Elements.Add(firstElement);
+            }
 
             SafeLoop(() => IsPeekType(separatorTokenType), () =>
             {
