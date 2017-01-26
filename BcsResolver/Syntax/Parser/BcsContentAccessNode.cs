@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using BcsResolver.Syntax.Tokenizer;
 
 namespace BcsResolver.Syntax.Parser
@@ -12,5 +14,10 @@ namespace BcsResolver.Syntax.Parser
 
         public override string ToDisplayString() =>
             $"{Target.ToDisplayString()}::{Container.ToDisplayString()}";
+
+        public override IEnumerable<BcsExpressionNode> EnumerateChildNodes()
+        {
+            return base.EnumerateChildNodes().Concat(new[] {Target, Container});
+        }
     }
 }

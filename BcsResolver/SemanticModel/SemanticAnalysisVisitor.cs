@@ -14,10 +14,10 @@ namespace BcsResolver.SemanticModel
         { }
 
         protected override void VisitAgentState(BcsAgentStateNode bcsAgentState)
-        {}
+        { }
 
         protected override void VisitComponent(BcsStructuralAgentNode bcsStructuralAgent)
-        {}
+        { }
 
         protected override void VisitComplex(BcsComplexNode bcsComplex)
         { }
@@ -35,6 +35,12 @@ namespace BcsResolver.SemanticModel
         { }
 
         protected override void VisitAccessor(BcsContentAccessNode node)
+        { }
+
+        protected override void VisitVariableExpression(BcsVariableExpresssioNode bcsVariableExpresssioNode)
+        { }
+
+        protected override void VisitNamedReference(BcsNamedEntityReferenceNode bcsNamedEntityReferenceNode)
         { }
 
         private void CheckEntityTreeConsistency<TNode, TParent>(TNode checkedNode, Func<List<TNode>> checkedEntityListGetter, Func<List<TParent>> parentEntityListGetter, Func<TParent, List<TNode>> nodeChildrenGetter)

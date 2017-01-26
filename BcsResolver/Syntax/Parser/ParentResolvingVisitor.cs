@@ -1,4 +1,6 @@
-﻿namespace BcsResolver.Syntax.Parser
+﻿using System;
+
+namespace BcsResolver.Syntax.Parser
 {
     public class ParentResolvingVisitor : BcsExpressionNodeVisitor
     {
@@ -24,7 +26,7 @@
 
         protected override void VisitDefault(BcsExpressionNode node)
         {
-            ResolveFromParent(node);
+            throw new InvalidOperationException($"Unsupported node type in visitor: {node.GetType().FullName}.");
         }
 
         protected override void VisitReactant(BcsReactantNode bcsReactant)
@@ -42,17 +44,27 @@
             ResolveFromParent(identifier);
         }
 
+        protected override void VisitAccessor(BcsContentAccessNode node)
+        {
+            ResolveFromParent(node);
+        }
+
+        protected override void VisitVariableExpression(BcsVariableExpresssioNode bcsVariableExpresssioNode)
+        {
+            ResolveFromParent(bcsVariableExpresssioNode);
+        }
+
+        protected override void VisitNamedReference(BcsNamedEntityReferenceNode bcsNamedEntityReferenceNode)
+        {
+            ResolveFromParent(bcsNamedEntityReferenceNode);
+        }
+
         private void ResolveFromParent(BcsExpressionNode parentNode)
         {
             foreach (var childNode in parentNode.EnumerateChildNodes())
             {
                 childNode.ParentNode = parentNode;
             }
-        }
-
-        protected override void VisitAccessor(BcsContentAccessNode node)
-        {
-            ResolveFromParent(node);
         }
     }
 }

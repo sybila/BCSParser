@@ -38,6 +38,15 @@ namespace BcsResolver.Syntax.Parser
             {
                 VisitAccessor(node as BcsContentAccessNode);
             }
+            else if (node is BcsVariableExpresssioNode)
+            {
+                VisitVariableExpression(node as BcsVariableExpresssioNode);
+            }
+            else if (node is BcsNamedEntityReferenceNode)
+            {
+                VisitNamedReference(node as BcsNamedEntityReferenceNode);
+            }
+            
             else
             {
                 VisitDefault(node);
@@ -50,6 +59,10 @@ namespace BcsResolver.Syntax.Parser
                 Visit(childNode);
             }
         }
+
+        protected abstract void VisitNamedReference(BcsNamedEntityReferenceNode bcsNamedEntityReferenceNode);
+
+        protected abstract void VisitVariableExpression(BcsVariableExpresssioNode bcsVariableExpresssioNode);
 
         protected abstract void VisitReaction(BcsReactionNode bcsReaction);
         protected abstract void VisitReactant(BcsReactantNode bcsReactant);
