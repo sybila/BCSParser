@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using BcsResolver.File;
 using BcsResolver.Syntax.Parser;
+using BcsResolver.Syntax.Visitors;
 
 namespace BcsResolver.SemanticModel
 {
     class SemanticAnalysisVisitor : BcsExpressionNodeVisitor
     {
-        public BcsDefinitionFile DefinitionFile { get; set; }
 
         protected override void VisitAgent(BcsAtomicAgentNode bcsAtomicAgent)
         { }
@@ -35,7 +35,8 @@ namespace BcsResolver.SemanticModel
         { }
 
         protected override void VisitAccessor(BcsContentAccessNode node)
-        { }
+        {
+        }
 
         protected override void VisitVariableExpression(BcsVariableExpresssioNode bcsVariableExpresssioNode)
         { }

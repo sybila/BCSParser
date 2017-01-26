@@ -1,6 +1,7 @@
 ﻿using System.Linq;
+using BcsResolver.Syntax.Parser;
 
-namespace BcsResolver.Syntax.Parser
+namespace BcsResolver.Syntax.Visitors
 {
     public abstract class BcsExpressionNodeVisitor
     {

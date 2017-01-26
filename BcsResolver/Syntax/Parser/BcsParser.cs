@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using BcsResolver.Extensions;
 using BcsResolver.Syntax.Tokenizer;
+using BcsResolver.Syntax.Visitors;
 using Microsoft.Build.Utilities;
 
 namespace BcsResolver.Syntax.Parser
@@ -167,20 +168,19 @@ namespace BcsResolver.Syntax.Parser
 
         private BcsExpressionNode ReadComponentAccess()
         {
-            BcsExpressionNode target = ReadComplex();
+            BcsNamedEntityNode child = ReadComplex();
 
-            SafeLoop(
-                () => IsPeekType(BcsExpresionTokenType.FourDot),
-                () =>
+            if (IsPeekType(BcsExpresionTokenType.FourDot))
+            {
+                return new BcsContentAccessNode
                 {
-                    target = new BcsContentAccessNode
-                    {
-                        Operator = Read().ToTextRange(),
-                        Target = target,
-                        Container = ReadComplex()
-                    };
-                });
-            return target;
+                    Operator = Read().ToTextRange(),
+                    Child = child,
+                    Container = ReadComponentAccess()
+                };
+
+            }
+            return child;
         }
 
         private BcsNamedEntityNode ReadComplex()

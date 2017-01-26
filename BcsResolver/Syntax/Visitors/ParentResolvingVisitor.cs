@@ -1,6 +1,7 @@
 ﻿using System;
+using BcsResolver.Syntax.Parser;
 
-namespace BcsResolver.Syntax.Parser
+namespace BcsResolver.Syntax.Visitors
 {
     public class ParentResolvingVisitor : BcsExpressionNodeVisitor
     {

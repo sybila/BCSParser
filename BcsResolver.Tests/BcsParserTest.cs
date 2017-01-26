@@ -22,7 +22,7 @@ namespace BcsResolver.Tests
         {
             var tree = BcsSyntaxFactory.ParseModifier("FRS(Thr{p},Tyr{u})::cyt");
 
-            var componentNode = tree.AssertCast<BcsContentAccessNode>().Target
+            var componentNode = tree.AssertCast<BcsContentAccessNode>().Child
                 .AssertCast<BcsStructuralAgentNode>();
 
             var pStateName = componentNode.Parts.Elements.AssertCount(2).ElementAt(0)
@@ -65,14 +65,13 @@ namespace BcsResolver.Tests
             var tree = BcsSyntaxFactory.ParseModifier("A{i}::K(B{u})::c");
 
             var i = tree
-                .AssertCast<BcsContentAccessNode>().Target
-                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Child
                 .AssertCast<BcsAtomicAgentNode>().Parts.Elements.AssertCount(1)[0]
                 .AssertCast<BcsAgentStateNode>();
 
             var u = tree
-               .AssertCast<BcsContentAccessNode>().Target
                .AssertCast<BcsContentAccessNode>().Container
+               .AssertCast<BcsContentAccessNode>().Child
                .AssertCast<BcsStructuralAgentNode>().Parts.Elements.AssertCount(1)[0]
                .AssertCast<BcsAtomicAgentNode>().Parts.Elements.AssertCount(1)[0]
                .AssertCast<BcsAgentStateNode>();
@@ -87,13 +86,12 @@ namespace BcsResolver.Tests
         {
             var tree = BcsSyntaxFactory.ParseModifier("Thr{u}::GS::cyt");
 
-            var stateNameId = tree
-                .AssertCast<BcsContentAccessNode>().Target
-                .AssertCast<BcsContentAccessNode>().Target
+            var u = tree
+                .AssertCast<BcsContentAccessNode>().Child
                 .AssertCast<BcsAtomicAgentNode>().Parts.Elements.AssertCount(1)[0]
-                .AssertCast<BcsAgentStateNode>().Identifier;
+                .AssertCast<BcsAgentStateNode>();
 
-            Assert.AreEqual("u", stateNameId.Name);
+            Assert.AreEqual("u", u.Identifier.Name);
             Assert.AreEqual("Thr{u}::GS::cyt", tree.ToDisplayString());
         }
 
@@ -103,7 +101,7 @@ namespace BcsResolver.Tests
             var tree = BcsSyntaxFactory.ParseModifier("FRS(Thr{p}).M(Tyr{u})::cyt");
 
             var complex = 
-                tree.AssertCast<BcsContentAccessNode>().Target
+                tree.AssertCast<BcsContentAccessNode>().Child
                 .AssertCast<BcsComplexNode>();
 
             var frs = complex.Parts.Elements.AssertCount(2).ElementAt(0).AssertCast<BcsStructuralAgentNode>();
@@ -140,9 +138,9 @@ namespace BcsResolver.Tests
             Assert.AreEqual(4, secondReactantLeft.Coeficient);
             Assert.AreEqual(1.55, reactantRight.Coeficient);
 
-            var r1Identifier = firstReactantLeft.Complex.AssertCast<BcsContentAccessNode>().Target.AssertCast<BcsNamedEntityReferenceNode>().Identifier;
-            var r2Identifier = secondReactantLeft.Complex.AssertCast<BcsContentAccessNode>().Target.AssertCast<BcsNamedEntityReferenceNode>().Identifier;
-            var l1Identifier = reactantRight.Complex.AssertCast<BcsContentAccessNode>().Target.AssertCast<BcsNamedEntityReferenceNode>().Identifier;
+            var r1Identifier = firstReactantLeft.Complex.AssertCast<BcsContentAccessNode>().Child.AssertCast<BcsNamedEntityReferenceNode>().Identifier;
+            var r2Identifier = secondReactantLeft.Complex.AssertCast<BcsContentAccessNode>().Child.AssertCast<BcsNamedEntityReferenceNode>().Identifier;
+            var l1Identifier = reactantRight.Complex.AssertCast<BcsContentAccessNode>().Child.AssertCast<BcsNamedEntityReferenceNode>().Identifier;
 
             Assert.AreEqual("FRS",r1Identifier.Name);
             Assert.AreEqual("R", r2Identifier.Name);
@@ -169,15 +167,14 @@ namespace BcsResolver.Tests
         {
             var tree = BcsSyntaxFactory.ParseModifier("B{p}::M::K.M.N::c");
             var p = tree
-                .AssertCast<BcsContentAccessNode>().Target
-                .AssertCast<BcsContentAccessNode>().Target
-                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Child
                 .AssertCast<BcsAtomicAgentNode>().Parts.Elements.AssertCount(1)[0]
                 .AssertCast<BcsAgentStateNode>();
 
             var kmn = tree
-                .AssertCast<BcsContentAccessNode>().Target
                 .AssertCast<BcsContentAccessNode>().Container
+                .AssertCast<BcsContentAccessNode>().Container
+                .AssertCast<BcsContentAccessNode>().Child
                 .AssertCast<BcsComplexNode>().Parts.Elements.AssertCount(3);
 
             var k = kmn[0].AssertCast<BcsNamedEntityReferenceNode>();
@@ -196,13 +193,18 @@ namespace BcsResolver.Tests
         {
             var tree = BcsSyntaxFactory.ParseModifier("B{p}::M::X::c");
             var p = tree
-                .AssertCast<BcsContentAccessNode>().Target
-                .AssertCast<BcsContentAccessNode>().Target
-                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Child
                 .AssertCast<BcsAtomicAgentNode>().Parts.Elements.AssertCount(1)[0]
                 .AssertCast<BcsAgentStateNode>();
 
+            var c = tree
+                .AssertCast<BcsContentAccessNode>().Container
+                .AssertCast<BcsContentAccessNode>().Container
+                .AssertCast<BcsContentAccessNode>().Container
+                .AssertCast<BcsNamedEntityReferenceNode>();
+
             Assert.AreEqual("p", p.Identifier.Name);
+            Assert.AreEqual("c", c.Identifier.Name);
             Assert.AreEqual("B{p}::M::X::c", tree.ToDisplayString());
         }
 
@@ -210,13 +212,13 @@ namespace BcsResolver.Tests
         public void Parser_EmptyBracketsInAccessor_Valid()
         {
             var tree = BcsSyntaxFactory.ParseModifier("A::B()::C.D.E::F");
-            var a = tree
-                .AssertCast<BcsContentAccessNode>().Target
-                .AssertCast<BcsContentAccessNode>().Target
-                .AssertCast<BcsContentAccessNode>().Target
+            var f = tree
+                .AssertCast<BcsContentAccessNode>().Container
+                .AssertCast<BcsContentAccessNode>().Container
+                .AssertCast<BcsContentAccessNode>().Container
                 .AssertCast<BcsNamedEntityReferenceNode>();
 
-            Assert.AreEqual("A", a.Identifier.Name);
+            Assert.AreEqual("F", f.Identifier.Name);
             Assert.AreEqual("A::B()::C.D.E::F", tree.ToDisplayString());
         }
 
@@ -225,15 +227,14 @@ namespace BcsResolver.Tests
         {
             var tree = BcsSyntaxFactory.ParseModifier("B{p}::M::K.M.N(C{a})::c");
             var p = tree
-                .AssertCast<BcsContentAccessNode>().Target
-                .AssertCast<BcsContentAccessNode>().Target
-                .AssertCast<BcsContentAccessNode>().Target
+                .AssertCast<BcsContentAccessNode>().Child
                 .AssertCast<BcsAtomicAgentNode>().Parts.Elements.AssertCount(1)[0]
                 .AssertCast<BcsAgentStateNode>();
 
             var a = tree
-                .AssertCast<BcsContentAccessNode>().Target
                 .AssertCast<BcsContentAccessNode>().Container
+                .AssertCast<BcsContentAccessNode>().Container
+                .AssertCast<BcsContentAccessNode>().Child
                 .AssertCast<BcsComplexNode>().Parts.Elements.AssertCount(3)[2]
                 .AssertCast<BcsStructuralAgentNode>().Parts.Elements.AssertCount(1)[0]
                 .AssertCast<BcsAtomicAgentNode>().Parts.Elements.AssertCount(1)[0]
