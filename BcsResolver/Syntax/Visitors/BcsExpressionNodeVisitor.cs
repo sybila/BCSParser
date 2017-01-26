@@ -46,7 +46,10 @@ namespace BcsResolver.Syntax.Parser
             {
                 VisitNamedReference(node as BcsNamedEntityReferenceNode);
             }
-            
+            else if (node is BcsNamedEntitySet)
+            {
+                VisitNamedEntitySet(node as BcsNamedEntitySet);
+            }
             else
             {
                 VisitDefault(node);
@@ -59,6 +62,8 @@ namespace BcsResolver.Syntax.Parser
                 Visit(childNode);
             }
         }
+
+        protected abstract void VisitNamedEntitySet(BcsNamedEntitySet bcsNamedEntitySet);
 
         protected abstract void VisitNamedReference(BcsNamedEntityReferenceNode bcsNamedEntityReferenceNode);
 

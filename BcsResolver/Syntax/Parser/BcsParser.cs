@@ -320,16 +320,15 @@ namespace BcsResolver.Syntax.Parser
             return entityReadFunc();
         }
 
-        private BcsSet<TElementNode> ReadSet<TElementNode>(
+        private BcsNamedEntitySet ReadSet(
             BcsExpresionTokenType separatorTokenType,
-            Func<TElementNode> elementReadFunc,
+            Func<BcsNamedEntityNode> elementReadFunc,
             BcsExpresionTokenType? openingTokenType = null,
             BcsExpresionTokenType? closingTokenType = null,
-            TElementNode firstElement = null,
+            BcsNamedEntityNode firstElement = null,
             bool allowEmpty = false)
-            where TElementNode : BcsExpressionNode
         {
-            var set = new BcsSet<TElementNode>();
+            var set = new BcsNamedEntitySet();
 
             if (openingTokenType.HasValue)
             {

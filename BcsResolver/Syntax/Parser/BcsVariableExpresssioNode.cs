@@ -13,7 +13,7 @@ namespace BcsResolver.Syntax.Parser
     {
         public BcsExpressionNode TargetExpression { get; set; }
         public BcsIdentifierNode VariableName { get; set; }
-        public BcsSet<BcsNamedEntityNode> References { get; set; }
+        public BcsNamedEntitySet References { get; set; }
 
         public TextRange DefinitionSeparator { get; set; }
         public TextRange AssignmentOperator { get; set; }

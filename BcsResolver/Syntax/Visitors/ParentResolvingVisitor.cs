@@ -59,6 +59,11 @@ namespace BcsResolver.Syntax.Parser
             ResolveFromParent(bcsNamedEntityReferenceNode);
         }
 
+        protected override void VisitNamedEntitySet(BcsNamedEntitySet bcsNamedEntitySet)
+        {
+            ResolveFromParent(bcsNamedEntitySet);
+        }
+
         private void ResolveFromParent(BcsExpressionNode parentNode)
         {
             foreach (var childNode in parentNode.EnumerateChildNodes())

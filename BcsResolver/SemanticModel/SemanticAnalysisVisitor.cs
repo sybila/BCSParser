@@ -43,6 +43,9 @@ namespace BcsResolver.SemanticModel
         protected override void VisitNamedReference(BcsNamedEntityReferenceNode bcsNamedEntityReferenceNode)
         { }
 
+        protected override void VisitNamedEntitySet(BcsNamedEntitySet bcsNamedEntitySet)
+        { }
+
         private void CheckEntityTreeConsistency<TNode, TParent>(TNode checkedNode, Func<List<TNode>> checkedEntityListGetter, Func<List<TParent>> parentEntityListGetter, Func<TParent, List<TNode>> nodeChildrenGetter)
            where TNode : BcsIdentifierNode
            where TParent : BcsIdentifierNode

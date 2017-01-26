@@ -59,7 +59,7 @@
     <Compile Include="SemanticModel\IBcsRuleMetadataProvider.cs" />
     <Compile Include="Syntax\BcsSyntaxFactory.cs" />
     <Compile Include="Syntax\Parser\BcsNamedEntityReferenceNode.cs" />
-    <Compile Include="Syntax\Parser\BcsExpressionNodeVisitor.cs" />
+    <Compile Include="Syntax\Visitors\BcsExpressionNodeVisitor.cs" />
     <Compile Include="Extensions\BcsExpressionTokenExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\TextExtensions.cs" />
@@ -95,7 +95,7 @@
     <Compile Include="Syntax\Parser\BcsReactionNode.cs" />
     <Compile Include="Common\IBcsTreeNode.cs" />
     <Compile Include="Syntax\Parser\NodeError.cs" />
-    <Compile Include="Syntax\Parser\ParentResolvingVisitor.cs" />
+    <Compile Include="Syntax\Visitors\ParentResolvingVisitor.cs" />
     <Compile Include="Syntax\Parser\ParserBase.cs" />
     <Compile Include="Syntax\Parser\ReactionDirectionType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

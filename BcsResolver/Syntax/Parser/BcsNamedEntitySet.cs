@@ -7,11 +7,10 @@ using BcsResolver.Syntax.Tokenizer;
 namespace BcsResolver.Syntax.Parser
 {
     [DebuggerDisplay("[Set count={Elements.Count}: {ToDisplayString()}]")]
-    public class BcsSet<TNode> : BcsExpressionNode
-        where TNode : BcsExpressionNode
+    public class BcsNamedEntitySet : BcsExpressionNode
     {
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public List<TNode> Elements { get; set; } = new List<TNode>();
+        public List<BcsNamedEntityNode> Elements { get; set; } = new List<BcsNamedEntityNode>();
         public List<BcsExpresionToken> SeparatorTokens { get; set; } = new List<BcsExpresionToken>();
         public BcsExpresionToken OpeningToken { get; set; }
         public BcsExpresionToken ClosingToken { get; set; }
