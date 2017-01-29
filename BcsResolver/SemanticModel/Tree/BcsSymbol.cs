@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BcsResolver.Common;
-using BcsResolver.Syntax.Parser;
 
-namespace BcsResolver.SemanticModel
+namespace BcsResolver.SemanticModel.Tree
 {
     public abstract class BcsSymbol : IBcsTreeNode<BcsSymbol>
     {
@@ -14,5 +12,7 @@ namespace BcsResolver.SemanticModel
         {
             return new List<BcsSymbol>();
         }
+
+        public virtual string ToDisplayString() => Type.ToString();
     }
 }

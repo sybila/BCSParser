@@ -50,15 +50,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\BcsEntityExtensions.cs" />
+    <Compile Include="Extensions\FunctionalExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="File\BcsEntityType.cs" />
     <Compile Include="SemanticModel\BcsBoundSymbol.cs" />
+    <Compile Include="SemanticModel\BcsComposedBoundSymbol.cs" />
     <Compile Include="SemanticModel\BcsRuleBinder.cs" />
     <Compile Include="SemanticModel\Tree\BcsRuleSymbol.cs" />
     <Compile Include="SemanticModel\Exceptions\UnsupportedEntityException.cs" />
     <Compile Include="SemanticModel\IBcsRuleMetadataProvider.cs" />
     <Compile Include="Syntax\BcsSyntaxFactory.cs" />
     <Compile Include="Syntax\Parser\BcsNamedEntityReferenceNode.cs" />
+    <Compile Include="Syntax\Visitors\BcsExpressionBuilderVisitor.cs" />
     <Compile Include="Syntax\Visitors\BcsExpressionNodeVisitor.cs" />
     <Compile Include="Extensions\BcsExpressionTokenExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
@@ -71,9 +74,9 @@
     <Compile Include="File\BcsFileMetadataProvider.cs" />
     <Compile Include="File\BcsFileRecord.cs" />
     <Compile Include="File\BcsRule.cs" />
-    <Compile Include="SemanticModel\Tree\BcsAgentSymbol.cs" />
+    <Compile Include="SemanticModel\Tree\BcsAtomicAgentSymbol.cs" />
     <Compile Include="SemanticModel\Tree\BcsComplexSymbol.cs" />
-    <Compile Include="SemanticModel\Tree\BcsComponentSymbol.cs" />
+    <Compile Include="SemanticModel\Tree\BcsStructuralAgentSymbol.cs" />
     <Compile Include="SemanticModel\BcsEntityBinder.cs" />
     <Compile Include="SemanticModel\Tree\BcsNamedSymbol.cs" />
     <Compile Include="SemanticModel\Tree\ErrorEntitySymbol.cs" />
@@ -81,7 +84,7 @@
     <Compile Include="SemanticModel\Exceptions\EntityNotFoundException.cs" />
     <Compile Include="SemanticModel\SemanticAnalysisVisitor.cs" />
     <Compile Include="Syntax\Parser\BcsContentAccessNode.cs" />
-    <Compile Include="Syntax\Parser\BcsComposedEntity.cs" />
+    <Compile Include="Syntax\Parser\BcsComposedEntityNode.cs" />
     <Compile Include="Syntax\Parser\BcsNamedEntityNode.cs" />
     <Compile Include="Syntax\Parser\BcsAgentStateNode.cs" />
     <Compile Include="Syntax\Parser\BcsAtomicAgentNode.cs" />

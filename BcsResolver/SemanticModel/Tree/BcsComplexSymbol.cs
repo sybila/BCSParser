@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
-namespace BcsResolver.SemanticModel
+namespace BcsResolver.SemanticModel.Tree
 {
+    [DebuggerDisplay("[{ToDisplayString()}]")]
     public sealed class BcsComplexSymbol : BcsComposedSymbol
     {
-        public IEnumerable<BcsComponentSymbol> Components => Parts.OfType<BcsComponentSymbol>();
+        public IEnumerable<BcsStructuralAgentSymbol> Components => Parts.OfType<BcsStructuralAgentSymbol>();
 
         public BcsComplexSymbol()
         {

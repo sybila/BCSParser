@@ -1,4 +1,4 @@
-﻿namespace BcsResolver.SemanticModel
+﻿namespace BcsResolver.SemanticModel.Tree
 {
     public sealed class ErrorSymbol : BcsNamedSymbol
     {

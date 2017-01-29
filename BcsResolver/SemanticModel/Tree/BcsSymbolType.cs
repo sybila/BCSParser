@@ -1,9 +1,9 @@
-﻿namespace BcsResolver.SemanticModel
+﻿namespace BcsResolver.SemanticModel.Tree
 {
     public enum BcsSymbolType
     {
         Complex = 0,
-        Component = 1,
+        StructuralAgent = 1,
         Agent = 2,
         State = 3,
         Location = 4,

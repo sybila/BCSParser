@@ -4,6 +4,7 @@ using System.Linq;
 using BcsResolver.Extensions;
 using BcsResolver.File;
 using BcsResolver.SemanticModel.Exceptions;
+using BcsResolver.SemanticModel.Tree;
 
 namespace BcsResolver.SemanticModel
 {
@@ -45,7 +46,7 @@ namespace BcsResolver.SemanticModel
                             var e = EnsureEntity(entity, expectedType);
                             return BindAgent(e.Id);
                         }
-                    case BcsSymbolType.Component:
+                    case BcsSymbolType.StructuralAgent:
                         {
                             var e = EnsureEntity(entity, expectedType);
                             return BindComponet(e.Id);
@@ -145,7 +146,7 @@ namespace BcsResolver.SemanticModel
             var location = bcsEntity.Locations
                 .Select(BindLocation)
                 .ToList();
-            return new BcsComponentSymbol
+            return new BcsStructuralAgentSymbol
             {
                 Name = entity,
                 Parts = parts,
@@ -158,7 +159,7 @@ namespace BcsResolver.SemanticModel
             var bcsEntity = EnsureEntityId(entity);
 
             var parts = bcsEntity.Composition
-                .Select(id => BindEntity(id, BcsSymbolType.Component))
+                .Select(id => BindEntity(id, BcsSymbolType.StructuralAgent))
                 .ToList();
 
             var location = bcsEntity.Locations
@@ -184,7 +185,7 @@ namespace BcsResolver.SemanticModel
                 .Select(BindLocation)
                 .ToList();
 
-            return new BcsAgentSymbol
+            return new BcsAtomicAgentSymbol
             {
                 Name = entity,
                 Parts = parts,

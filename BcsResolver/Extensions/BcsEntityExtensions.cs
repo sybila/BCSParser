@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BcsResolver.File;
 using BcsResolver.SemanticModel;
 using BcsResolver.SemanticModel.Exceptions;
+using BcsResolver.SemanticModel.Tree;
 
 namespace BcsResolver.Extensions
 {

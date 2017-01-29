@@ -59,9 +59,11 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BcsParserTest.cs" />
+    <Compile Include="BcsSemanticAnalysisTests.cs" />
     <Compile Include="Helpers\AssertExtensions.cs" />
     <Compile Include="BcsTokenizerTest.cs" />
     <Compile Include="BcsWorkspaceTest.cs" />
+    <Compile Include="Helpers\MoqExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\TestCaseFactory.cs" />
   </ItemGroup>

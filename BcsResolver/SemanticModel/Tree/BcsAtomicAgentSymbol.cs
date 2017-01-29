@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
-namespace BcsResolver.SemanticModel
+namespace BcsResolver.SemanticModel.Tree
 {
-    public sealed class BcsAgentSymbol : BcsComposedSymbol
+    [DebuggerDisplay("[{ToDisplayString()}]")]
+    public sealed class BcsAtomicAgentSymbol : BcsComposedSymbol
     {
         public IEnumerable<BcsStateSymbol> States => Parts.OfType<BcsStateSymbol>();
 
-        public BcsAgentSymbol()
+        public BcsAtomicAgentSymbol()
         {
             Type = BcsSymbolType.Agent;
         }

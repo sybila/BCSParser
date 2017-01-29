@@ -5,8 +5,7 @@ using BcsResolver.Syntax.Tokenizer;
 
 namespace BcsResolver.Syntax.Parser
 {
-    public abstract class BcsComposedEntity<TComponent> : BcsNamedEntityNode
-        where TComponent : BcsNamedEntityNode
+    public abstract class BcsComposedEntityNode : BcsNamedEntityNode
     {
         public BcsNamedEntitySet Parts { get; set; }
         public override IEnumerable<BcsExpressionNode> EnumerateChildNodes()

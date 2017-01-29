@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BcsResolver.File;
 using BcsResolver.SemanticModel;
+using BcsResolver.SemanticModel.Tree;
 using BcsResolver.Tests.Helpers;
 using Moq;
 
@@ -48,9 +49,9 @@ namespace BcsResolver.Tests
 
             workspace.CreateSemanticModel();
 
-            var componentSymbol = workspace.Commponents.First().Value;
+            var componentSymbol = workspace.StructuralAgents.First().Value;
             Assert.AreEqual(componentSymbol.Name, "ct1");
-            Assert.AreEqual(componentSymbol.Type, BcsSymbolType.Component);
+            Assert.AreEqual(componentSymbol.Type, BcsSymbolType.StructuralAgent);
             Assert.AreEqual(componentSymbol.Locations.Count, 2);
             Assert.AreEqual(componentSymbol.Locations[0].Name, "l1");
             Assert.AreEqual(componentSymbol.Locations[1].Name, "l2");
@@ -69,7 +70,7 @@ namespace BcsResolver.Tests
 
             workspace.CreateSemanticModel();
 
-            var agentSymbol = workspace.Agents.First().Value;
+            var agentSymbol = workspace.AtomicAgents.First().Value;
             Assert.AreEqual("ag1", agentSymbol.Name);
             Assert.AreEqual(BcsSymbolType.Agent, agentSymbol.Type);
             Assert.AreEqual(agentSymbol.Locations.Count, 2);
@@ -99,8 +100,8 @@ namespace BcsResolver.Tests
             Assert.AreEqual("ct2", cComponents.ElementAt(0).Name);
             Assert.AreEqual("ct3", cComponents.ElementAt(1).Name);
 
-            var firstAgents = cComponents.ElementAt(0).Agents.AssertCount(2);
-            var secondAtgents = cComponents.ElementAt(1).Agents.AssertCount(1);
+            var firstAgents = cComponents.ElementAt(0).AtomicAgents.AssertCount(2);
+            var secondAtgents = cComponents.ElementAt(1).AtomicAgents.AssertCount(1);
 
             var firsrFirstAgent = firstAgents.ElementAt(0);
             var firsrSecondAgent = firstAgents.ElementAt(1);
@@ -142,7 +143,7 @@ namespace BcsResolver.Tests
             var workspace = new BcsWorkspace(null, mock.Object);
             workspace.CreateSemanticModel();
 
-            var componentSymbol = workspace.Commponents.AssertCount(1).First().Value;
+            var componentSymbol = workspace.StructuralAgents.AssertCount(1).First().Value;
             var errorSymbol = componentSymbol.Parts.AssertCount(1).First().AssertCast<ErrorSymbol>();
             Assert.AreEqual("Entity not found: Entity agUndefined is not defined.", errorSymbol.Error);
             Assert.AreEqual(BcsSymbolType.Agent, errorSymbol.ExpectedType);
