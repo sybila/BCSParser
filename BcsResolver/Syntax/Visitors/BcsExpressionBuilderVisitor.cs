@@ -55,7 +55,7 @@ namespace BcsResolver.Syntax.Visitors
             {
                 return VisitNamedEntitySet(node as BcsNamedEntitySet, parameter);
             }
-            throw new InvalidOperationException("Unsupported node tipe in visitor.");
+            throw new InvalidOperationException("Unsupported node type in visitor.");
         }
 
         protected abstract TResult VisitNamedEntitySet(BcsNamedEntitySet bcsNamedEntitySet, TParameter parameter);
