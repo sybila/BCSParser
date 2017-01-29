@@ -1,5 +1,4 @@
-﻿using BcsExplorerDemo.Controls;
-using BcsResolver.File;
+﻿using BcsResolver.File;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BcsResolver.Syntax;
 using BcsResolver.Syntax.Parser;
 
 namespace BcsExplorerDemo
@@ -25,8 +25,8 @@ namespace BcsExplorerDemo
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Dictionary<Guid, BcsReactionNode> _reactions;
-        private BcsDefinitionFile _document;
+        private Dictionary<Guid,BcsReactionNode> reactions;
+        private BcsDefinitionFile document;
 
         public ObservableCollection<string> StateNames;
 
@@ -37,51 +37,33 @@ namespace BcsExplorerDemo
             LoadBcsFile("yamada.txt");
 
             reactionTree.Items.Add(BuildTreeView());
-
-            var firstReaction = _reactions.Values.First();
-
-            DrawReactionInCanvas(firstReaction);
-        }
-
-        private void DrawReactionInCanvas(BcsReactionNode firstReaction)
-        {
-            MainCanvas.Children.Clear();
-            var grid = GridHelper.CreateReactionGrid(firstReaction);
-            Grid.SetColumn(grid, 1);
-            MainCanvas.Children.Add(grid);
         }
 
         public void LoadBcsFile(string fileName)
         {
-            BcsDefinitionFile document;
-
-            using (var bcsHandler = new BcsWorkspace())
+            using (var bcsHandler = new BcsDefinitionFileReader())
             {
-                bcsHandler.ProcessDefinitionFile("yamada.txt");
-                document = bcsHandler.DefinitionFile;
+                document = bcsHandler.ReadFile("yamada.txt");
             }
 
-            _reactions = document.Rules.Select(r => r.Equation.ExpressionNode).ToDictionary(reaction => reaction.UniqueId);
-            _document = document;
+            reactions = document.Rules
+                .Select(r => BcsSyntaxFactory.ParseReaction(r.Equation))
+                .Cast<BcsReactionNode>()
+                .ToDictionary(key => Guid.NewGuid());
 
-            StateNames = new ObservableCollection<string>();
-
-            foreach(var state in document.States)
-            {
-                StateNames.Add(state.Name);
-            }
+            StateNames = new ObservableCollection<string>();     
         }
 
         private MenuItem BuildTreeView()
         {
             MenuItem root = new MenuItem() { Title = "Reactions" };
 
-            foreach (var reaction in _reactions.Values)
+            foreach (var reaction in reactions)
             {
                 try
                 {
                     var visitor = new MenuItemVisitor();
-                    visitor.Visit(reaction);
+                    visitor.Visit(reaction.Value);
                     root.Items.Add(visitor.Root);
                 }
                 catch (Exception)
@@ -100,11 +82,6 @@ namespace BcsExplorerDemo
         {
             var senderButton = sender as Button;
             var id = (Guid) senderButton.Tag;
-
-            if(_reactions.ContainsKey(id))
-            {
-                DrawReactionInCanvas(_reactions[id]);
-            }
         }
     }
     public class MenuItem

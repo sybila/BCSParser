@@ -8,6 +8,6 @@ namespace BcsResolver.Syntax.Parser
     public sealed class BcsStructuralAgentNode : BcsComposedEntityNode
     {
         public override string ToDisplayString() =>
-            $"{Identifier.ToDisplayString()}{Parts.ToDisplayString()}";
+            $"{Identifier?.ToDisplayString()??""}{Parts.ToDisplayString()}";
     }
 }

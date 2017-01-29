@@ -13,7 +13,7 @@ namespace BcsResolver.Syntax.Tokenizer
         [Description("}")]
         SetEnd,
         [Description("|")]
-        AgentSeparator, 
+        AgentSeparatorOld, 
         [Description("(")]
         BracketBegin, 
         [Description(")")]

@@ -393,10 +393,11 @@ namespace BcsResolver.Syntax.Parser
             }
             else
             {
-                errors.Add(new NodeError("Unexpected token type.", Peek().ToTextRange(), Peek()));
+                var errorMessage = $"Unexpected token type: {Peek()?.Type} containing text: {(Peek()?.Text?? "")} on index {CurrentIndex}.";
+                errors.Add(new NodeError(errorMessage, Peek().ToTextRange(), Peek()));
                 if (throwException)
                 {
-                    throw new ParserException($"Unexpected token type: {Peek()?.Type} index: {CurrentIndex}");
+                    throw new ParserException(errorMessage);
                 }
             }
             return null;

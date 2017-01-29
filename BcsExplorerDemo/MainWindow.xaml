@@ -8,14 +8,14 @@
         Title="MainWindow">
     <Grid Margin="10,10,10,10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300"/>
-            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="600"/>
+            <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <TreeView x:Name="reactionTree" Margin="10,10,10,10" Grid.Column="0" Grid.RowSpan="2">
+        <TreeView x:Name="reactionTree" Margin="10,10,9,10" Grid.Column="0" Grid.RowSpan="2">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type MenuItem}" ItemsSource="{Binding Items}">
                     <StackPanel Orientation="Vertical">
@@ -38,7 +38,7 @@
         </TreeView>
         <Canvas Name="MainCanvas" Visibility="Visible" Margin="10,10,10,10" Grid.Column="1">
         </Canvas>
-        <StackPanel Grid.Column="1" Grid.Row="1" Width="200" Margin="10, 10, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Vertical" Height="140">
+        <StackPanel Grid.Column="1" Grid.Row="1" Width="200" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Vertical" Height="140">
             <TextBlock Text="All defined states:"></TextBlock>
             <ListView Margin="0" Height="125" ItemsSource="{Binding StateNames}">
                 <ListView.ItemTemplate>

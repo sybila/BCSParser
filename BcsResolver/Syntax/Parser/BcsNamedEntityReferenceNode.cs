@@ -16,7 +16,7 @@ namespace BcsResolver.Syntax.Parser
 
         public override string ToDisplayString()
         {
-            return $"{(QuestionMark!=null?"?":"")}{Identifier.ToDisplayString()}";
+            return $"{(QuestionMark!=null?"?":"")}{Identifier?.ToDisplayString()??""}";
         }
     }
 }

@@ -6,57 +6,44 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using BcsResolver.Syntax.Parser;
+using BcsResolver.Syntax.Visitors;
 
 namespace BcsExplorerDemo
 {
-    public class MenuItemVisitor : BcsExpressionNodeVisitor 
+    public class MenuItemVisitor : BcsExpressionNodeVisitor
     {
-        public IDictionary<Guid, MenuItem> NodeCache { get; set; } = new Dictionary<Guid, MenuItem>();
+        public IDictionary<object, MenuItem> NodeCache { get; set; } = new Dictionary<object, MenuItem>();
 
         public MenuItem Root { get; set; }
 
         protected override void VisitAgent(BcsAtomicAgentNode bcsAtomicAgent)
         {
-            var item = new MenuItem() { Title = $"Agent: {bcsAtomicAgent.Name}{{{bcsAtomicAgent?.CurrentState?.Name ?? ""}}}" };
-
-            AddToTree(bcsAtomicAgent, item);
+            AddNodeToTree(bcsAtomicAgent);
         }
 
         protected override void VisitAgentState(BcsAgentStateNode bcsAgentState)
         {
-            bool isCurrentState = bcsAgentState.ParentNode != null && (bcsAgentState.ParentNode as BcsAtomicAgentNode).CurrentState.UniqueId == bcsAgentState.UniqueId;
-
-            var item = new MenuItem() { Title = $"State{(isCurrentState ? " - current" : string.Empty)}: {bcsAgentState.Name}" };
-
-            AddToTree(bcsAgentState, item);
+            AddNodeToTree(bcsAgentState);
         }
 
         protected override void VisitComplex(BcsComplexNode bcsComplex)
         {
-            var item = new MenuItem() { Title = $"Complex: {GetComplexFullName(bcsComplex)}" };
-
-            AddToTree(bcsComplex, item);
+            AddNodeToTree(bcsComplex);
         }
 
-        protected override void VisitComponent(BcsComponentNode bcsComponent)
+        protected override void VisitComponent(BcsStructuralAgentNode bcsStructuralAgentNode)
         {
-            var item = new MenuItem() { Title = $"Component: {bcsComponent.Name}::{bcsComponent?.Location?.Name ?? string.Empty}" };
-
-            AddToTree(bcsComponent, item);
+            AddNodeToTree(bcsStructuralAgentNode);
         }
 
         protected override void VisitDefault(BcsExpressionNode node)
         {
-            var item = new MenuItem() { Title = $"Unknown" };
-
-            AddToTree(node, item);
+            AddNodeToTree(node);
         }
 
         protected override void VisitReactant(BcsReactantNode bcsReactant)
         {
-            var item = new MenuItem() { Title = $"Reactant: {bcsReactant.Coeficient} {GetComplexFullName(bcsReactant.Complex)}" };
-
-            AddToTree(bcsReactant, item);
+            AddNodeToTree(bcsReactant);
         }
 
         protected override void VisitReaction(BcsReactionNode bcsReaction)
@@ -64,18 +51,44 @@ namespace BcsExplorerDemo
             var item = new MenuItem()
             {
                 Drawable = true,
-                SyntaxTreeEntityId = bcsReaction.UniqueId,
-                Title = $"Reaction: L={bcsReaction.LeftSideReactants.Count} {bcsReaction.ReactionDirection} R={bcsReaction.RightSideReactants.Count}"
+                Title = bcsReaction.ToDisplayString()
             };
 
-            NodeCache.Add(bcsReaction.UniqueId, item);
+            NodeCache.Add(bcsReaction, item);
             Root = item;
         }
 
-        protected override void VisitIdentifier(BcsLocationNode locationNode)
+        protected override void VisitNamedEntitySet(BcsNamedEntitySet bcsNamedEntitySet)
         {
-            var item = new MenuItem() { Title = $"Location: {locationNode.Name}" };
-            AddToTree(locationNode, item);
+            AddNodeToTree(bcsNamedEntitySet);
+        }
+
+        protected override void VisitNamedReference(BcsNamedEntityReferenceNode bcsNamedEntityReferenceNode)
+        {
+            AddNodeToTree(bcsNamedEntityReferenceNode);
+        }
+
+        protected override void VisitVariableExpression(BcsVariableExpresssioNode bcsVariableExpresssioNode)
+        {
+            AddNodeToTree(bcsVariableExpresssioNode);
+        }
+
+        protected override void VisitIdentifier(BcsIdentifierNode identifier)
+        {
+            AddNodeToTree(identifier);
+        }
+
+        protected override void VisitAccessor(BcsContentAccessNode node)
+        {
+            AddNodeToTree(node);
+        }
+
+        private void AddNodeToTree<TNode>(TNode syntaxNode)
+          where TNode : BcsExpressionNode
+        {
+            var item = new MenuItem() { Title = $"{typeof(TNode).Name}: <{syntaxNode.ToDisplayString()}>" };
+
+            AddToTree(syntaxNode, item);
         }
 
         private void AddToTree(BcsExpressionNode node, MenuItem item)
@@ -86,26 +99,10 @@ namespace BcsExplorerDemo
                 item.NodeErrors.Add(error.Message);
             }
 
-            var parentItem = NodeCache[node.ParentNode.UniqueId];
+            var parentItem = NodeCache[node.ParentNode];
 
             parentItem.Items.Add(item);
-            NodeCache.Add(node.UniqueId, item);
-        }
-
-        private static string GetComplexFullName(BcsComplexNode complex)
-        {
-            if (complex == null)
-            {
-                return "[]";
-            }
-
-            var componentNames = complex.Components
-                .Select(c =>
-                {
-                    return (c is BcsLocationNode) ? ((c as BcsLocationNode).Resident?.Name ?? "<error>") : c.Name;
-                });
-
-            return $"[{string.Join(".", componentNames)}]";
+            NodeCache.Add(node, item);
         }
     }
 }
