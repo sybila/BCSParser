@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,16 +8,16 @@ using BcsResolver.SemanticModel.Tree;
 
 namespace BcsResolver.SemanticModel
 {
+    [DebuggerDisplay("[BAA: {ToString()}]")]
     public class BcsBoundAtomicAgent : BcsComposedBoundSymbol<BcsAtomicAgentSymbol>
     { }
 
+    [DebuggerDisplay("[BSA: {ToString()}]")]
     public class BcsBoundStructuralAgent : BcsComposedBoundSymbol<BcsStructuralAgentSymbol>
     { }
- 
-    public class BcsBoundComplex : BcsComposedBoundSymbol<BcsComplexSymbol>
-    { }
 
-    public class BcsBoundLocation : BcsComposedBoundSymbol<BcsLocationSymbol>
+    [DebuggerDisplay("[BCX: {ToString()}]")]
+    public class BcsBoundComplex : BcsComposedBoundSymbol<BcsComplexSymbol>
     { }
 
     public abstract class BcsComposedBoundSymbol<TSymbol> : BcsBoundSymbol<TSymbol>, IBcsComposedBoundSymbol

@@ -96,7 +96,7 @@ namespace BcsResolver.Tests
             workspace.CreateSemanticModel();
 
             var complexSymbol = workspace.Complexes.First().Value;           
-            var cComponents = complexSymbol.Components.AssertCount(2);
+            var cComponents = complexSymbol.StructuralAgents.AssertCount(2);
             Assert.AreEqual("ct2", cComponents.ElementAt(0).Name);
             Assert.AreEqual("ct3", cComponents.ElementAt(1).Name);
 
@@ -144,7 +144,7 @@ namespace BcsResolver.Tests
             workspace.CreateSemanticModel();
 
             var componentSymbol = workspace.StructuralAgents.AssertCount(1).First().Value;
-            var errorSymbol = componentSymbol.Parts.AssertCount(1).First().AssertCast<ErrorSymbol>();
+            var errorSymbol = componentSymbol.Parts.AssertCount(1).First().AssertCast<BcsErrorSymbol>();
             Assert.AreEqual("Entity not found: Entity agUndefined is not defined.", errorSymbol.Error);
             Assert.AreEqual(BcsSymbolType.Agent, errorSymbol.ExpectedType);
         }

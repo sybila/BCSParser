@@ -121,7 +121,7 @@ namespace BcsResolver.Syntax.Tokenizer
                     case '|':
                         FinishIncompleteIdentifier();
                         Read();
-                        EnsureUnsupportedOperator(BcsExpresionTokenType.AgentSeparator);
+                        EnsureUnsupportedOperator(BcsExpresionTokenType.AgentSeparatorOld);
                         break;
                     case '<':
                         FinishIncompleteIdentifier();

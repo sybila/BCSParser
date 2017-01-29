@@ -9,7 +9,7 @@ namespace BcsResolver.Syntax.Visitors
 {
     public abstract class BcsExpressionBuilderVisitor<TResult, TParameter>
     {
-        public TResult Visit(BcsExpressionNode node, TParameter parameter = default(TParameter))
+        public virtual TResult Visit(BcsExpressionNode node, TParameter parameter = default(TParameter))
         {
             if (node is BcsAtomicAgentNode)
             {

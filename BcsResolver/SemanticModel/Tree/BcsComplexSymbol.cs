@@ -7,7 +7,7 @@ namespace BcsResolver.SemanticModel.Tree
     [DebuggerDisplay("[{ToDisplayString()}]")]
     public sealed class BcsComplexSymbol : BcsComposedSymbol
     {
-        public IEnumerable<BcsStructuralAgentSymbol> Components => Parts.OfType<BcsStructuralAgentSymbol>();
+        public IEnumerable<BcsStructuralAgentSymbol> StructuralAgents => Parts.OfType<BcsStructuralAgentSymbol>();
 
         public BcsComplexSymbol()
         {

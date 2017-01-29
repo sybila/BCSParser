@@ -73,7 +73,7 @@ namespace BcsResolver.SemanticModel
             }
             catch (EntityTypeException ex)
             {
-                return new ErrorSymbol
+                return new BcsErrorSymbol
                 {
                     Name = entity,
                     Error = $"Entity type missmatch: {ex.Message}",
@@ -82,7 +82,7 @@ namespace BcsResolver.SemanticModel
             }
             catch (EntityNotFoundException ex)
             {
-                return new ErrorSymbol
+                return new BcsErrorSymbol
                 {
                     Name = entity,
                     Error = $"Entity not found: {ex.Message}",
@@ -91,7 +91,7 @@ namespace BcsResolver.SemanticModel
             }
             catch (UnsupportedEntityException ex)
             {
-                return new ErrorSymbol
+                return new BcsErrorSymbol
                 {
                     Name = entity,
                     Error = ex.Message,

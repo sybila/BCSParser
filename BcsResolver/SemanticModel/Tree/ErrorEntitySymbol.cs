@@ -1,11 +1,11 @@
 ﻿namespace BcsResolver.SemanticModel.Tree
 {
-    public sealed class ErrorSymbol : BcsNamedSymbol
+    public sealed class BcsErrorSymbol : BcsNamedSymbol
     {
         public string Error { get; set; }
         public BcsSymbolType ExpectedType { get; set; }
 
-        public ErrorSymbol()
+        public BcsErrorSymbol()
         {
             Type= BcsSymbolType.Error;;
         }

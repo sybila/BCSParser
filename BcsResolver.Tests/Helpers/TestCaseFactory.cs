@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BcsResolver.File;
+using BcsResolver.SemanticModel.Tree;
 
 namespace BcsResolver.Tests.Helpers
 {
@@ -108,5 +109,68 @@ namespace BcsResolver.Tests.Helpers
                     }
                 }
             };
+
+        public static BcsComplexSymbol CreateThreePartComplex(List<BcsLocationSymbol> withLocations = null)
+        {
+            return new BcsComplexSymbol
+            {
+                Parts = new List<BcsNamedSymbol>()
+                {
+                    new BcsStructuralAgentSymbol
+                    {
+                        Name = "A",
+                        Locations = withLocations,
+                        Parts = new List<BcsNamedSymbol>
+                        {
+                            new BcsAtomicAgentSymbol
+                            {
+                                Name = "B",
+                                Parts = new List<BcsNamedSymbol>
+                                {
+                                    new BcsStateSymbol {Name = "u"},
+                                    new BcsStateSymbol {Name = "p"},
+                                    new BcsStateSymbol {Name = "q"}
+                                }
+                            }
+                        }
+                    },
+                    new BcsStructuralAgentSymbol
+                    {
+                        Name = "C",
+                        Locations = withLocations,
+                        Parts = new List<BcsNamedSymbol>
+                        {
+                            new BcsAtomicAgentSymbol
+                            {
+                                Name = "D",
+                                Parts = new List<BcsNamedSymbol>
+                                {
+                                    new BcsStateSymbol {Name = "p"},
+                                    new BcsStateSymbol {Name = "r"}
+                                }
+                            }
+                        }
+                    },
+                    new BcsStructuralAgentSymbol
+                    {
+                        Name = "E",
+                        Locations = withLocations,
+                        Parts = new List<BcsNamedSymbol>
+                        {
+                            new BcsAtomicAgentSymbol
+                            {
+                                Name = "F",
+                                Parts = new List<BcsNamedSymbol>
+                                {
+                                    new BcsStateSymbol {Name = "i"},
+                                    new BcsStateSymbol {Name = "j"}
+                                }
+                            }
+                        }
+                    }
+                },
+                Locations = withLocations
+            };
+        }
     }
 }
