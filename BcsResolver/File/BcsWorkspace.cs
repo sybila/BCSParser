@@ -24,12 +24,10 @@ namespace BcsResolver.File
     public class BcsWorkspace : IBcsWorkspace
     {
         private readonly IBcsEntityMetadataProvider entityMetadataProvider;
-        private readonly IBcsRuleMetadataProvider ruleMetadataProvider;
         private BcsEntityBinder entityBinder;
 
-        public BcsWorkspace(IBcsRuleMetadataProvider ruleMetadataProvider, IBcsEntityMetadataProvider entityMetadataProvider)
+        public BcsWorkspace(IBcsEntityMetadataProvider entityMetadataProvider)
         {
-            this.ruleMetadataProvider = ruleMetadataProvider;
             this.entityMetadataProvider = entityMetadataProvider;
         }
 
@@ -48,8 +46,13 @@ namespace BcsResolver.File
             Complexes = resolvedSymbols[BcsSymbolType.Complex].Cast<BcsComplexSymbol>().ToDictionary(k=> k.Name);
             StructuralAgents = resolvedSymbols[BcsSymbolType.StructuralAgent].Cast<BcsStructuralAgentSymbol>().ToDictionary(k => k.Name);
             AtomicAgents = resolvedSymbols[BcsSymbolType.Agent].Cast<BcsAtomicAgentSymbol>().ToDictionary(k => k.Name);
-            Locations = resolvedSymbols[BcsSymbolType.Location].Cast<BcsLocationSymbol>().ToDictionary(k => k.Name);
-
+            Locations = 
+                Complexes.Values
+                .Concat<BcsComposedSymbol>(StructuralAgents.Values)
+                .Concat<BcsComposedSymbol>(AtomicAgents.Values)
+                .SelectMany(ce=> ce.Locations)
+                .Distinct()
+                .ToDictionary(k=> k.Name);
         }
 
 

@@ -24,7 +24,7 @@ namespace BcsResolver.Tests
             mock.Setup(p => p.GetAvailableEntityIds()).Returns(() => new[] { "cx1" });
 
 
-            var workspace = new BcsWorkspace(null, mock.Object);
+            var workspace = new BcsWorkspace(mock.Object);
 
             workspace.CreateSemanticModel();
 
@@ -45,7 +45,7 @@ namespace BcsResolver.Tests
             mock.Setup(p => p.GetAvailableEntityIds()).Returns(() => new[] { "ct1" });
 
 
-            var workspace = new BcsWorkspace(null, mock.Object);
+            var workspace = new BcsWorkspace(mock.Object);
 
             workspace.CreateSemanticModel();
 
@@ -66,7 +66,7 @@ namespace BcsResolver.Tests
             mock.Setup(p => p.GetAvailableEntityIds()).Returns(() => new[] { "ag1" });
 
 
-            var workspace = new BcsWorkspace(null, mock.Object);
+            var workspace = new BcsWorkspace(mock.Object);
 
             workspace.CreateSemanticModel();
 
@@ -88,14 +88,14 @@ namespace BcsResolver.Tests
             var mock = new Mock<IBcsEntityMetadataProvider>();
 
             mock.Setup(p => p.GetEntity(It.IsAny<string>())).Returns<string>(e => entityPool[e]);
-            mock.Setup(p => p.GetAvailableEntityIds()).Returns(() => new[] { "ag2","ag3","ct2","ct3","cx2" });
+            mock.Setup(p => p.GetAvailableEntityIds()).Returns(() => new[] { "ag2", "ag3", "ct2", "ct3", "cx2" });
 
 
-            var workspace = new BcsWorkspace(null, mock.Object);
+            var workspace = new BcsWorkspace(mock.Object);
 
             workspace.CreateSemanticModel();
 
-            var complexSymbol = workspace.Complexes.First().Value;           
+            var complexSymbol = workspace.Complexes.First().Value;
             var cComponents = complexSymbol.StructuralAgents.AssertCount(2);
             Assert.AreEqual("ct2", cComponents.ElementAt(0).Name);
             Assert.AreEqual("ct3", cComponents.ElementAt(1).Name);
@@ -140,7 +140,7 @@ namespace BcsResolver.Tests
             });
             mock.Setup(p => p.GetAvailableEntityIds()).Returns(() => new[] { "ctE" });
 
-            var workspace = new BcsWorkspace(null, mock.Object);
+            var workspace = new BcsWorkspace(mock.Object);
             workspace.CreateSemanticModel();
 
             var componentSymbol = workspace.StructuralAgents.AssertCount(1).First().Value;

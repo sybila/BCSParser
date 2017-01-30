@@ -131,6 +131,15 @@ namespace BcsResolver.Tests.Helpers
                                     new BcsStateSymbol {Name = "p"},
                                     new BcsStateSymbol {Name = "q"}
                                 }
+                            },
+                             new BcsAtomicAgentSymbol
+                            {
+                                Name = "G",
+                                Parts = new List<BcsNamedSymbol>
+                                {
+                                    new BcsStateSymbol {Name = "p"},
+                                    new BcsStateSymbol {Name = "q"}
+                                }
                             }
                         }
                     },

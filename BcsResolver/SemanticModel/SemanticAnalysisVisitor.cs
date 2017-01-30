@@ -13,14 +13,14 @@ using BcsResolver.Syntax.Visitors;
 namespace BcsResolver.SemanticModel
 {
 
-    public class SemantiVisitor : BcsExpressionBuilderVisitor<IBcsBoundSymbol, IBcsBoundSymbol>
+    public class SemanticAnalisisVisitor : BcsExpressionBuilderVisitor<IBcsBoundSymbol, IBcsBoundSymbol>
     {
         public IBcsWorkspace Workspace { get; }
 
         public Dictionary<BcsExpressionNode, List<SemanticError>> Errors { get; } = new Dictionary<BcsExpressionNode, List<SemanticError>>();
         public Dictionary<BcsExpressionNode, IBcsBoundSymbol> ResolvedNodeMap { get; } = new Dictionary<BcsExpressionNode, IBcsBoundSymbol>();
         
-        public SemantiVisitor(IBcsWorkspace workspace)
+        public SemanticAnalisisVisitor(IBcsWorkspace workspace)
         {
             Workspace = workspace;
         }
@@ -123,12 +123,26 @@ namespace BcsResolver.SemanticModel
 
         protected override IBcsBoundSymbol VisitReaction(BcsReactionNode bcsReaction, IBcsBoundSymbol parameter)
         {
-            throw new NotImplementedException();
+            var boundReaction = new BcsBoundReaction
+            {
+                Syntax = bcsReaction,
+                Symbol = null
+            };
+
+            foreach (var reactionNode in bcsReaction.LeftSideReactants.Concat(bcsReaction.RightSideReactants))
+            {
+                var boundContent = Visit(reactionNode);
+
+                var name = boundContent.Symbol.As<BcsNamedSymbol>()?.Name ?? "unnamed";
+
+                boundReaction.AddContent(name, boundContent);
+            }
+            return boundReaction;
         }
 
         protected override IBcsBoundSymbol VisitReactant(BcsReactantNode bcsReactant, IBcsBoundSymbol parameter)
         {
-            throw new NotImplementedException();
+            return Visit(bcsReactant.Complex);
         }
 
         protected override IBcsBoundSymbol VisitComplex(BcsComplexNode bcsComplex, IBcsBoundSymbol parameter)
@@ -279,6 +293,12 @@ namespace BcsResolver.SemanticModel
             foreach (var element in bcsComposedEntityNode.Parts.Elements)
             {
                 var boundContent = Visit(element, containingBoundEntity) as BcsBoundSymbol<TExpectedChildSymbol>;
+
+                if (boundContent?.Symbol == null)
+                {
+                    AddError(element, $"No entity named {element?.Identifier?.Name??""} found in this context.",SemanticErrorSeverity.Error);
+                    continue;
+                }
 
                 if (AreSymbolsCompatibile(bcsComposedEntityNode, containingBoundEntity.Symbol, boundContent?.Symbol))
                 {

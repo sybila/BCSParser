@@ -134,8 +134,9 @@ namespace BcsResolver.File
                     separator = '.';
                     entity.Type = BcsEntityType.Complex;
                 }
-                else if (value.Contains("|"))
+                else if (value.Contains(","))
                 {
+                    separator = ',';
                     entity.Type = BcsEntityType.Component;
                 }
                 entity.Composition.AddRange(SplitNames(value,separator));

@@ -15,6 +15,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BcsExplorerDemo.Controls;
+using BcsResolver.SemanticModel;
 using BcsResolver.Syntax;
 using BcsResolver.Syntax.Parser;
 
@@ -27,6 +29,7 @@ namespace BcsExplorerDemo
     {
         private Dictionary<Guid,BcsReactionNode> reactions;
         private BcsDefinitionFile document;
+        private BcsWorkspace workspace;
 
         public ObservableCollection<string> StateNames;
 
@@ -37,6 +40,9 @@ namespace BcsExplorerDemo
             LoadBcsFile("yamada.txt");
 
             reactionTree.Items.Add(BuildTreeView());
+
+            workspace = new BcsWorkspace(new BcsFileMetadataProvider(document));
+            workspace.CreateSemanticModel();
         }
 
         public void LoadBcsFile(string fileName)
@@ -49,7 +55,7 @@ namespace BcsExplorerDemo
             reactions = document.Rules
                 .Select(r => BcsSyntaxFactory.ParseReaction(r.Equation))
                 .Cast<BcsReactionNode>()
-                .ToDictionary(key => Guid.NewGuid());
+                .ToDictionary(key => key.UniqueId);
 
             StateNames = new ObservableCollection<string>();     
         }
@@ -81,7 +87,25 @@ namespace BcsExplorerDemo
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var senderButton = sender as Button;
-            var id = (Guid) senderButton.Tag;
+            var id = (Guid) senderButton?.Tag;
+
+            DrawReactionInCanvas(id);
+        }
+
+        private void DrawReactionInCanvas(Guid id)
+        {
+            MainCanvas.Children.Clear();
+
+            var gridHelper = new GridHelper();
+            var reactionTree = reactions[id];
+            var binder = new SemanticAnalisisVisitor(workspace);
+
+            var bound = binder.Visit(reactionTree);
+
+            var control = gridHelper.CreateBoundSymbol(bound);
+
+            Grid.SetColumn(control, 1);
+            MainCanvas.Children.Add(control);
         }
     }
     public class MenuItem

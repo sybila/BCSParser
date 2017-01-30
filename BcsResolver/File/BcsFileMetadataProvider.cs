@@ -24,7 +24,7 @@ namespace BcsResolver.File
 
         public BcsEntity GetEntity(string entityId) =>
             _file.Entities
-                .SingleOrDefault();
+                .SingleOrDefault(e=> e.Id== entityId);
 
 
     }

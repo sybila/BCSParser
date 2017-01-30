@@ -20,6 +20,11 @@ namespace BcsResolver.SemanticModel
     public class BcsBoundComplex : BcsComposedBoundSymbol<BcsComplexSymbol>
     { }
 
+
+    [DebuggerDisplay("[BRE: {ToString()}]")]
+    public class BcsBoundReaction : BcsComposedBoundSymbol<BcsAtomicAgentSymbol>
+    { }
+
     public abstract class BcsComposedBoundSymbol<TSymbol> : BcsBoundSymbol<TSymbol>, IBcsComposedBoundSymbol
         where TSymbol : BcsSymbol
     {

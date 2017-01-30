@@ -47,7 +47,7 @@ namespace BcsResolver.Tests
                 }
             });
 
-            var binder = new SemantiVisitor(mock.Object);
+            var binder = new SemanticAnalisisVisitor(mock.Object);
 
             var tree = BcsSyntaxFactory.ParseModifier("A(B{u})");
 
@@ -79,7 +79,7 @@ namespace BcsResolver.Tests
                 }
             });
 
-            var binder = new SemantiVisitor(mock.Object);
+            var binder = new SemanticAnalisisVisitor(mock.Object);
 
             var tree = BcsSyntaxFactory.ParseModifier("C().A(B{u})");
 
@@ -120,7 +120,7 @@ namespace BcsResolver.Tests
             });
             mock.SetupGet(p => p.Locations).Returns(locs.ToDictionary(k => k.Name));
 
-            var binder = new SemantiVisitor(mock.Object);
+            var binder = new SemanticAnalisisVisitor(mock.Object);
 
             var tree = BcsSyntaxFactory.ParseModifier("C.A(B{u})::cyt");
 
@@ -152,7 +152,7 @@ namespace BcsResolver.Tests
             });
             mock.SetupGet(p => p.Locations).Returns(locs.ToDictionary(k => k.Name));
 
-            var binder = new SemantiVisitor(mock.Object);
+            var binder = new SemanticAnalisisVisitor(mock.Object);
 
             var tree = BcsSyntaxFactory.ParseModifier("B{u}::A::C.A::cyt");
 
@@ -180,9 +180,37 @@ namespace BcsResolver.Tests
             mock.SetupGet(p => p.AtomicAgents).Returns(complexTree.StructuralAgents.SelectMany(c=> c.AtomicAgents).ToDictionary(aa => aa.Name));
             mock.SetupGet(p => p.Locations).Returns(locs.ToDictionary(k => k.Name));
 
-            var binder = new SemantiVisitor(mock.Object);
+            var binder = new SemanticAnalisisVisitor(mock.Object);
 
             var tree = BcsSyntaxFactory.ParseModifier("B{u}::A::cx1::cyt");
+
+            var bound = binder.Visit(tree);
+
+            var boundU = bound
+               .AssertCast<BcsBoundLocation>().Content
+               .AssertCast<BcsBoundComplex>().StatedContent["A"].AssertCount(1).Last()
+               .AssertCast<BcsBoundStructuralAgent>().StatedContent["B"].AssertCount(1).Single()
+               .AssertCast<BcsBoundAtomicAgent>().StatedContent["u"].AssertCount(1).Single();
+
+            Assert.AreEqual("u", boundU.Symbol.AssertCast<BcsNamedSymbol>().Name);
+            Assert.AreEqual("u", boundU.Syntax.ToDisplayString());
+        }
+
+        [TestMethod]
+        public void SemanticAnalysisVisitor_BindComplexStateAccessComplexReference_Valid()
+        {
+            var locs = new List<BcsLocationSymbol> { new BcsLocationSymbol { Name = "cyt" } };
+            var complexTree = TestCaseFactory.CreateThreePartComplex(locs);
+
+            var mock = new Mock<IBcsWorkspace>();
+            mock.SetupGet(p => p.Complexes).Returns(new Dictionary<string, BcsComplexSymbol> { { "cx1", complexTree } });
+            mock.SetupGet(p => p.StructuralAgents).Returns(complexTree.StructuralAgents.ToDictionary(sa => sa.Name));
+            mock.SetupGet(p => p.AtomicAgents).Returns(complexTree.StructuralAgents.SelectMany(c => c.AtomicAgents).ToDictionary(aa => aa.Name));
+            mock.SetupGet(p => p.Locations).Returns(locs.ToDictionary(k => k.Name));
+
+            var binder = new SemanticAnalisisVisitor(mock.Object);
+
+            var tree = BcsSyntaxFactory.ParseModifier("B{u}::A(G{p}, B{u})::A(G{q}).C(D{u}).E(F{u})::cyt");
 
             var bound = binder.Visit(tree);
 

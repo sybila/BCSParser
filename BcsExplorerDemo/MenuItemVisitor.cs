@@ -51,7 +51,8 @@ namespace BcsExplorerDemo
             var item = new MenuItem()
             {
                 Drawable = true,
-                Title = bcsReaction.ToDisplayString()
+                Title = bcsReaction.ToDisplayString(),
+                SyntaxTreeEntityId = bcsReaction.UniqueId
             };
 
             NodeCache.Add(bcsReaction, item);

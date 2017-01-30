@@ -6,14 +6,89 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using BcsResolver.Extensions;
+using BcsResolver.SemanticModel;
 using BcsResolver.Syntax.Parser;
 using BcsResolver.Syntax.Visitors;
 
 namespace BcsExplorerDemo.Controls
 {
-    public class GridHelper : BcsExpressionBuilderVisitor<Grid, object>
+    public class GridHelper
     {
+        public Grid CreateBoundSymbol(IBcsBoundSymbol boundSymbol)
+        {
+            if (boundSymbol == null)
+            {
+                return new Grid()
+                {
+                    Background = Brushes.Red,
+                    Margin = new Thickness(5, 2, 2, 0)
+                };
+            }
+            if (boundSymbol is IBcsComposedBoundSymbol)
+            {
+                return CreateBoundComposedSymbol(boundSymbol.CastTo<IBcsComposedBoundSymbol>());
+            }
+            if (boundSymbol is BcsBoundLocation)
+            {
+                return CreateBoundLocation(boundSymbol.CastTo<BcsBoundLocation>());
+            }
+            return CreateBoundSymbolOnly(boundSymbol);
+        }
 
+        private Grid CreateBoundLocation(BcsBoundLocation location)
+        {
+            var grid = new Grid()
+            {
+                Background = Brushes.Aquamarine,
+                Margin = new Thickness(15,5,5,0)
+            };
+            SetBoundSymbolPropertirs(location, grid);
+            AddContentLabel(grid);
+            AddRowControlToGrid(grid, CreateBoundSymbol(location.Content));
+            return grid;
+        }
+
+        private static void AddContentLabel(Grid grid)
+        {
+            AddRowControlToGrid(grid, new Label
+            {
+                FontSize = 12,
+                Background = Brushes.Transparent,
+                Content = "Content:",
+                VerticalContentAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left
+            });
+        }
+
+        public Grid CreateBoundSymbolOnly(IBcsBoundSymbol boundSymbol)
+        {
+            var grid = new Grid()
+            {
+                Background = Brushes.Aqua,
+                Margin = new Thickness(5, 2, 2, 0)
+            };
+            SetBoundSymbolPropertirs(boundSymbol, grid);
+            return grid;
+        }
+
+       
+
+        public Grid CreateBoundComposedSymbol(IBcsComposedBoundSymbol composedBoundSymbol)
+        {
+            var grid = new Grid()
+            {
+                Background = Brushes.LawnGreen,
+                Margin = new Thickness(5, 2, 2, 0)
+            };
+            SetBoundSymbolPropertirs(composedBoundSymbol, grid);
+            AddContentLabel(grid);
+            foreach (var pair in composedBoundSymbol.StatedContent.Values.SelectMany(v=> v))
+            {
+                AddRowControlToGrid(grid, CreateBoundSymbol(pair));
+            }
+            return grid;
+        }
 
 
         private static void AddColumnControlToGrid(Grid grid, UIElement control, int row = 0)
@@ -33,10 +108,9 @@ namespace BcsExplorerDemo.Controls
 
         private static void AddReactionSymbolColumn(Grid grid, string label)
         {
-            AddColumnControlToGrid(grid, new Label
+            AddRowControlToGrid(grid, new Label
             {
-                FontSize = 20,
-                FontWeight = FontWeights.Bold,
+                FontSize = 12,
                 Background = Brushes.LawnGreen,
                 Content = label,
                 VerticalContentAlignment = VerticalAlignment.Center,
@@ -44,69 +118,24 @@ namespace BcsExplorerDemo.Controls
             });
         }
 
-        private static void AddEmptyRow(Grid grid)
+        private static void SetBoundSymbolPropertirs(IBcsBoundSymbol boundSymbol, Grid grid)
         {
-            grid.RowDefinitions.Add(new RowDefinition { Height = new System.Windows.GridLength(1, GridUnitType.Star) });
-        }
-
-        protected override Grid VisitNamedEntitySet(BcsNamedEntitySet bcsNamedEntitySet, object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Grid VisitNamedReference(BcsNamedEntityReferenceNode bcsNamedEntityReferenceNode, object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Grid VisitVariableExpression(BcsVariableExpresssioNode bcsVariableExpresssioNode, object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Grid VisitReaction(BcsReactionNode bcsReaction, object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Grid VisitReactant(BcsReactantNode bcsReactant, object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Grid VisitComplex(BcsComplexNode bcsComplex, object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Grid VisitStructuralAgent(BcsStructuralAgentNode bcsStructuralAgent, object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Grid VisitAgentState(BcsAgentStateNode bcsAgentState, object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Grid VisitAtomicAgent(BcsAtomicAgentNode bcsAtomicAgent, object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Grid VisitIdentifier(BcsIdentifierNode identifier, object parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Grid VisitDefault(BcsExpressionNode node)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Grid VisitAccessor(BcsContentAccessNode node, object parameter)
-        {
-            throw new NotImplementedException();
+            AddRowControlToGrid(grid, new Label
+            {
+                Content = $"Syntax: {boundSymbol.Syntax.ToDisplayString()}",
+                VerticalContentAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                FontSize = 12,
+                Background = Brushes.MediumPurple,
+            });
+            AddRowControlToGrid(grid, new Label
+            {
+                Content = $"Symbol: {boundSymbol.Symbol?.ToDisplayString()?? "none"}",
+                VerticalContentAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                FontSize = 12,
+                Background = Brushes.DeepSkyBlue,
+            });
         }
     }
 }
