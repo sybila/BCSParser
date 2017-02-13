@@ -15,7 +15,7 @@ namespace BcsAnalysisWeb.Utils
                 {
                     Dispaly = node.ToDisplayString(),
                     NodeName = node.GetType().Name,
-                    //HasErrors = node.Errors.Any()
+                    Errors = node.Errors.Select(e=> e.Message).ToList()
                 },
                 Children = node.EnumerateChildNodes().Select(n => Visit(n, parameter)).ToList()
             };

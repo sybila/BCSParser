@@ -117,6 +117,13 @@ right connector from last child*/
 	border: 1px solid #ff4500;
 }
 
+ul.error-list{
+
+}
+ul.error-list li{
+	color: #ff4500;
+}
+
 /*Time for some hover effects*/
 /*We will apply the hover effect the the lineage of the element also*/
 .tree li a:hover, .tree li a:hover+ul li a {

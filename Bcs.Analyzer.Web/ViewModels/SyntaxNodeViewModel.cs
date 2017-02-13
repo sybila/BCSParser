@@ -9,7 +9,7 @@ namespace BcsAnalysisWeb.ViewModels
     {
         public string NodeName { get; set; }
         public string Dispaly { get; set; }
-
-        public bool HasErrors { get; set; } = true;
+        public bool HasErrors => Errors.Any();
+        public List<string> Errors { get; set; }
     }
 }

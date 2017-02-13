@@ -368,7 +368,7 @@ namespace BcsResolver.SemanticModel
 
             if (!areCompatible)
             {
-                AddError(sourceSyntaxNode, $"Type error: {contentSymbol.Type} is not component of {containerSymbol.Type}", SemanticErrorSeverity.Error);
+                AddError(sourceSyntaxNode, $"Type error: {contentSymbol?.Type?? BcsSymbolType.Unknown} is not component of {containerSymbol.Type}", SemanticErrorSeverity.Error);
             }
             return areCompatible;
         }

@@ -22,7 +22,7 @@
         </ItemTemplate>
     </dot:Repeater>
 
-    <dot:TextBox Text="{value: TextEdit}" Changed="{command: DrawLive()}"/>
+    <dot:TextBox Text="{value: TextEdit}" Changed="{command: DrawLive()}" />
 
     <cc:Tree class="tree"
              DataSource="{value: SyntaxToDraw}"
@@ -31,11 +31,15 @@
              RenderSettings.Mode="Server"
              PostBack.Update="true">
         <ItemTemplate>
-            
             <a class="{value: Data.HasErrors ? "error":""}" href="#">
-                    <h4>{{value: Data.NodeName}}</h4>
-                    {{value: Data.Dispaly}}
+                <h4>{{value: Data.NodeName}}</h4>
+                {{value: Data.Dispaly}}
                 <dot:Button Click="{command: _root.Click(_this)}" Text="Add" />
+                <dot:Repeater class="error-list" WrapperTagName="ul" DataSource="{value: Data.Errors}">
+                    <li>
+                        {{value: _this}}
+                    </li>
+                </dot:Repeater>
             </a>
         </ItemTemplate>
     </cc:Tree>

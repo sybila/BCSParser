@@ -73,6 +73,20 @@ namespace BcsAnalysisWeb.ViewModels
 
             SyntaxToDraw.Add(viewModelTreeBuilder.Visit(reactions[id]));
         }
+
+        public void Click(TreeNode<SyntaxNodeViewModel> item)
+        {
+            item.Children.Add(new TreeNode<SyntaxNodeViewModel>()
+            {
+                Data = new SyntaxNodeViewModel()
+                {
+                    Dispaly = "Delf",
+                    NodeName = "Delf",
+                    Errors = new List<string>()
+                },
+                Children = new List<TreeNode<SyntaxNodeViewModel>>()
+            });
+        }
         
         public void DrawLive()
         {

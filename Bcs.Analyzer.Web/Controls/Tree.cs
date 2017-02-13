@@ -5,12 +5,40 @@ using System.Linq;
 using System.Text;
 using BcsResolver.Extensions;
 using DotVVM.Framework.Binding;
+using DotVVM.Framework.Binding.Expressions;
 using DotVVM.Framework.Compilation.Javascript;
 using DotVVM.Framework.Controls;
 using DotVVM.Framework.Hosting;
 
 namespace BcsAnalysisWeb.Controls
 {
+    public class KoWithPlaceHolder : DotvvmControl
+    {
+        private string koExpression;
+
+        public KoWithPlaceHolder(string koExpression)
+        {
+            this.koExpression = koExpression;
+        }
+
+        public override void Render(IHtmlWriter writer, IDotvvmRequestContext context)
+        {
+            writer.WriteKnockoutWithComment(koExpression);
+
+            foreach (KeyValuePair<DotvvmProperty, object> property in this.properties)
+            {
+                if (property.Key is ActiveDotvvmProperty)
+                    ((ActiveDotvvmProperty)property.Key).AddAttributesToRender(writer, context, this);
+            }
+            this.AddAttributesToRender(writer, context);
+            this.RenderBeginTag(writer, context);
+            this.RenderContents(writer, context);
+            this.RenderEndTag(writer, context);
+
+            writer.WriteKnockoutDataBindEndComment();
+        }
+    }
+
     public class Tree : ItemsControl
     {
         [MarkupOptions(AllowBinding = false, MappingMode = MappingMode.InnerElement, Required = true)]
@@ -83,9 +111,8 @@ namespace BcsAnalysisWeb.Controls
             if (dataSource != null)
             {
                 var items = GetIEnumerableFromDataSource(dataSource).Cast<ITreeItem>().ToList();
-
                 nodeCount = 0;
-                CreateChildrenCollectionIfAny(context,items, this);
+                CreateChildrenCollectionIfAny(context,items, this, $"{GetDataSourceBinding().GetKnockoutBindingExpression()}()");
             }
             else
             {
@@ -93,37 +120,42 @@ namespace BcsAnalysisWeb.Controls
             }
         }
 
-        private DotvvmControl BuildTreeNode(IDotvvmRequestContext context, ITreeItem dataContext)
+        private DotvvmControl BuildTreeNode(IDotvvmRequestContext context, ITreeItem dataContext, string koExpressionHierarchy)
         {
             nodeCount++;
             var uniqueChildId = GetUniqueIdForDataContainer();
 
             var nodeContainer = new PlaceHolder();
-            
-            var nodeDataContainer = new DataItemContainer { DataContext = dataContext};
 
+            var nodeKoWrapper = new KoWithPlaceHolder(koExpressionHierarchy);
+            nodeContainer.Children.Add(nodeKoWrapper);
+
+            var nodeDataContainer = new DataItemContainer { DataContext = dataContext};
             nodeDataContainer.SetValue(Internal.PathFragmentProperty, uniqueChildId);
             ItemTemplate.BuildContent(context, nodeDataContainer);
-            nodeContainer.Children.Add(nodeDataContainer);
+            nodeKoWrapper.Children.Add(nodeDataContainer);
 
-            CreateChildrenCollectionIfAny(context, dataContext.Children, nodeContainer);
+            CreateChildrenCollectionIfAny(context, dataContext.Children, nodeContainer, $"{koExpressionHierarchy}.Children()");
 
             return nodeContainer;
         }
 
-        private void CreateChildrenCollectionIfAny(IDotvvmRequestContext context, IReadOnlyList<ITreeItem> children, DotvvmControl nodeContainer)
+        private void CreateChildrenCollectionIfAny(IDotvvmRequestContext context, IReadOnlyList<ITreeItem> children, DotvvmControl nodeContainer, string koExpressionHierarchy)
         {
             if (children != null && children.Any())
             {
                 var childrenCollectionWrap = GetChildrenCollectionWrap();
                 nodeContainer.Children.Add(childrenCollectionWrap);
 
+                var childIndex = 0;
                 foreach (var item in children)
                 {
                     var childWrap = GetChildWrap();
+                    
 
                     childrenCollectionWrap.Children.Add(childWrap);
-                    childWrap.Children.Add(BuildTreeNode(context, item));
+                    childWrap.Children.Add(BuildTreeNode(context, item, $"{koExpressionHierarchy}[{childIndex}]()"));
+                    childIndex++;
                 }
             }
         }
