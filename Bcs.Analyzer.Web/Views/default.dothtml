@@ -1,0 +1,58 @@
+﻿@viewModel BcsAnalysisWeb.ViewModels.DefaultViewModel, BcsAnalysisWeb
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <dot:RequiredResource Name="Site" />
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <h1>
+        <dot:Literal Text="{value: Title}" />
+    </h1>
+    <dot:Repeater class="reaction-list" WrapperTagName="ul" DataSource="{value: Reactions}">
+        <ItemTemplate>
+            <li>
+                {{value: Display}}
+                <dot:Button class="btn" Click="{command: _root.DrawTree(Id)}" Text="Draw syntax tree" />
+                <dot:Button class="btn" Click="{command: _root.DrawSemanticTree(Id)}" Text="Draw semantic tree" />
+            </li>
+        </ItemTemplate>
+    </dot:Repeater>
+
+    <dot:TextBox Text="{value: TextEdit}" Changed="{command: DrawLive()}"/>
+
+    <cc:Tree class="tree"
+             DataSource="{value: SyntaxToDraw}"
+             NodeCollectionWrapperTag="ul"
+             NodeWrapperTag="li"
+             RenderSettings.Mode="Server"
+             PostBack.Update="true">
+        <ItemTemplate>
+            
+            <a class="{value: Data.HasErrors ? "error":""}" href="#">
+                    <h4>{{value: Data.NodeName}}</h4>
+                    {{value: Data.Dispaly}}
+                <dot:Button Click="{command: _root.Click(_this)}" Text="Add" />
+            </a>
+        </ItemTemplate>
+    </cc:Tree>
+
+    <cc:Tree class="tree"
+             DataSource="{value: SemanticToDraw}"
+             NodeCollectionWrapperTag="ul"
+             NodeWrapperTag="li"
+             RenderSettings.Mode="Server"
+             PostBack.Update="true">
+        <ItemTemplate>
+            <a href="#">
+                <h4>{{value: Data.Type}}</h4>
+                Syntax: {{value: Data.SyntaxNode}} <br />
+                Symbol: {{value: Data.Symbol}} <br />
+            </a>
+        </ItemTemplate>
+    </cc:Tree>
+</body>
+</html>

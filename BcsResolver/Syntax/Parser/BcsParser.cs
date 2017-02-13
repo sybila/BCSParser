@@ -394,7 +394,7 @@ namespace BcsResolver.Syntax.Parser
             else
             {
                 var errorMessage = $"Unexpected token type: {Peek()?.Type} containing text: {(Peek()?.Text?? "")} on index {CurrentIndex}.";
-                errors.Add(new NodeError(errorMessage, Peek().ToTextRange(), Peek()));
+                errors.Add(new NodeError(errorMessage, GetErrorRangeSafe(), Peek()));
                 if (throwException)
                 {
                     throw new ParserException(errorMessage);
@@ -402,6 +402,8 @@ namespace BcsResolver.Syntax.Parser
             }
             return null;
         }
+
+       
 
         private bool IsPeekType(BcsExpresionTokenType type) => Peek() != null && Peek().Type == type;
 
@@ -413,6 +415,11 @@ namespace BcsResolver.Syntax.Parser
                 type == BcsExpresionTokenType.ReactionDirectionBoth
                 || type == BcsExpresionTokenType.ReactionDirectionLeft
                 || type == BcsExpresionTokenType.ReactionDirectionRight;
+        }
+
+        private TextRange GetErrorRangeSafe()
+        {
+            return Peek()?.ToTextRange() ?? new TextRange(Math.Max(0, Tokens.LastOrDefault()?.StartPosition ?? 0), (Tokens.LastOrDefault()?.StartPosition ?? 0) + (Tokens.LastOrDefault()?.Length ?? 0));
         }
     }
 }

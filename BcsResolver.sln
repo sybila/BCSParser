@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BcsResolver.Tests", "BcsRes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{AA31DC00-6B69-4051-B850-25B1997E403F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bcs.Analyzer.Web", "Bcs.Analyzer.Web\Bcs.Analyzer.Web.csproj", "{1C7A9914-8CDC-4075-9422-37BD0E51C076}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,11 +44,16 @@ Global
 		{92F111CC-15FD-4BCE-9141-4FB410C52B6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92F111CC-15FD-4BCE-9141-4FB410C52B6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92F111CC-15FD-4BCE-9141-4FB410C52B6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C7A9914-8CDC-4075-9422-37BD0E51C076}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C7A9914-8CDC-4075-9422-37BD0E51C076}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C7A9914-8CDC-4075-9422-37BD0E51C076}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C7A9914-8CDC-4075-9422-37BD0E51C076}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{92F111CC-15FD-4BCE-9141-4FB410C52B6A} = {3E490B77-565B-4EEE-9E1F-148E77F9437D}
+		{1C7A9914-8CDC-4075-9422-37BD0E51C076} = {AA31DC00-6B69-4051-B850-25B1997E403F}
 	EndGlobalSection
 EndGlobal

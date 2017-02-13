@@ -137,7 +137,7 @@ namespace BcsResolver.Tests.Helpers
                                 Name = "G",
                                 Parts = new List<BcsNamedSymbol>
                                 {
-                                    new BcsStateSymbol {Name = "p"},
+                                    new BcsStateSymbol {Name = "u"},
                                     new BcsStateSymbol {Name = "q"}
                                 }
                             }

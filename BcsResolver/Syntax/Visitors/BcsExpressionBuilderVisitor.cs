@@ -58,27 +58,17 @@ namespace BcsResolver.Syntax.Visitors
             throw new InvalidOperationException("Unsupported node type in visitor.");
         }
 
-        protected abstract TResult VisitNamedEntitySet(BcsNamedEntitySet bcsNamedEntitySet, TParameter parameter);
-
-        protected abstract TResult VisitNamedReference(BcsNamedEntityReferenceNode bcsNamedEntityReferenceNode, TParameter parameter);
-
-        protected abstract TResult VisitVariableExpression(BcsVariableExpresssioNode bcsVariableExpresssioNode, TParameter parameter);
-
-        protected abstract TResult VisitReaction(BcsReactionNode bcsReaction, TParameter parameter);
-        protected abstract TResult VisitReactant(BcsReactantNode bcsReactant, TParameter parameter);
-
-        protected abstract TResult VisitComplex(BcsComplexNode bcsComplex, TParameter parameter);
-
-        protected abstract TResult VisitStructuralAgent(BcsStructuralAgentNode bcsStructuralAgent, TParameter parameter);
-
-        protected abstract TResult VisitAgentState(BcsAgentStateNode bcsAgentState, TParameter parameter);
-
-        protected abstract TResult VisitAtomicAgent(BcsAtomicAgentNode bcsAtomicAgent, TParameter parameter);
-
-        protected abstract TResult VisitIdentifier(BcsIdentifierNode identifier, TParameter parameter);
-
-        protected abstract TResult VisitDefault(BcsExpressionNode node);
-
-        protected abstract TResult VisitAccessor(BcsContentAccessNode node, TParameter parameter);
+        protected virtual TResult VisitNamedEntitySet(BcsNamedEntitySet bcsNamedEntitySet, TParameter parameter) { return VisitDefault(bcsNamedEntitySet, parameter); }
+        protected virtual TResult VisitNamedReference(BcsNamedEntityReferenceNode bcsNamedEntityReferenceNode, TParameter parameter) { return VisitDefault(bcsNamedEntityReferenceNode, parameter); }
+        protected virtual TResult VisitVariableExpression(BcsVariableExpresssioNode bcsVariableExpresssioNode, TParameter parameter) { return VisitDefault(bcsVariableExpresssioNode, parameter); }
+        protected virtual TResult VisitReaction(BcsReactionNode bcsReaction, TParameter parameter) { return VisitDefault(bcsReaction, parameter); }
+        protected virtual TResult VisitReactant(BcsReactantNode bcsReactant, TParameter parameter) { return VisitDefault(bcsReactant, parameter); }
+        protected virtual TResult VisitComplex(BcsComplexNode bcsComplex, TParameter parameter) { return VisitDefault(bcsComplex, parameter); }
+        protected virtual TResult VisitStructuralAgent(BcsStructuralAgentNode bcsStructuralAgent, TParameter parameter) { return VisitDefault(bcsStructuralAgent, parameter); }
+        protected virtual TResult VisitAgentState(BcsAgentStateNode bcsAgentState, TParameter parameter) { return VisitDefault(bcsAgentState, parameter); }
+        protected virtual TResult VisitAtomicAgent(BcsAtomicAgentNode bcsAtomicAgent, TParameter parameter) { return VisitDefault(bcsAtomicAgent, parameter); }
+        protected virtual TResult VisitIdentifier(BcsIdentifierNode bcsIdentifier, TParameter parameter) { return VisitDefault(bcsIdentifier, parameter); }
+        protected virtual TResult VisitAccessor(BcsContentAccessNode node, TParameter parameter) { return VisitDefault(node, parameter); }
+        protected abstract TResult VisitDefault(BcsExpressionNode node, TParameter parameter);
     }
 }

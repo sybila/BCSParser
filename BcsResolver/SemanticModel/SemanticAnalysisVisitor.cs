@@ -37,12 +37,7 @@ namespace BcsResolver.SemanticModel
             throw new NotSupportedException("Should be handled by respective entity visits.");
         }
 
-        protected override IBcsBoundSymbol VisitIdentifier(BcsIdentifierNode identifier, IBcsBoundSymbol parameter)
-        {
-            throw new NotSupportedException("Should be handled by respective entity visits.");
-        }
-
-        protected override IBcsBoundSymbol VisitDefault(BcsExpressionNode node)
+        protected override IBcsBoundSymbol VisitIdentifier(BcsIdentifierNode bcsIdentifier, IBcsBoundSymbol parameter)
         {
             throw new NotSupportedException("Should be handled by respective entity visits.");
         }
@@ -387,5 +382,9 @@ namespace BcsResolver.SemanticModel
             Errors[identifier].Add(new SemanticError(message, severity));
         }
 
+        protected override IBcsBoundSymbol VisitDefault(BcsExpressionNode node, IBcsBoundSymbol parameter)
+        {
+            throw new NotSupportedException("Should be handled by respective entity visits.");
+        }
     }
 }

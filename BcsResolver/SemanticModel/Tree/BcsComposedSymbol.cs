@@ -10,5 +10,12 @@ namespace BcsResolver.SemanticModel.Tree
         public List<BcsLocationSymbol> Locations { get; set; }
 
         public override string ToDisplayString() => $"{Type}: {Name}::{string.Join(",", Locations?.Select(l => l.Name)?? new [] {"none"})}";
+
+        public override IEnumerable<BcsSymbol> EnumerateChildNodes()
+        {
+            return base.EnumerateChildNodes()
+                .Concat(Parts)
+                .Concat(Locations);
+        }
     }
 }
