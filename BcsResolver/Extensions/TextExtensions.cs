@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using BcsResolver.Syntax.Parser;
 
 namespace BcsResolver.Extensions
 {
@@ -22,6 +23,16 @@ namespace BcsResolver.Extensions
         public static bool IsEmptyOrWhitespace(this string str)
         {
             return string.IsNullOrEmpty(str) || string.IsNullOrWhiteSpace(str);
+        }
+
+        public static TNode CheckExpectedIdentifierError<TNode>(this TNode hostNode)
+            where TNode : BcsNamedEntityNode
+        {
+            if (hostNode.Identifier == null)
+            {
+                hostNode.Errors.Add(new NodeError("Identifier expected."));
+            }
+            return hostNode;
         }
     }
 }

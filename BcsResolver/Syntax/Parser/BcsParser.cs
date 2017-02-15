@@ -62,7 +62,8 @@ namespace BcsResolver.Syntax.Parser
                     TargetExpression = reaction
                 };
 
-                variableExpression.VariableName = ReadIdentifier();
+                var identifier = ReadIdentifier();
+                variableExpression.VariableName = identifier;
                 //TODO: Add Error if not
 
                 if (IsPeekType(BcsExpresionTokenType.Assignment))
@@ -85,6 +86,7 @@ namespace BcsResolver.Syntax.Parser
             }
             return reaction;
         }
+
 
         private BcsReactionNode ReadReaction()
         {
@@ -185,7 +187,7 @@ namespace BcsResolver.Syntax.Parser
 
         private BcsNamedEntityNode ReadComplex()
         {
-            var component = ReadComponentOrAgentOrReference();
+            var component = ReadComponentOrAgentOrReference().CheckExpectedIdentifierError();
 
             if (IsPeekType(BcsExpresionTokenType.Dot))
             {
@@ -222,7 +224,7 @@ namespace BcsResolver.Syntax.Parser
             {
                 var identifier = ReadIdentifier();
                 return ReadComponent(identifier);
-            });
+            }).CheckExpectedIdentifierError();
         }
 
         private BcsNamedEntityNode ReadComponent(BcsIdentifierNode identifier)
@@ -250,7 +252,7 @@ namespace BcsResolver.Syntax.Parser
             {
                 var identifier = ReadIdentifier();
                 return ReadAtomicAgent(identifier);
-            });
+            }).CheckExpectedIdentifierError();
         }
 
         private BcsNamedEntityNode ReadAtomicAgent(BcsIdentifierNode identifier)
@@ -260,7 +262,9 @@ namespace BcsResolver.Syntax.Parser
                 var agent = new BcsAtomicAgentNode
                 {
                     Identifier = identifier,
-                    Parts = ReadSet(BcsExpresionTokenType.Comma, ReadState, BcsExpresionTokenType.SetBegin, BcsExpresionTokenType.SetEnd, allowEmpty: true)
+                    Parts =
+                        ReadSet(BcsExpresionTokenType.Comma, ReadState, BcsExpresionTokenType.SetBegin,
+                            BcsExpresionTokenType.SetEnd, allowEmpty: true)
                 };
 
                 return agent;
@@ -270,7 +274,7 @@ namespace BcsResolver.Syntax.Parser
 
         private BcsNamedEntityNode ReadState()
         {
-            return ReadVariableOrEntity(() => new BcsAgentStateNode { Identifier = ReadIdentifier() });
+            return ReadVariableOrEntity(() => new BcsAgentStateNode { Identifier = ReadIdentifier() }).CheckExpectedIdentifierError();
         }
 
         private void ReadCoeficient(BcsReactantNode reactant)
@@ -391,9 +395,14 @@ namespace BcsResolver.Syntax.Parser
             {
                 return Read();
             }
+            else if (Peek() == null)
+            {
+                errors.Add(new NodeError($"Unexpected end of the file on index {CurrentIndex}", GetErrorRangeSafe()));
+            }
             else
             {
-                var errorMessage = $"Unexpected token type: {Peek()?.Type} containing text: {(Peek()?.Text?? "")} on index {CurrentIndex}.";
+                
+                var errorMessage = $"Unexpected token type: {Peek().Type} containing text: {Peek().Text} on index {CurrentIndex}.";
                 errors.Add(new NodeError(errorMessage, GetErrorRangeSafe(), Peek()));
                 if (throwException)
                 {
@@ -402,8 +411,6 @@ namespace BcsResolver.Syntax.Parser
             }
             return null;
         }
-
-       
 
         private bool IsPeekType(BcsExpresionTokenType type) => Peek() != null && Peek().Type == type;
 

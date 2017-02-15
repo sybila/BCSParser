@@ -40,8 +40,7 @@ ul.reaction-list li{
     white-space: nowrap;
 	list-style-type: none;
 	position: relative;
-	padding: 20px 5px 0 5px;
-	
+	padding: 20px 5px 0 5px;	
 	transition: all 0.5s;
 	-webkit-transition: all 0.5s;
 	-moz-transition: all 0.5s;
@@ -117,11 +116,19 @@ right connector from last child*/
 	border: 1px solid #ff4500;
 }
 
-ul.error-list{
-
+ul.error-list::before{
+    display: none;
 }
 ul.error-list li{
 	color: #ff4500;
+}
+
+ul.error-list li::after {
+    display: none;
+}
+
+ul.error-list li::before {
+    display: none;
 }
 
 /*Time for some hover effects*/
