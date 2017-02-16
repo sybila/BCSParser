@@ -4,7 +4,7 @@ using BcsResolver.Syntax.Parser;
 using BcsResolver.Syntax.Visitors;
 
 namespace BcsAnalysisWeb.Utils
-{
+{ 
     public class SyntaxTreeViewModelBuilder : BcsExpressionBuilderVisitor<TreeNode<SyntaxNodeViewModel>, object>
     {
         protected override TreeNode<SyntaxNodeViewModel> VisitDefault(BcsExpressionNode node, object parameter)

@@ -9,6 +9,38 @@
     <title></title>
 </head>
 <body>
+    <dot:InlineScript Dependencies="knockout">
+        ko.bindingHandlers.htmlLazy = {
+            update: function (element, valueAccessor) {
+                var value = ko.unwrap(valueAccessor());
+
+                if (!element.isContentEditable) {
+                    element.innerHTML = value;
+                }
+            }
+        };
+        ko.bindingHandlers.contentEditable = {
+            init: function (element, valueAccessor, allBindingsAccessor) {
+                var value = ko.unwrap(valueAccessor()),
+                    htmlLazy = allBindingsAccessor().htmlLazy;
+
+                $(element).on("input", function () {
+                    if (this.isContentEditable && ko.isWriteableObservable(htmlLazy)) {
+                        htmlLazy(this.innerHTML);
+                    }
+                });
+            },
+            update: function (element, valueAccessor) {
+                var value = ko.unwrap(valueAccessor());
+
+                element.contentEditable = value;
+
+                if (!element.isContentEditable) {
+                    $(element).trigger("input");
+                }
+            }
+        };
+    </dot:InlineScript>
     <h1>
         <dot:Literal Text="{value: Title}" />
     </h1>
@@ -23,6 +55,12 @@
     </dot:Repeater>
 
     <dot:TextBox Text="{value: TextEdit}" Changed="{command: DrawLive()}" />
+
+    <div contenteditable="true"
+         data-bind="contentEditable: true, htmlLazy: TextEdit"
+         onkeyup="if(!dotvvm.isViewModelUpdating){dotvvm.postbackScript('DrawLive()')('root', this, [], '', true, '$root', null, null)};return false;">
+        <span style="color:blue;"><span style="color:aqua">bbb</span>::aaa</span>::<span style="color:green;">cyt</span>
+    </div>
 
     <cc:Tree class="tree"
              DataSource="{value: SyntaxToDraw}"

@@ -8,9 +8,9 @@ using BcsResolver.SemanticModel.Tree;
 
 namespace BcsAnalysisWeb.Utils
 {
-    public class SymbolTreeViewModelBuilder
+    public class SymbolTreeViewModelBuilder : BcsSymbolVisitor<TreeNode<SymbolTreeViewModel>, object>
     {
-        public TreeNode<SymbolTreeViewModel> Visit(BcsSymbol symbol)
+        protected  override TreeNode<SymbolTreeViewModel> VisitDefault(BcsSymbol symbol, object param)
         {
             var namedSymbol = symbol.As<BcsNamedSymbol>();
             return new TreeNode<SymbolTreeViewModel>
@@ -19,9 +19,9 @@ namespace BcsAnalysisWeb.Utils
                 {
                     Name = namedSymbol?.Name ?? "-",
                     Type = symbol.Type.ToString(),
-                    Display = namedSymbol.ToDisplayString()
+                    Display = symbol.ToDisplayString()
                 },
-                Children = symbol.EnumerateChildNodes().Select(Visit).ToList()
+                Children = symbol.EnumerateChildNodes().Select(c=> Visit(c, null)).ToList()
             };
         }
     }

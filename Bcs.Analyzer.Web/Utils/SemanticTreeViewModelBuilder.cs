@@ -18,7 +18,16 @@ namespace BcsAnalysisWeb.Utils
                 return new TreeNode<SemanticNodeViewModel>
                 {
                     Data = CreateSymbolVM(symbol),
-                    Children = cs.StatedContent.Values.SelectMany(c=> c.Select(Visit)).ToList()
+                    Children = cs.StatedContent.Values.SelectMany(c => c.Select(Visit)).ToList()
+                };
+            }
+            if (symbol is BcsBoundLocation)
+            {
+                var ls = symbol.CastTo<BcsBoundLocation>();
+                return new TreeNode<SemanticNodeViewModel>
+                {
+                    Data = CreateSymbolVM(symbol),
+                    Children = new List<TreeNode<SemanticNodeViewModel>> { Visit(ls.Content) }
                 };
             }
             return new TreeNode<SemanticNodeViewModel>

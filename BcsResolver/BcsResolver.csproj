@@ -54,6 +54,8 @@
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="File\BcsEntityType.cs" />
     <Compile Include="SemanticModel\BcsBoundSymbol.cs" />
+    <Compile Include="SemanticModel\BcsBoundSymbolFactory.cs" />
+    <Compile Include="SemanticModel\Tree\BcsSymbolVisitor.cs" />
     <Compile Include="SemanticModel\BcsComposedBoundSymbol.cs" />
     <Compile Include="SemanticModel\BcsRuleBinder.cs" />
     <Compile Include="SemanticModel\Tree\BcsRuleSymbol.cs" />
@@ -79,7 +81,7 @@
     <Compile Include="SemanticModel\Tree\BcsStructuralAgentSymbol.cs" />
     <Compile Include="SemanticModel\BcsEntityBinder.cs" />
     <Compile Include="SemanticModel\Tree\BcsNamedSymbol.cs" />
-    <Compile Include="SemanticModel\Tree\ErrorEntitySymbol.cs" />
+    <Compile Include="SemanticModel\Tree\BcsErrorSymbol.cs" />
     <Compile Include="SemanticModel\Exceptions\EntityTypeException.cs" />
     <Compile Include="SemanticModel\Exceptions\EntityNotFoundException.cs" />
     <Compile Include="SemanticModel\SemanticAnalysisVisitor.cs" />

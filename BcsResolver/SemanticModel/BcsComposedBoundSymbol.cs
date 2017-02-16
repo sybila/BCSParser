@@ -22,7 +22,7 @@ namespace BcsResolver.SemanticModel
 
 
     [DebuggerDisplay("[BRE: {ToString()}]")]
-    public class BcsBoundReaction : BcsComposedBoundSymbol<BcsAtomicAgentSymbol>
+    public class BcsBoundReaction : BcsComposedBoundSymbol<BcsRuleSymbol>
     { }
 
     public abstract class BcsComposedBoundSymbol<TSymbol> : BcsBoundSymbol<TSymbol>, IBcsComposedBoundSymbol

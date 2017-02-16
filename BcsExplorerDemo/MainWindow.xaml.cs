@@ -98,7 +98,7 @@ namespace BcsExplorerDemo
 
             var gridHelper = new GridHelper();
             var reactionTree = reactions[id];
-            var binder = new SemanticAnalisisVisitor(workspace);
+            var binder = new SemanticAnalisisVisitor(workspace, new BcsBoundSymbolFactory());
 
             var bound = binder.Visit(reactionTree);
 

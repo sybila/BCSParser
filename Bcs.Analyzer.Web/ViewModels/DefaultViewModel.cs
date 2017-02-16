@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI;
+using AngleSharp.Parser.Html;
 using BcsAnalysisWeb.Controls;
 using BcsAnalysisWeb.Utils;
 using BcsResolver.File;
@@ -13,6 +14,7 @@ using BcsResolver.SemanticModel;
 using BcsResolver.Syntax;
 using BcsResolver.Syntax.Parser;
 using DotVVM.Framework.ViewModel;
+using Ganss.XSS;
 using MyTreeNode = BcsAnalysisWeb.ViewModels.TreeNode<string>;
 
 namespace BcsAnalysisWeb.ViewModels
@@ -53,7 +55,7 @@ namespace BcsAnalysisWeb.ViewModels
 
         public void DrawSemanticTree(Guid id)
         {
-            var semanticAnalyzer = new SemanticAnalisisVisitor(workspace);
+            var semanticAnalyzer = new SemanticAnalisisVisitor(workspace, new BcsBoundSymbolFactory());
             var semanticVmBuilder= new SemanticTreeViewModelBuilder();
             var reaction = reactions[id];
 
@@ -90,8 +92,13 @@ namespace BcsAnalysisWeb.ViewModels
         
         public void DrawLive()
         {
-            var tree = BcsSyntaxFactory.ParseReaction(TextEdit);
+            var sanitizer = new HtmlParser();
+           
+            var rawText = sanitizer.Parse(TextEdit).DocumentElement.TextContent;
+            var tree = BcsSyntaxFactory.ParseReaction(rawText);
             var viewModelTreeBuilder = new SyntaxTreeViewModelBuilder();
+
+            if(tree== null) { return;}
 
             SyntaxToDraw.Clear();
 
