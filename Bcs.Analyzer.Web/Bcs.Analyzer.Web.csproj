@@ -163,6 +163,7 @@
     <Compile Include="Controls\TreeNode.cs" />
     <Compile Include="ViewModels\EntityViewModel.cs" />
     <Compile Include="ViewModels\ReactionViewModel.cs" />
+    <Compile Include="ViewModels\SemanticErrorViewModel.cs" />
     <Compile Include="ViewModels\SemanticNodeViewModel.cs" />
     <Compile Include="ViewModels\SymbolTreeViewModel.cs" />
     <Compile Include="ViewModels\SyntaxNodeViewModel.cs" />

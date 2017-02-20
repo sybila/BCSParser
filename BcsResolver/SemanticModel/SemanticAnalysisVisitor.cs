@@ -243,7 +243,7 @@ namespace BcsResolver.SemanticModel
 
                 if (AreSymbolsCompatibile(bcsComposedEntityNode, composedBoundEntity.Symbol, boundContent?.Symbol))
                 {
-                    composedBoundEntity.AddContent(element.Identifier.Name, boundContent);
+                    composedBoundEntity.AddContent(element.Identifier?.Name ?? "", boundContent);
                 }
             }
         }
@@ -337,7 +337,7 @@ namespace BcsResolver.SemanticModel
                 if (symbol == null)
                 {
                     AddError(namedEntityNode,
-                        $"{resultEntityFriendlyName} {nameToBind} does not exist inside {location.Symbol.Name}",
+                        $"{resultEntityFriendlyName} '{nameToBind}' does not exist inside {location.Symbol.Name}",
                         SemanticErrorSeverity.Error);
                 }
                 return symbol;
@@ -346,12 +346,12 @@ namespace BcsResolver.SemanticModel
             {
                 var resultSymbol =
                     parentBoundSymbol.Symbol?.Parts?
-                        .FirstOrDefault(c => c.Name == namedEntityNode.Identifier.Name);
+                        .FirstOrDefault(c => c.Name == namedEntityNode.Identifier?.Name);
 
                 if (resultSymbol == null)
                 {
                     AddError(namedEntityNode,
-                        $"{resultEntityFriendlyName} {nameToBind} does not exist inside {parentBoundSymbol.Syntax.ToDisplayString()}",
+                        $"{resultEntityFriendlyName} '{nameToBind}' does not exist inside {parentBoundSymbol.Syntax.ToDisplayString()}",
                         SemanticErrorSeverity.Error);
                 }
                 return resultSymbol;

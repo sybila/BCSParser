@@ -103,6 +103,9 @@
                     </ItemTemplate>
                 </cc:Tree>
 
+                <dot:Repeater DataSource="{value: SemanticErrors}" WrapperTagName="ul">
+                    <li><span class="text-danger">{{value: AssociatedSyntax}}</span> {{value: Message}}</li>
+                </dot:Repeater>
                 <cc:Tree class="tree"
                          DataSource="{value: SemanticToDraw}"
                          NodeCollectionWrapperTag="ul"

@@ -30,6 +30,7 @@ namespace BcsAnalysisWeb.ViewModels
 
         public List<TreeNode<SyntaxNodeViewModel>> SyntaxToDraw { get; set; } = new List<TreeNode<SyntaxNodeViewModel>>();
         public List<TreeNode<SemanticNodeViewModel>> SemanticToDraw { get; set; } = new List<TreeNode<SemanticNodeViewModel>>();
+        public List<SemanticErrorViewModel> SemanticErrors { get; set; } = new List<SemanticErrorViewModel>();
         public List<ReactionViewModel> Reactions { get; set; } = new List<ReactionViewModel>();
 
         public GridViewDataSet<EntityViewModel> EntityDataSet { get; set; }= new GridViewDataSet<EntityViewModel>()
@@ -71,30 +72,22 @@ namespace BcsAnalysisWeb.ViewModels
 
         public void DrawSemanticTree(Guid id)
         {
-            var semanticAnalyzer = new SemanticAnalisisVisitor(workspace, new BcsBoundSymbolFactory());
-            var semanticVmBuilder= new SemanticTreeViewModelBuilder();
             var reaction = reactions[id];
+            ClearTrees();
 
-            var semanticTree = semanticAnalyzer.Visit(reaction);
-
-            var vmTree = semanticVmBuilder.Visit(semanticTree);
-
-            SemanticToDraw.Clear();
-            SemanticToDraw.Add(vmTree);
+            DrawSemanticTree(reaction);
         }
 
         public void DrawTree(Guid id)
         {
+            ClearTrees();
+
             var viewModelTreeBuilder = new SyntaxTreeViewModelBuilder();
-
-            SyntaxToDraw.Clear();
-
             SyntaxToDraw.Add(viewModelTreeBuilder.Visit(reactions[id]));
         }
 
         public void Click(TreeNode<SyntaxNodeViewModel> item)
         {
-            throw new ArgumentNullException();
             item.Children.Add(new TreeNode<SyntaxNodeViewModel>()
             {
                 Data = new SyntaxNodeViewModel()
@@ -118,10 +111,42 @@ namespace BcsAnalysisWeb.ViewModels
 
             if(tree== null) { return;}
 
-            SyntaxToDraw.Clear();
+            ClearTrees();
 
             SyntaxToDraw.Add(viewModelTreeBuilder.Visit(tree));
+
+            DrawSemanticTree(tree);
         }
+
+        private void DrawSemanticTree(BcsExpressionNode reaction)
+        {
+            var semanticAnalyzer = new SemanticAnalisisVisitor(workspace, new BcsBoundSymbolFactory());
+            var semanticVmBuilder = new SemanticTreeViewModelBuilder();
+
+            var semanticTree = semanticAnalyzer.Visit(reaction);
+
+            var vmTree = semanticVmBuilder.Visit(semanticTree);
+
+            SemanticToDraw.Add(vmTree);
+
+            foreach (var error in semanticAnalyzer.Errors)
+            {
+                var errs = error.Value.Select(e => new SemanticErrorViewModel
+                {
+                    Message = e.Message,
+                    AssociatedSyntax = error.Key.ToDisplayString()
+                });
+                SemanticErrors.AddRange(errs);
+            }
+        }
+
+        private void ClearTrees()
+        {
+            SyntaxToDraw.Clear();
+            SemanticToDraw.Clear();
+            SemanticErrors.Clear();
+        }
+
 
 
         private static void LoadBcsFile(string fileName)
