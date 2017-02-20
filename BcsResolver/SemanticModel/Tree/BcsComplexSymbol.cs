@@ -8,6 +8,7 @@ namespace BcsResolver.SemanticModel.Tree
     public sealed class BcsComplexSymbol : BcsComposedSymbol
     {
         public IEnumerable<BcsStructuralAgentSymbol> StructuralAgents => Parts.OfType<BcsStructuralAgentSymbol>();
+        public IEnumerable<BcsAtomicAgentSymbol> AtomicAgents => Parts.OfType<BcsAtomicAgentSymbol>();
 
         public BcsComplexSymbol()
         {

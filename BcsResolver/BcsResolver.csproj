@@ -55,6 +55,7 @@
     <Compile Include="File\BcsEntityType.cs" />
     <Compile Include="SemanticModel\BcsBoundSymbol.cs" />
     <Compile Include="SemanticModel\BcsBoundSymbolFactory.cs" />
+    <Compile Include="SemanticModel\BcsComposedSymbolMerger.cs" />
     <Compile Include="SemanticModel\Tree\BcsSymbolVisitor.cs" />
     <Compile Include="SemanticModel\BcsComposedBoundSymbol.cs" />
     <Compile Include="SemanticModel\BcsRuleBinder.cs" />

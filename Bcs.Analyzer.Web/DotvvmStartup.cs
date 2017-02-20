@@ -37,6 +37,8 @@ namespace BcsAnalysisWeb
         {
             // register custom resources and adjust paths to the built-in resources
             config.Resources.Register("Site", new StylesheetResource(new LocalFileResourceLocation("~/Content/Site.css")));
+            config.Resources.Register("BootstrapCss", new StylesheetResource(new LocalFileResourceLocation("~/Content/bootstrap.css")));
+            config.Resources.Register("BootstrapJs", new ScriptResource(new LocalFileResourceLocation("~/Content/bootstrap.js")));
         }
     }
 }

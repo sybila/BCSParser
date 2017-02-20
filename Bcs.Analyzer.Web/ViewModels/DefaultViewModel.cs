@@ -9,10 +9,13 @@ using System.Web.UI;
 using AngleSharp.Parser.Html;
 using BcsAnalysisWeb.Controls;
 using BcsAnalysisWeb.Utils;
+using BcsResolver.Extensions;
 using BcsResolver.File;
 using BcsResolver.SemanticModel;
+using BcsResolver.SemanticModel.Tree;
 using BcsResolver.Syntax;
 using BcsResolver.Syntax.Parser;
+using DotVVM.Framework.Controls;
 using DotVVM.Framework.ViewModel;
 using Ganss.XSS;
 using MyTreeNode = BcsAnalysisWeb.ViewModels.TreeNode<string>;
@@ -29,6 +32,19 @@ namespace BcsAnalysisWeb.ViewModels
         public List<TreeNode<SemanticNodeViewModel>> SemanticToDraw { get; set; } = new List<TreeNode<SemanticNodeViewModel>>();
         public List<ReactionViewModel> Reactions { get; set; } = new List<ReactionViewModel>();
 
+        public GridViewDataSet<EntityViewModel> EntityDataSet { get; set; }= new GridViewDataSet<EntityViewModel>()
+        {
+            PageSize = 20,
+            Items = workspace.GetAllEntities()
+            .Select(e=> new EntityViewModel
+                {
+                    Name = e.Name,
+                    Type = e.Type.GetDescription(),
+                    Children = e.Parts.Select(p => $"[{p.Type.GetDescription()}: {p.Name}]").ToList()
+                })
+            .ToList()
+        };
+
         public string TextEdit { get; set; }
 
         public string Title { get; set; }
@@ -43,7 +59,7 @@ namespace BcsAnalysisWeb.ViewModels
 
         public DefaultViewModel()
         {
-            Title = "Hello from DotVVM!";
+            Title = "Hello from BCS!";
         }
 
         public override Task Init()
@@ -78,6 +94,7 @@ namespace BcsAnalysisWeb.ViewModels
 
         public void Click(TreeNode<SyntaxNodeViewModel> item)
         {
+            throw new ArgumentNullException();
             item.Children.Add(new TreeNode<SyntaxNodeViewModel>()
             {
                 Data = new SyntaxNodeViewModel()
@@ -95,6 +112,7 @@ namespace BcsAnalysisWeb.ViewModels
             var sanitizer = new HtmlParser();
            
             var rawText = sanitizer.Parse(TextEdit).DocumentElement.TextContent;
+
             var tree = BcsSyntaxFactory.ParseReaction(rawText);
             var viewModelTreeBuilder = new SyntaxTreeViewModelBuilder();
 

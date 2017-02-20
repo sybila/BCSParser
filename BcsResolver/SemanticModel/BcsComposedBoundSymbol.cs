@@ -10,7 +10,8 @@ namespace BcsResolver.SemanticModel
 {
     [DebuggerDisplay("[BAA: {ToString()}]")]
     public class BcsBoundAtomicAgent : BcsComposedBoundSymbol<BcsAtomicAgentSymbol>
-    { }
+    {
+    }
 
     [DebuggerDisplay("[BSA: {ToString()}]")]
     public class BcsBoundStructuralAgent : BcsComposedBoundSymbol<BcsStructuralAgentSymbol>

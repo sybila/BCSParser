@@ -327,12 +327,23 @@ namespace BcsResolver.Tests
             Assert.AreEqual("1A::c<=>1AA{?Var,p,?Var}::SA::B.SA::c;Var={D}", tree.ToDisplayString());
         }
 
-
-
         [TestMethod]
-        public void Parser_SimpleComplexWhitespaced_Valid()
+        public void Parser_SimpleComplexComposedOfStructuralAndAtimicAgents_Valid()
         {
-            var tree = BcsSyntaxFactory.ParseModifier("FRS   (   Thr  { p } )  .  Tyr { u  }   ::  M   ::  cyt");
+            var tree = BcsSyntaxFactory.ParseModifier("FRS(Thr{p}).Tyr{u}::M::cyt");
+
+            var complexParts =tree.AssertCast<BcsContentAccessNode>().Child
+                .AssertCast<BcsComplexNode>().Parts.Elements.AssertCount(2);
+
+            var pState = complexParts[0].AssertCast<BcsStructuralAgentNode>().Parts.Elements.AssertCount(1)[0]
+                .AssertCast<BcsAtomicAgentNode>().Parts.Elements.AssertCount(1)[0]
+                .AssertCast<BcsAgentStateNode>();
+
+            var uState = complexParts[1].AssertCast<BcsAtomicAgentNode>().Parts.Elements.AssertCount(1)[0]
+                .AssertCast<BcsAgentStateNode>();
+
+            Assert.AreEqual("p", pState.Identifier.Name);
+            Assert.AreEqual("u", uState.Identifier.Name);
 
             Assert.AreEqual("FRS(Thr{p}).Tyr{u}::M::cyt", tree.ToDisplayString());
         }

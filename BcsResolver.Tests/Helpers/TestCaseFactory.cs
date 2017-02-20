@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using BcsResolver.File;
 using BcsResolver.SemanticModel.Tree;
+using BcsResolver.Syntax.Parser;
+using Castle.Components.DictionaryAdapter;
 
 namespace BcsResolver.Tests.Helpers
 {
@@ -107,7 +109,7 @@ namespace BcsResolver.Tests.Helpers
                         Composition = { "agUndefined" },
                         States = { }
                     }
-                }
+                },
             };
 
         public static BcsComplexSymbol CreateThreePartComplex(List<BcsLocationSymbol> withLocations = null)
@@ -179,6 +181,48 @@ namespace BcsResolver.Tests.Helpers
                     }
                 },
                 Locations = withLocations
+            };
+        }
+
+        public static BcsComplexSymbol CreateMixedAgentComplex()
+        {
+            var cyt = new BcsLocationSymbol { Name = "cyt" };
+            return new BcsComplexSymbol
+            {
+                Name = "mixed",
+                Locations = new List<BcsLocationSymbol> { cyt },
+                Parts = new List<BcsNamedSymbol>
+                {
+                    new BcsAtomicAgentSymbol
+                    {
+                        Name = "Tyr",
+                        Parts = new List<BcsNamedSymbol>
+                                {
+                                    new BcsStateSymbol {Name = "u"},
+                                    new BcsStateSymbol {Name = "v"}
+                                },
+                        Locations = new List<BcsLocationSymbol> {cyt}
+                    },
+                    new BcsStructuralAgentSymbol
+                    {
+                        Name = "FRS",
+                        Locations = new List<BcsLocationSymbol> {cyt},
+                        Parts = new List<BcsNamedSymbol>
+                        {
+                            new BcsAtomicAgentSymbol
+                            {
+                                Name ="Thr",
+                                Parts = new List<BcsNamedSymbol>
+                                {
+                                    new BcsStateSymbol {Name = "p"},
+                                    new BcsStateSymbol {Name = "r"}
+                                },
+                                Locations = new List<BcsLocationSymbol> {cyt}
+                            }
+                        }
+
+                    }
+                }
             };
         }
     }

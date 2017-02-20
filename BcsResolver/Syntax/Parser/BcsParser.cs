@@ -194,7 +194,7 @@ namespace BcsResolver.Syntax.Parser
                 var complex = new BcsComplexNode
                 {
                     Identifier = null,
-                    Parts = ReadSet(BcsExpresionTokenType.Dot, ReadComponent, firstElement: component)
+                    Parts = ReadSet(BcsExpresionTokenType.Dot, ReadComponentOrAgentOrReference, firstElement: component)
                 };
                 return complex;
             }
