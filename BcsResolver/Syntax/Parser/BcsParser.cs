@@ -53,6 +53,7 @@ namespace BcsResolver.Syntax.Parser
 
         private BcsExpressionNode ParseVariableDefinition()
         {
+            var startChar = LastChar;
             var reaction = ReadReaction();
             if (IsPeekType(BcsExpresionTokenType.Semicolon))
             {
@@ -82,6 +83,7 @@ namespace BcsResolver.Syntax.Parser
                     variableExpression.Errors.Add(new NodeError("Expected assigmmennt of variable.",
                         Peek()?.ToTextRange() ?? default(TextRange)));
                 }
+                variableExpression.ExpressioRange = TextRange.FromBounds(startChar, LastChar);
                 return variableExpression;
             }
             return reaction;
@@ -90,6 +92,7 @@ namespace BcsResolver.Syntax.Parser
 
         private BcsReactionNode ReadReaction()
         {
+            var startChar = LastChar;
             var reaction = new BcsReactionNode();
 
             ReadReactionLeftSide(reaction);
@@ -97,6 +100,7 @@ namespace BcsResolver.Syntax.Parser
             ReadReactionDirection(reaction);
 
             ReadReactionRightSide(reaction);
+            reaction.ExpressioRange = TextRange.FromBounds(startChar, LastChar);
             return reaction;
         }
 
@@ -159,17 +163,20 @@ namespace BcsResolver.Syntax.Parser
 
         private BcsReactantNode ReadReactant()
         {
+            var startChar = LastChar;
             BcsReactantNode reactant = new BcsReactantNode();
 
             ReadCoeficient(reactant);
 
             reactant.Complex = ReadComponentAccess();
+            reactant.ExpressioRange = TextRange.FromBounds(startChar, LastChar);
 
             return reactant;
         }
 
         private BcsExpressionNode ReadComponentAccess()
         {
+            var startChar = LastChar;
             BcsNamedEntityNode child = ReadComplex();
 
             if (IsPeekType(BcsExpresionTokenType.FourDot))
@@ -178,7 +185,8 @@ namespace BcsResolver.Syntax.Parser
                 {
                     Operator = Read().ToTextRange(),
                     Child = child,
-                    Container = ReadComponentAccess()
+                    Container = ReadComponentAccess(),
+                    ExpressioRange = TextRange.FromBounds(startChar, LastChar)
                 };
 
             }
@@ -187,6 +195,7 @@ namespace BcsResolver.Syntax.Parser
 
         private BcsNamedEntityNode ReadComplex()
         {
+            var startChar = LastChar;
             var component = ReadComponentOrAgentOrReference().CheckExpectedIdentifierError();
 
             if (IsPeekType(BcsExpresionTokenType.Dot))
@@ -194,7 +203,8 @@ namespace BcsResolver.Syntax.Parser
                 var complex = new BcsComplexNode
                 {
                     Identifier = null,
-                    Parts = ReadSet(BcsExpresionTokenType.Dot, ReadComponentOrAgentOrReference, firstElement: component)
+                    Parts = ReadSet(BcsExpresionTokenType.Dot, ReadComponentOrAgentOrReference, firstElement: component),
+                    ExpressioRange = TextRange.FromBounds(startChar, LastChar)
                 };
                 return complex;
             }
@@ -205,30 +215,22 @@ namespace BcsResolver.Syntax.Parser
         {
             return ReadVariableOrEntity(() =>
             {
+                var startChar = LastChar;
                 var identifier = ReadIdentifier();
                 if (IsPeekType(BcsExpresionTokenType.BracketBegin))
                 {
-                    return ReadComponent(identifier);
+                    return ReadComponent(identifier, startChar);
                 }
                 if (IsPeekType(BcsExpresionTokenType.SetBegin))
                 {
-                    return ReadAtomicAgent(identifier);
+                    return ReadAtomicAgent(identifier, startChar);
                 }
-                return new BcsNamedEntityReferenceNode { Identifier = identifier };
+                return new BcsNamedEntityReferenceNode { Identifier = identifier, ExpressioRange = TextRange.FromBounds(startChar, LastChar) };
             });
         }
 
-        private BcsNamedEntityNode ReadComponent()
-        {
-            return ReadVariableOrEntity(() =>
-            {
-                var identifier = ReadIdentifier();
-                return ReadComponent(identifier);
-            }).CheckExpectedIdentifierError();
-        }
-
-        private BcsNamedEntityNode ReadComponent(BcsIdentifierNode identifier)
-        {
+        private BcsNamedEntityNode ReadComponent(BcsIdentifierNode identifier, int startChar)
+        {         
             if (IsPeekType(BcsExpresionTokenType.BracketBegin))
             {
                 var component = new BcsStructuralAgentNode
@@ -238,24 +240,26 @@ namespace BcsResolver.Syntax.Parser
                         BcsExpresionTokenType.Comma,
                         ReadAtomicAgent, BcsExpresionTokenType.BracketBegin,
                         BcsExpresionTokenType.BracketEnd,
-                        allowEmpty: true)
+                        allowEmpty: true),
+                    ExpressioRange = TextRange.FromBounds(startChar, LastChar)
                 };
 
                 return component;
             }
-            return new BcsNamedEntityReferenceNode { Identifier = identifier };
+            return new BcsNamedEntityReferenceNode { Identifier = identifier, ExpressioRange = TextRange.FromBounds(startChar, LastChar) };
         }
 
         private BcsNamedEntityNode ReadAtomicAgent()
         {
             return ReadVariableOrEntity(() =>
             {
+                var startChar = LastChar;
                 var identifier = ReadIdentifier();
-                return ReadAtomicAgent(identifier);
+                return ReadAtomicAgent(identifier, startChar);
             }).CheckExpectedIdentifierError();
         }
 
-        private BcsNamedEntityNode ReadAtomicAgent(BcsIdentifierNode identifier)
+        private BcsNamedEntityNode ReadAtomicAgent(BcsIdentifierNode identifier, int startChar)
         {
             if (IsPeekType(BcsExpresionTokenType.SetBegin))
             {
@@ -264,17 +268,24 @@ namespace BcsResolver.Syntax.Parser
                     Identifier = identifier,
                     Parts =
                         ReadSet(BcsExpresionTokenType.Comma, ReadState, BcsExpresionTokenType.SetBegin,
-                            BcsExpresionTokenType.SetEnd, allowEmpty: true)
+                            BcsExpresionTokenType.SetEnd, allowEmpty: true),
+                    ExpressioRange = TextRange.FromBounds(startChar, LastChar)
                 };
 
                 return agent;
             }
-            return new BcsNamedEntityReferenceNode { Identifier = identifier };
+            return new BcsNamedEntityReferenceNode { Identifier = identifier, ExpressioRange = TextRange.FromBounds(startChar, LastChar) };
         }
 
         private BcsNamedEntityNode ReadState()
         {
-            return ReadVariableOrEntity(() => new BcsAgentStateNode { Identifier = ReadIdentifier() }).CheckExpectedIdentifierError();
+            var startChar = LastChar;
+            return ReadVariableOrEntity(
+                () => new BcsAgentStateNode
+                {
+                    Identifier = ReadIdentifier(),
+                    ExpressioRange = TextRange.FromBounds(startChar, LastChar)
+                }).CheckExpectedIdentifierError();
         }
 
         private void ReadCoeficient(BcsReactantNode reactant)
@@ -306,6 +317,7 @@ namespace BcsResolver.Syntax.Parser
 
             identifier.Name = identifierToken?.Text;
             identifier.NameRange = identifierToken?.ToTextRange() ?? default(TextRange);
+            identifier.ExpressioRange = identifier.NameRange;
             return identifier;
         }
 
@@ -314,10 +326,12 @@ namespace BcsResolver.Syntax.Parser
         {
             if (IsPeekType(BcsExpresionTokenType.QuestionMark))
             {
+                var startChar = LastChar;
                 return new BcsNamedEntityReferenceNode
                 {
                     QuestionMark = Read(),
-                    Identifier = ReadIdentifier()
+                    Identifier = ReadIdentifier(),
+                    ExpressioRange = TextRange.FromBounds(startChar, LastChar)
                 };
             }
 
@@ -355,7 +369,7 @@ namespace BcsResolver.Syntax.Parser
                         Peek()?.ToTextRange()
                         ?? new TextRange(Tokens.LastOrDefault()?.StartPosition ?? 0, 0)));
             }
-            if (firstElement!=null)
+            if (firstElement != null)
             {
                 set.Elements.Add(firstElement);
             }
@@ -401,7 +415,7 @@ namespace BcsResolver.Syntax.Parser
             }
             else
             {
-                
+
                 var errorMessage = $"Unexpected token type: {Peek().Type} containing text: {Peek().Text} on index {CurrentIndex}.";
                 errors.Add(new NodeError(errorMessage, GetErrorRangeSafe(), Peek()));
                 if (throwException)

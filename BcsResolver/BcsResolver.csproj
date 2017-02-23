@@ -53,13 +53,13 @@
     <Compile Include="Extensions\FunctionalExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="File\BcsEntityType.cs" />
-    <Compile Include="SemanticModel\BcsBoundSymbol.cs" />
+    <Compile Include="SemanticModel\BoundTree\BcsBoundSymbol.cs" />
     <Compile Include="SemanticModel\BcsBoundSymbolFactory.cs" />
     <Compile Include="SemanticModel\BcsComposedSymbolMerger.cs" />
-    <Compile Include="SemanticModel\Tree\BcsSymbolVisitor.cs" />
-    <Compile Include="SemanticModel\BcsComposedBoundSymbol.cs" />
-    <Compile Include="SemanticModel\BcsRuleBinder.cs" />
-    <Compile Include="SemanticModel\Tree\BcsRuleSymbol.cs" />
+    <Compile Include="SemanticModel\BoundTree\BoundTreeVisitor.cs" />
+    <Compile Include="SemanticModel\SymbolTree\BcsSymbolVisitor.cs" />
+    <Compile Include="SemanticModel\BoundTree\BcsComposedBoundSymbol.cs" />
+    <Compile Include="SemanticModel\SymbolTree\BcsRuleSymbol.cs" />
     <Compile Include="SemanticModel\Exceptions\UnsupportedEntityException.cs" />
     <Compile Include="SemanticModel\IBcsRuleMetadataProvider.cs" />
     <Compile Include="Syntax\BcsSyntaxFactory.cs" />
@@ -77,12 +77,12 @@
     <Compile Include="File\BcsFileMetadataProvider.cs" />
     <Compile Include="File\BcsFileRecord.cs" />
     <Compile Include="File\BcsRule.cs" />
-    <Compile Include="SemanticModel\Tree\BcsAtomicAgentSymbol.cs" />
-    <Compile Include="SemanticModel\Tree\BcsComplexSymbol.cs" />
-    <Compile Include="SemanticModel\Tree\BcsStructuralAgentSymbol.cs" />
+    <Compile Include="SemanticModel\SymbolTree\BcsAtomicAgentSymbol.cs" />
+    <Compile Include="SemanticModel\SymbolTree\BcsComplexSymbol.cs" />
+    <Compile Include="SemanticModel\SymbolTree\BcsStructuralAgentSymbol.cs" />
     <Compile Include="SemanticModel\BcsEntityBinder.cs" />
-    <Compile Include="SemanticModel\Tree\BcsNamedSymbol.cs" />
-    <Compile Include="SemanticModel\Tree\BcsErrorSymbol.cs" />
+    <Compile Include="SemanticModel\SymbolTree\BcsNamedSymbol.cs" />
+    <Compile Include="SemanticModel\SymbolTree\BcsErrorSymbol.cs" />
     <Compile Include="SemanticModel\Exceptions\EntityTypeException.cs" />
     <Compile Include="SemanticModel\Exceptions\EntityNotFoundException.cs" />
     <Compile Include="SemanticModel\SemanticAnalysisVisitor.cs" />
@@ -105,11 +105,11 @@
     <Compile Include="Syntax\Parser\ParserBase.cs" />
     <Compile Include="Syntax\Parser\ReactionDirectionType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SemanticModel\Tree\BcsComposedSymbol.cs" />
-    <Compile Include="SemanticModel\Tree\BcsLocationSymbol.cs" />
-    <Compile Include="SemanticModel\Tree\BcsStateSymbol.cs" />
-    <Compile Include="SemanticModel\Tree\BcsSymbolType.cs" />
-    <Compile Include="SemanticModel\Tree\BcsSymbol.cs" />
+    <Compile Include="SemanticModel\SymbolTree\BcsComposedSymbol.cs" />
+    <Compile Include="SemanticModel\SymbolTree\BcsLocationSymbol.cs" />
+    <Compile Include="SemanticModel\SymbolTree\BcsStateSymbol.cs" />
+    <Compile Include="SemanticModel\SymbolTree\BcsSymbolType.cs" />
+    <Compile Include="SemanticModel\SymbolTree\BcsSymbol.cs" />
     <Compile Include="SemanticModel\IBcsEntityMetadataProvider.cs" />
     <Compile Include="SemanticModel\SemanticErrorSeverity.cs" />
     <Compile Include="SemanticModel\SemanticError.cs" />
@@ -131,9 +131,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SemanticModel\Binding\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

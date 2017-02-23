@@ -143,6 +143,39 @@ ul.error-list li::before {
     display: none;
 }
 
+
+span.error-tag {
+    border-bottom: 1px solid #ff4500;
+}
+
+
+span.error {
+    color: #ff4500;
+}
+
+span.complex {
+    color: #1e90ff;
+}
+
+span.atomic-agent {
+    color: #008b8b;
+}
+
+span.structural-agent {
+    color: #1e90ff;
+}
+
+span.state {
+    color: #008000;
+    font-weight: 500;
+}
+
+span.location {
+    font-weight: 600;
+    color: #0000ff;
+}
+
+
 /*Time for some hover effects*/
 /*We will apply the hover effect the the lineage of the element also*/
 .tree li a:hover, .tree li a:hover+ul li a {

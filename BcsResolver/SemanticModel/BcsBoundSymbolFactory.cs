@@ -1,4 +1,5 @@
 ﻿using System;
+using BcsResolver.SemanticModel.BoundTree;
 using BcsResolver.SemanticModel.Tree;
 using BcsResolver.Syntax.Parser;
 
@@ -84,7 +85,7 @@ namespace BcsResolver.SemanticModel
 
         protected override IBcsBoundSymbol VisitDefault(BcsSymbol symbol, BcsExpressionNode parameter)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("All visits sould be overloaded");
         }
     }
 }

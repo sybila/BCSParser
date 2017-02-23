@@ -5,11 +5,31 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BcsResolver.Syntax.Parser;
+using BcsResolver.Syntax.Tokenizer;
 
 namespace BcsResolver.Extensions
 {
     public static class TextExtensions
-    {
+    {   
+        public static bool ContainsPosition(this TextRange range, int position)
+        {
+            return range.Start <= position && position < range.End;
+        }
+
+        public static bool ContainsRange(this TextRange token, TextRange range)
+        {
+            return token.ContainsPosition(range.Start) && range.End <= token.End;
+        }
+
+        public static TextRange RangeFromBounds(int start, int end)
+        {
+            return new TextRange(start, end - start);
+        }
+
+        public static TextRange Offset(this TextRange range, int offset)
+        {
+            return new TextRange(offset + range.Start, range.Length);
+        }
         public static string RemoveAllWhitespaces (this string str)
         {
             return Regex.Replace(str, @"\s+", "");

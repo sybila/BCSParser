@@ -12,9 +12,11 @@ using BcsAnalysisWeb.Utils;
 using BcsResolver.Extensions;
 using BcsResolver.File;
 using BcsResolver.SemanticModel;
+using BcsResolver.SemanticModel.BoundTree;
 using BcsResolver.SemanticModel.Tree;
 using BcsResolver.Syntax;
 using BcsResolver.Syntax.Parser;
+using BcsResolver.Syntax.Tokenizer;
 using DotVVM.Framework.Controls;
 using DotVVM.Framework.ViewModel;
 using Ganss.XSS;
@@ -28,21 +30,23 @@ namespace BcsAnalysisWeb.ViewModels
         private static BcsDefinitionFile document;
         private static BcsWorkspace workspace;
 
+        public TextPresenter TextPresenter { get; set; } = new TextPresenter();
+
         public List<TreeNode<SyntaxNodeViewModel>> SyntaxToDraw { get; set; } = new List<TreeNode<SyntaxNodeViewModel>>();
         public List<TreeNode<SemanticNodeViewModel>> SemanticToDraw { get; set; } = new List<TreeNode<SemanticNodeViewModel>>();
         public List<SemanticErrorViewModel> SemanticErrors { get; set; } = new List<SemanticErrorViewModel>();
         public List<ReactionViewModel> Reactions { get; set; } = new List<ReactionViewModel>();
 
-        public GridViewDataSet<EntityViewModel> EntityDataSet { get; set; }= new GridViewDataSet<EntityViewModel>()
+        public GridViewDataSet<EntityViewModel> EntityDataSet { get; set; } = new GridViewDataSet<EntityViewModel>()
         {
             PageSize = 20,
             Items = workspace.GetAllEntities()
-            .Select(e=> new EntityViewModel
-                {
-                    Name = e.Name,
-                    Type = e.Type.GetDescription(),
-                    Children = e.Parts.Select(p => $"[{p.Type.GetDescription()}: {p.Name}]").ToList()
-                })
+            .Select(e => new EntityViewModel
+            {
+                Name = e.Name,
+                Type = e.Type.GetDescription(),
+                Children = e.Parts.Select(p => $"[{p.Type.GetDescription()}: {p.Name}]").ToList()
+            })
             .ToList()
         };
 
@@ -65,7 +69,7 @@ namespace BcsAnalysisWeb.ViewModels
 
         public override Task Init()
         {
-            Reactions = reactions.Select(r=> new ReactionViewModel {Id = r.Key, Display = r.Value.ToDisplayString()}).ToList();
+            Reactions = reactions.Select(r => new ReactionViewModel { Id = r.Key, Display = r.Value.ToDisplayString() }).ToList();
 
             return base.Init();
         }
@@ -75,7 +79,10 @@ namespace BcsAnalysisWeb.ViewModels
             var reaction = reactions[id];
             ClearTrees();
 
-            DrawSemanticTree(reaction);
+            var semanticAnalyzer = new SemanticAnalisisVisitor(workspace, new BcsBoundSymbolFactory());
+            var semanticTree = semanticAnalyzer.Visit(reaction);
+
+            DrawSemanticTree(semanticTree, semanticAnalyzer.Errors);
         }
 
         public void DrawTree(Guid id)
@@ -99,37 +106,56 @@ namespace BcsAnalysisWeb.ViewModels
                 Children = new List<TreeNode<SyntaxNodeViewModel>>()
             });
         }
-        
+
         public void DrawLive()
         {
-            var sanitizer = new HtmlParser();
-           
-            var rawText = sanitizer.Parse(TextEdit).DocumentElement.TextContent;
+            var semanticAnalyzer = new SemanticAnalisisVisitor(workspace, new BcsBoundSymbolFactory());
+            var semanticColorVisitor = new SemanticColoringVisitor();
+
+            var rawText = TextPresenter.ToRawText(TextEdit);
+            TextEdit = TextPresenter.CreateRichText(rawText, new List<StyleSpan>());
 
             var tree = BcsSyntaxFactory.ParseReaction(rawText);
-            var viewModelTreeBuilder = new SyntaxTreeViewModelBuilder();
+            if (tree == null) { return; }
 
-            if(tree== null) { return;}
+            var semanticTree = semanticAnalyzer.Visit(tree);
+            if (semanticTree == null) { return; }
+
+            semanticColorVisitor.Visit(semanticTree);
+
+            var spans = semanticColorVisitor.SemanticStyleSpans;
+
+            foreach (var error in semanticAnalyzer.Errors)
+            {
+                var errorTag = new StyleSpan
+                {
+                    Range = error.Key.ExpressioRange,
+                    CssClass = "error-tag"
+                };
+
+                spans.Add(errorTag);
+            }
+            TextEdit = TextPresenter.CreateRichText(rawText, spans);
+
+
 
             ClearTrees();
 
+            var viewModelTreeBuilder = new SyntaxTreeViewModelBuilder();
             SyntaxToDraw.Add(viewModelTreeBuilder.Visit(tree));
 
-            DrawSemanticTree(tree);
+            DrawSemanticTree(semanticTree, semanticAnalyzer.Errors);
         }
 
-        private void DrawSemanticTree(BcsExpressionNode reaction)
+        private void DrawSemanticTree(IBcsBoundSymbol semanticTree, Dictionary<BcsExpressionNode, List<SemanticError>> semanticAnalyzerErrors)
         {
-            var semanticAnalyzer = new SemanticAnalisisVisitor(workspace, new BcsBoundSymbolFactory());
             var semanticVmBuilder = new SemanticTreeViewModelBuilder();
-
-            var semanticTree = semanticAnalyzer.Visit(reaction);
 
             var vmTree = semanticVmBuilder.Visit(semanticTree);
 
             SemanticToDraw.Add(vmTree);
 
-            foreach (var error in semanticAnalyzer.Errors)
+            foreach (var error in semanticAnalyzerErrors)
             {
                 var errs = error.Value.Select(e => new SemanticErrorViewModel
                 {

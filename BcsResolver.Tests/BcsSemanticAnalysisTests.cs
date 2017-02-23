@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BcsResolver.File;
 using BcsResolver.SemanticModel;
+using BcsResolver.SemanticModel.BoundTree;
 using BcsResolver.SemanticModel.Tree;
 using BcsResolver.Syntax;
 using BcsResolver.Syntax.Visitors;
@@ -180,8 +181,8 @@ namespace BcsResolver.Tests
 
             var mock = new Mock<IBcsWorkspace>();
             mock.SetupGet(p => p.Complexes).Returns(new Dictionary<string, BcsComplexSymbol> { { "cx1", complexTree } });
-            mock.SetupGet(p => p.StructuralAgents).Returns(complexTree.StructuralAgents.ToDictionary(sa=> sa.Name));
-            mock.SetupGet(p => p.AtomicAgents).Returns(complexTree.StructuralAgents.SelectMany(c=> c.AtomicAgents).ToDictionary(aa => aa.Name));
+            mock.SetupGet(p => p.StructuralAgents).Returns(complexTree.StructuralAgents.ToDictionary(sa => sa.Name));
+            mock.SetupGet(p => p.AtomicAgents).Returns(complexTree.StructuralAgents.SelectMany(c => c.AtomicAgents).ToDictionary(aa => aa.Name));
             mock.SetupGet(p => p.Locations).Returns(locs.ToDictionary(k => k.Name));
 
             var binder = new SemanticAnalisisVisitor(mock.Object, new BcsBoundSymbolFactory());
@@ -231,7 +232,7 @@ namespace BcsResolver.Tests
             Assert.AreEqual("u", boundU.Symbol.AssertCast<BcsNamedSymbol>().Name);
             Assert.AreEqual("u", boundU.Syntax.ToDisplayString());
 
-            Assert.AreEqual(0,binder.Errors.Count);
+            Assert.AreEqual(0, binder.Errors.Count);
         }
 
         [TestMethod]
@@ -242,8 +243,8 @@ namespace BcsResolver.Tests
             var mock = new Mock<IBcsWorkspace>();
             mock.SetupGet(p => p.Complexes).Returns(new Dictionary<string, BcsComplexSymbol> { { "mixed", complexTree } });
             mock.SetupGet(p => p.StructuralAgents).Returns(complexTree.Parts.OfType<BcsStructuralAgentSymbol>().ToDictionary(sa => sa.Name));
-            mock.SetupGet(p => p.AtomicAgents).Returns(complexTree.Parts.OfType<BcsAtomicAgentSymbol>().Concat(complexTree.Parts.OfType<BcsStructuralAgentSymbol>().SelectMany(sa=> sa.AtomicAgents)).ToDictionary(aa => aa.Name));
-            mock.SetupGet(p => p.Locations).Returns(new [] {complexTree.Locations[0]}.ToDictionary(k => k.Name));
+            mock.SetupGet(p => p.AtomicAgents).Returns(complexTree.Parts.OfType<BcsAtomicAgentSymbol>().Concat(complexTree.Parts.OfType<BcsStructuralAgentSymbol>().SelectMany(sa => sa.AtomicAgents)).ToDictionary(aa => aa.Name));
+            mock.SetupGet(p => p.Locations).Returns(new[] { complexTree.Locations[0] }.ToDictionary(k => k.Name));
 
             var binder = new SemanticAnalisisVisitor(mock.Object, new BcsBoundSymbolFactory());
 
@@ -267,6 +268,34 @@ namespace BcsResolver.Tests
             Assert.AreEqual("u", boundU.Syntax.ToDisplayString());
 
             Assert.AreEqual(0, binder.Errors.Count);
+        }
+
+        [TestMethod]
+        public void SemanticAnalysisVisitor_UnknownStructuralAgentKnownLoacation_Invalid()
+        {
+            var complexTree = TestCaseFactory.CreateMixedAgentComplex();
+
+            var mock = new Mock<IBcsWorkspace>();
+            mock.SetupGet(p => p.Complexes).Returns(new Dictionary<string, BcsComplexSymbol> { { "mixed", complexTree } });
+            mock.SetupGet(p => p.StructuralAgents)
+                .Returns(complexTree.Parts.OfType<BcsStructuralAgentSymbol>().ToDictionary(sa => sa.Name));
+            mock.SetupGet(p => p.AtomicAgents)
+                .Returns(
+                    complexTree.Parts.OfType<BcsAtomicAgentSymbol>()
+                        .Concat(complexTree.Parts.OfType<BcsStructuralAgentSymbol>().SelectMany(sa => sa.AtomicAgents))
+                        .ToDictionary(aa => aa.Name));
+            mock.SetupGet(p => p.LocationEntityMap)
+                .Returns(new Dictionary<string, IReadOnlyList<BcsComposedSymbol>>());
+
+            mock.SetupGet(p => p.Locations).Returns(new[] { complexTree.Locations[0] }.ToDictionary(k => k.Name));
+
+            var binder = new SemanticAnalisisVisitor(mock.Object, new BcsBoundSymbolFactory());
+
+            var tree = BcsSyntaxFactory.ParseModifier("bbb::aaa(aa)::cyt");
+
+            var boundTree = binder.Visit(tree);
+
+
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BcsResolver.Extensions;
+using BcsResolver.SemanticModel.BoundTree;
 using BcsResolver.Syntax.Parser;
 
 namespace BcsResolver.SemanticModel

@@ -20,6 +20,7 @@ namespace BcsResolver.Syntax.Parser
         internal IList<TToken> Tokens { get; set; }
         protected int CurrentIndex { get; set; }
 
+        protected int LastChar { get; set; } = 0;
         
         /// <summary>
         /// Skips the whitespace.
@@ -48,6 +49,7 @@ namespace BcsResolver.Syntax.Parser
         {
             if (CurrentIndex < Tokens.Count)
             {
+                LastChar = Tokens[CurrentIndex].StartPosition + Tokens[CurrentIndex].Length;
                 return Tokens[CurrentIndex++];
             }
             return null;

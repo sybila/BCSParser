@@ -12,13 +12,103 @@
 </head>
 <body>
     <dot:InlineScript Dependencies="knockout">
+        var lastCaret = 0;
+
+        function getCharacterOffsetWithin(range, node) {
+            var treeWalker = document.createTreeWalker(
+                node,
+                NodeFilter.SHOW_TEXT,
+                function (node) {
+                    var nodeRange = document.createRange();
+                    nodeRange.selectNode(node);
+                    return nodeRange.compareBoundaryPoints(Range.END_TO_END, range) < 1 ?
+                        NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+                },
+                false
+            );
+
+            var charCount = 0;
+            while (treeWalker.nextNode()) {
+                charCount += treeWalker.currentNode.length;
+            }
+            if (range.startContainer.nodeType == 3) {
+                charCount += range.startOffset;
+            }
+            return charCount;
+        }
+
+        function getCaretPosition(node) {
+            var caretPos = 0,
+              sel, range;
+            if (window.getSelection) {
+                sel = window.getSelection();
+                if (sel.rangeCount) {
+                    range = sel.getRangeAt(0);
+                    return getCharacterOffsetWithin(range, node);
+                }
+            } else if (document.selection && document.selection.createRange) {
+                range = document.selection.createRange();
+                return getCharacterOffsetWithin(range, node); 
+            }
+            return caretPos;
+        }
+
+        var setCaret = function (e, cp)
+        {
+            var carretSet = false;
+
+            var placeCaret = function (item, position) {
+                var range = document.createRange();
+                range.setStart(item, position)
+                range.setEnd(item, position)
+
+                var sel = window.getSelection()
+                sel.removeAllRanges()
+                sel.addRange(range)
+                carretSet = true;
+            }
+
+            var setCaretCore = function (element, caretPosition) {
+                var charsInNode = 0;
+
+                element.childNodes.forEach(function (item, index) {
+                    if (carretSet) { return 0; }
+
+                    if (item.nodeType === 3) {
+                        var textContentLenght = item.textContent.length;
+                        var relativeCaretPosition = caretPosition - charsInNode;
+
+                        if (0 <= relativeCaretPosition && relativeCaretPosition <= textContentLenght) {
+                            placeCaret(item, relativeCaretPosition);
+                        }
+                        else {
+                            charsInNode += textContentLenght
+                        }
+                        return;
+                    }
+                    if (item.nodeType == 1) {
+                        charsInNode += setCaretCore(item, caretPosition - charsInNode)
+                    }
+                });
+
+                if (carretSet) { return 0; }
+                return charsInNode;
+            }
+
+            setCaretCore(e, cp);
+        }
+
         ko.bindingHandlers.htmlLazy = {
             update: function (element, valueAccessor) {
                 var value = ko.unwrap(valueAccessor());
-
-                if (!element.isContentEditable) {
+ 
+                if (element.isContentEditable) {
+                    lastCaret = getCaretPosition(element)
+                    console.log(lastCaret);
                     element.innerHTML = value;
+                    setCaret(element, lastCaret);
                 }
+               
             }
         };
         ko.bindingHandlers.contentEditable = {
@@ -30,6 +120,7 @@
                     if (this.isContentEditable && ko.isWriteableObservable(htmlLazy)) {
                         htmlLazy(this.innerHTML);
                     }
+                }).on('change', function (e) {
                 });
             },
             update: function (element, valueAccessor) {
@@ -78,9 +169,8 @@
                 <dot:TextBox Text="" Changed="{command: DrawLive()}" style="display: none;" />
                 <div class="form-control" contenteditable="true"
                      data-bind="contentEditable: true, htmlLazy: TextEdit"
-                     onkeyup="if(!dotvvm.isViewModelUpdating){dotvvm.postbackScript('DrawLive()')('root', this, [], '', true, '$root', null, null)};return false;">
-                    <span style="color:blue;"><span style="color:aqua">bbb</span>::aaa</span>::<span style="color:green;">cyt</span>
-                </div>
+                     spellcheck="false"
+                     onkeyup="if(!dotvvm.isViewModelUpdating){dotvvm.postbackScript('DrawLive()')('root', this, [], '', true, '$root', null, null)};return false;"></div>
             </div>
             <div class="col-md-12">
                 <cc:Tree class="tree"

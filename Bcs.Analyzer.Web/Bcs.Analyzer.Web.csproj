@@ -157,8 +157,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="DotvvmStartup.cs" />
+    <Compile Include="Utils\SemanticColoringVisitor.cs" />
     <Compile Include="Utils\SemanticTreeViewModelBuilder.cs" />
     <Compile Include="Utils\SymbolTreeViewModelBuilder.cs" />
+    <Compile Include="Utils\TextPresenter.cs" />
     <Compile Include="ViewModels\DefaultViewModel.cs" />
     <Compile Include="Controls\TreeNode.cs" />
     <Compile Include="ViewModels\EntityViewModel.cs" />

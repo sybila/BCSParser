@@ -1,17 +1,26 @@
+using System;
+
 namespace BcsResolver.Syntax.Tokenizer
 {
     public struct TextRange
     {
-        public int StartPosition { get; private set; }
+        public int Start { get; private set; }
 
         public int Length { get; private set; }
 
-        public int End => StartPosition + Length;
+        public int End => Start + Length;
 
-        public TextRange(int startPosition, int length)
+        public TextRange(int start, int length)
         {
-            StartPosition = startPosition;
+            Start = start;
             Length = length;
         }
+
+        public static TextRange FromBounds(int start, int end)
+        {
+            if (end - start < 0) { throw new ArgumentException("End must be after start"); }
+            return new TextRange(start, end - start);
+        }
+
     }
 }

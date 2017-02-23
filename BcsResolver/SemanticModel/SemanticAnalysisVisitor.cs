@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using BcsResolver.Extensions;
 using BcsResolver.File;
+using BcsResolver.SemanticModel.BoundTree;
 using BcsResolver.SemanticModel.Tree;
 using BcsResolver.Syntax.Parser;
 using BcsResolver.Syntax.Visitors;
@@ -86,6 +87,10 @@ namespace BcsResolver.SemanticModel
                     ?? GetSymbolFromWokrspaceByNameAndLocation(nameToBind, locationSymbol, () => Workspace.StructuralAgents).CastTo<BcsNamedSymbol>()
                     ?? GetSymbolFromWokrspaceByNameAndLocation(nameToBind, locationSymbol, () => Workspace.AtomicAgents);
 
+                if (complexSymbol == null)
+                {
+                    AddError(bcsNamedEntityReferenceNode, $"Entity '{nameToBind}' does not exist inside {parameter.Syntax.ToDisplayString()}", SemanticErrorSeverity.Error);
+                }
                 return BoundSymbolFactory.CreateBoundNamedSymbol(complexSymbol, bcsNamedEntityReferenceNode, BcsSymbolType.Unknown);
             }
             return new BcsBoundError
@@ -167,11 +172,20 @@ namespace BcsResolver.SemanticModel
         protected override IBcsBoundSymbol VisitAtomicAgent(BcsAtomicAgentNode bcsAtomicAgent, IBcsBoundSymbol parameter)
         {
             //Complex can have both atomic and structural agents
-            var symbol =
-                parameter == null
-                    ? GetSymbolFromWokrspace(bcsAtomicAgent, () => Workspace.AtomicAgents)
-                    : (GetSymbolFromParameter<BcsStructuralAgentSymbol>(bcsAtomicAgent, parameter, BcsSymbolType.Agent, false) 
-                    ?? GetSymbolFromParameter<BcsComplexSymbol>(bcsAtomicAgent, parameter, BcsSymbolType.Agent));
+            BcsNamedSymbol symbol;
+            if (parameter == null)
+            {
+                symbol = GetSymbolFromWokrspace(bcsAtomicAgent, () => Workspace.AtomicAgents);
+            }
+            else
+            {
+                bool isStructuralAgentMissmatch;
+                symbol = GetSymbolFromParameter<BcsStructuralAgentSymbol>(bcsAtomicAgent, parameter, BcsSymbolType.Agent, out isStructuralAgentMissmatch);
+                if (isStructuralAgentMissmatch)
+                {
+                    symbol = GetSymbolFromParameter<BcsComplexSymbol>(bcsAtomicAgent, parameter, BcsSymbolType.Agent);
+                }
+            }
 
             var boundSymbol = BoundSymbolFactory.CreateBoundNamedSymbol(symbol, bcsAtomicAgent, BcsSymbolType.Agent);
 
@@ -215,7 +229,7 @@ namespace BcsResolver.SemanticModel
             }
             else
             {
-                AddError(node, $"Type error. Expected composed entity or location. Got '{boundContainer?.Syntax?.ToDisplayString() ?? ""}' instead.", SemanticErrorSeverity.Error);
+                AddError(node, $"Type error. Expected composed entity or location. Got '{directParentSyntax?.ToDisplayString() ?? ""}' instead.", SemanticErrorSeverity.Error);
             }
 
             return boundContainer;
@@ -320,9 +334,19 @@ namespace BcsResolver.SemanticModel
             return composedSymbol;
         }
 
-        private BcsNamedSymbol GetSymbolFromParameter<TParentSymbol>(BcsNamedEntityNode namedEntityNode, IBcsBoundSymbol parameter, BcsSymbolType expectedType, bool errorOnParentMissmatch = true)
+        private BcsNamedSymbol GetSymbolFromParameter<TParentSymbol>(BcsNamedEntityNode namedEntityNode, IBcsBoundSymbol parameter, BcsSymbolType expectedType)
             where TParentSymbol : BcsComposedSymbol
         {
+            var isNoMatch = false;
+            var symbol = GetSymbolFromParameter<TParentSymbol>(namedEntityNode, parameter, expectedType, out isNoMatch);
+            AddNoMatchErrorIfAny(isNoMatch, namedEntityNode, expectedType);
+            return symbol;
+        }
+
+        private BcsNamedSymbol GetSymbolFromParameter<TParentSymbol>(BcsNamedEntityNode namedEntityNode, IBcsBoundSymbol parameter, BcsSymbolType expectedType, out bool noMatch)
+            where TParentSymbol : BcsComposedSymbol
+        {
+            noMatch = false;
             var nameToBind = namedEntityNode.Identifier?.Name ?? "";
             var resultEntityFriendlyName = expectedType.GetDescription();
 
@@ -331,7 +355,7 @@ namespace BcsResolver.SemanticModel
 
             if (!string.IsNullOrEmpty(location?.Symbol?.Name))
             {
-                var symbol = Workspace.LocationEntityMap.GetValueOrDefault(location?.Symbol?.Name)
+                var symbol = Workspace.LocationEntityMap.GetValueOrDefault(location?.Symbol?.Name)?
                     .FirstOrDefault(s => s.Type == expectedType && s.Name == nameToBind);
 
                 if (symbol == null)
@@ -357,11 +381,7 @@ namespace BcsResolver.SemanticModel
                 return resultSymbol;
             }
 
-            if (errorOnParentMissmatch)
-            {
-                AddError(namedEntityNode, $"{resultEntityFriendlyName} is not valid in this context.",
-                    SemanticErrorSeverity.Error);
-            }
+            noMatch = true;
             return null;
         }
 
@@ -381,6 +401,15 @@ namespace BcsResolver.SemanticModel
                 AddError(sourceSyntaxNode, $"Type error: {contentSymbol?.Type ?? BcsSymbolType.Unknown} is not component of {containerSymbol.Type}", SemanticErrorSeverity.Error);
             }
             return areCompatible;
+        }
+
+        private void AddNoMatchErrorIfAny(bool isNoMatch, BcsExpressionNode syntax, BcsSymbolType expectedType)
+        {
+            if (isNoMatch)
+            {
+                AddError(syntax, $"{expectedType.GetDescription()} is not valid in this context.",
+                    SemanticErrorSeverity.Error);
+            }
         }
 
         private void AddError(BcsExpressionNode identifier, string message, SemanticErrorSeverity severity)

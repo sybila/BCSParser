@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BcsResolver.SemanticModel.Tree;
 
-namespace BcsResolver.SemanticModel
+namespace BcsResolver.SemanticModel.BoundTree
 {
     [DebuggerDisplay("[BAA: {ToString()}]")]
     public class BcsBoundAtomicAgent : BcsComposedBoundSymbol<BcsAtomicAgentSymbol>
@@ -39,6 +36,8 @@ namespace BcsResolver.SemanticModel
             }
             StatedContent[name].Add(content);
         }
+
+        public override IEnumerable<IBcsBoundSymbol> GetChildren() => StatedContent.Values.SelectMany(c=> c);
     }
 
     public interface IBcsComposedBoundSymbol : IBcsBoundSymbol

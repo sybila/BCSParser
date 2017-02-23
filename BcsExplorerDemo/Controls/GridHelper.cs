@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using BcsResolver.Extensions;
 using BcsResolver.SemanticModel;
+using BcsResolver.SemanticModel.BoundTree;
 using BcsResolver.Syntax.Parser;
 using BcsResolver.Syntax.Visitors;
 

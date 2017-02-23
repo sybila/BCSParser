@@ -5,6 +5,7 @@ using System.Web;
 using BcsAnalysisWeb.ViewModels;
 using BcsResolver.Extensions;
 using BcsResolver.SemanticModel;
+using BcsResolver.SemanticModel.BoundTree;
 
 namespace BcsAnalysisWeb.Utils
 {
