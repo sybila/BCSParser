@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Web;
 using AngleSharp;
@@ -59,7 +60,7 @@ namespace BcsAnalysisWeb.Utils
 
             foreach (var point in spanPoints)
             {
-                var textChunk = rawText.Substring(previousPosition, point.Position - previousPosition);
+                var textChunk = WebUtility.HtmlEncode(rawText.Substring(previousPosition, point.Position - previousPosition));
 
                 richTextBuilder.Append(textChunk);
 
@@ -95,7 +96,7 @@ namespace BcsAnalysisWeb.Utils
 
                 previousPosition = point.Position;
             }
-            var lastChunk = rawText.Substring(previousPosition, rawText.Length - previousPosition);
+            var lastChunk = WebUtility.HtmlEncode(rawText.Substring(previousPosition, rawText.Length - previousPosition));
             richTextBuilder.Append(lastChunk);
 
             return richTextBuilder.ToString();

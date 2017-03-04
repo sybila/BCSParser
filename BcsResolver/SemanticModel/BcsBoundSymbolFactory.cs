@@ -1,5 +1,6 @@
 ﻿using System;
 using BcsResolver.SemanticModel.BoundTree;
+using BcsResolver.SemanticModel.SymbolTree;
 using BcsResolver.SemanticModel.Tree;
 using BcsResolver.Syntax.Parser;
 
@@ -79,6 +80,15 @@ namespace BcsResolver.SemanticModel
             return new BcsBoundAtomicAgent
             {
                 Symbol = bcsAtomicAgentSymbol,
+                Syntax = parameter
+            };
+        }
+
+        protected override IBcsBoundSymbol VisitVariable(BcsVariableSymbol bcsVariableSymbol, BcsExpressionNode parameter)
+        {
+            return new BcsBoundVariableExpression
+            { 
+                Symbol = bcsVariableSymbol,
                 Syntax = parameter
             };
         }

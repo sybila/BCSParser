@@ -62,6 +62,7 @@
     <Compile Include="SemanticModel\SymbolTree\BcsRuleSymbol.cs" />
     <Compile Include="SemanticModel\Exceptions\UnsupportedEntityException.cs" />
     <Compile Include="SemanticModel\IBcsRuleMetadataProvider.cs" />
+    <Compile Include="SemanticModel\SymbolTree\BcsVariableSymbol.cs" />
     <Compile Include="Syntax\BcsSyntaxFactory.cs" />
     <Compile Include="Syntax\Parser\BcsNamedEntityReferenceNode.cs" />
     <Compile Include="Syntax\Visitors\BcsExpressionBuilderVisitor.cs" />

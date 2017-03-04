@@ -16,6 +16,8 @@ namespace BcsResolver.SemanticModel.Tree
         Location = 4,
         [Description("Rule")]
         Rule = 5,
+        [Description("Variable")]
+        Variable = 6,
         [Description("Unknown entity")]
         Unknown = 53,
         [Description("Entity error")]

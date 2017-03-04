@@ -31,6 +31,15 @@ namespace BcsAnalysisWeb.Utils
                     Children = new List<TreeNode<SemanticNodeViewModel>> { Visit(ls.Content) }
                 };
             }
+            if (symbol.Is<BcsBoundVariableExpression>())
+            {
+                var ve = symbol.CastTo<BcsBoundVariableExpression>();
+                return new TreeNode<SemanticNodeViewModel>()
+                {
+                    Data = CreateSymbolVM(symbol),
+                    Children = new List<TreeNode<SemanticNodeViewModel>> { Visit(ve.Target) }
+                };
+            }
             return new TreeNode<SemanticNodeViewModel>
             {
                 Data = CreateSymbolVM(symbol),

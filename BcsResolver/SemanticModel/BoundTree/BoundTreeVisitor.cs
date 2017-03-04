@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Policy;
 using BcsResolver.Extensions;
 
 namespace BcsResolver.SemanticModel.BoundTree
@@ -32,6 +33,10 @@ namespace BcsResolver.SemanticModel.BoundTree
             {
                 VisitBoundReaction(boundSymbol.CastTo<BcsBoundReaction>());
             }
+            else if (boundSymbol.Is<BcsBoundVariableExpression>())
+            {
+                VisitBoundVariableExpression(boundSymbol.CastTo<BcsBoundVariableExpression>());
+            }
             else if (boundSymbol.Is<BcsBoundError>())
             {
                 VisitBoundError(boundSymbol.CastTo<BcsBoundError>());
@@ -46,6 +51,8 @@ namespace BcsResolver.SemanticModel.BoundTree
                 Visit(child);
             }
         }
+
+        protected virtual void VisitBoundVariableExpression(BcsBoundVariableExpression castTo) { VisitDefault(castTo); }
 
         protected virtual void VisitBoundError(BcsBoundError castTo) { VisitDefault(castTo);}
 

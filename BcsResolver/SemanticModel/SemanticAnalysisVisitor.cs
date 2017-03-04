@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using System.Threading;
 using BcsResolver.Extensions;
 using BcsResolver.File;
 using BcsResolver.SemanticModel.BoundTree;
+using BcsResolver.SemanticModel.SymbolTree;
 using BcsResolver.SemanticModel.Tree;
 using BcsResolver.Syntax.Parser;
 using BcsResolver.Syntax.Visitors;
@@ -21,6 +23,8 @@ namespace BcsResolver.SemanticModel
 
         public Dictionary<BcsExpressionNode, List<SemanticError>> Errors { get; } = new Dictionary<BcsExpressionNode, List<SemanticError>>();
         public Dictionary<BcsExpressionNode, IBcsBoundSymbol> ResolvedNodeMap { get; } = new Dictionary<BcsExpressionNode, IBcsBoundSymbol>();
+
+        public BcsVariableSymbol DefinedVariable { get; private set; }
 
         public SemanticAnalisisVisitor(IBcsWorkspace workspace, BcsBoundSymbolFactory boundSymbolFactory)
         {
@@ -48,6 +52,7 @@ namespace BcsResolver.SemanticModel
         protected override IBcsBoundSymbol VisitNamedReference(BcsNamedEntityReferenceNode bcsNamedEntityReferenceNode, IBcsBoundSymbol parameter)
         {
             var nameToBind = bcsNamedEntityReferenceNode.Identifier?.Name ?? "";
+
             if (parameter == null)
             {
                 BcsLocationSymbol locationSymbol = Workspace.Locations.GetValueOrDefault(nameToBind);
@@ -102,7 +107,39 @@ namespace BcsResolver.SemanticModel
 
         protected override IBcsBoundSymbol VisitVariableExpression(BcsVariableExpresssioNode bcsVariableExpresssioNode, IBcsBoundSymbol parameter)
         {
-            throw new NotImplementedException();
+            var resolvedSymbols = bcsVariableExpresssioNode.References?.Elements?.Select(e => Visit(e))?.ToList() ?? new List<IBcsBoundSymbol>();
+            var firstReferenceSymbol = resolvedSymbols.FirstOrDefault()?.Symbol;
+
+
+            var variableType = BcsSymbolType.Unknown;
+            if (firstReferenceSymbol != null)
+            {
+                variableType = firstReferenceSymbol.Type;
+
+                resolvedSymbols
+                    .Where(rs => rs?.Symbol?.Type != variableType)
+                    .ToList()
+                    .ForEach(e=> AddError(e.Syntax,$"Entity type missmatch entity is of type {(e?.Symbol.Type ?? BcsSymbolType.Unknown).GetDescription()} while first enity is of type {variableType}.", SemanticErrorSeverity.Error));
+            }
+            if (string.IsNullOrWhiteSpace(bcsVariableExpresssioNode.VariableName?.Name))
+            {
+                AddError(bcsVariableExpresssioNode,"Name expected", SemanticErrorSeverity.Error);
+            }
+
+
+            DefinedVariable = new BcsVariableSymbol
+            {
+                Name = bcsVariableExpresssioNode.VariableName?.Name ?? "",
+                AssignedEntities = resolvedSymbols.Select(be => be.Symbol).OfType<BcsNamedSymbol>().ToList(),
+                VariableType = variableType
+            };
+
+            return new BcsBoundVariableExpression
+            {
+                Syntax = bcsVariableExpresssioNode,
+                Symbol = DefinedVariable,
+                Target = Visit(bcsVariableExpresssioNode.TargetExpression)
+            };
         }
 
         protected override IBcsBoundSymbol VisitReaction(BcsReactionNode bcsReaction, IBcsBoundSymbol parameter)

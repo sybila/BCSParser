@@ -1,4 +1,5 @@
 ﻿using System;
+using BcsResolver.SemanticModel.SymbolTree;
 
 namespace BcsResolver.SemanticModel.Tree
 {
@@ -30,11 +31,20 @@ namespace BcsResolver.SemanticModel.Tree
             {
                 return VisitRule(symbol as BcsRuleSymbol, parameter);
             }
+            if (symbol is BcsVariableSymbol)
+            {
+                return VisitVariable(symbol as BcsVariableSymbol, parameter);
+            }
             if (symbol is BcsErrorSymbol)
             {
                 return VisitError(symbol as BcsErrorSymbol, parameter);
             }
             throw new InvalidOperationException("Unsupported node type in visitor.");
+        }
+
+        protected virtual TResult VisitVariable(BcsVariableSymbol bcsVariableSymbol, TParameter parameter)
+        {
+            return VisitDefault(bcsVariableSymbol, parameter);
         }
 
         protected virtual TResult VisitRule(BcsRuleSymbol bcsRuleSymbol, TParameter parameter)

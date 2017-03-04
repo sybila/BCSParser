@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using BcsResolver.SemanticModel.SymbolTree;
 using BcsResolver.SemanticModel.Tree;
 using BcsResolver.Syntax.Parser;
 
@@ -29,13 +30,25 @@ namespace BcsResolver.SemanticModel.BoundTree
         }
     }
 
+    [DebuggerDisplay("[BVE: {ToString()}]")]
+    public class BcsBoundVariableExpression : BcsBoundSymbol<BcsVariableSymbol>
+    {
+        public IBcsBoundSymbol Target { get; set; }
+
+        public override IEnumerable<IBcsBoundSymbol> GetChildren()
+        {
+            return Target == null ? Enumerable.Empty<IBcsBoundSymbol>() : new[] { Target };
+        }
+
+    }
+
+
     public abstract class BcsBoundSymbol<TSymbol> : IBcsBoundSymbol
         where TSymbol : BcsSymbol
     {
         public BcsExpressionNode Syntax { get; set; }
         public TSymbol Symbol { get; set; }
         BcsSymbol IBcsBoundSymbol.Symbol => Symbol;
-        public List<SemanticError> Errors { get; set; } = new List<SemanticError>();
 
         public override string ToString() => $"{Syntax.ToDisplayString()} --> {Symbol.ToDisplayString()}";
         public abstract IEnumerable<IBcsBoundSymbol> GetChildren();
@@ -45,7 +58,6 @@ namespace BcsResolver.SemanticModel.BoundTree
     {
         BcsExpressionNode Syntax { get; set; }
         BcsSymbol Symbol { get; }
-        List<SemanticError> Errors { get; set; }
         IEnumerable<IBcsBoundSymbol> GetChildren();
     }
 }
