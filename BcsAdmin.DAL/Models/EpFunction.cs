@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace BcsAdmin.DAL.Models
+{
+    public partial class EpFunction
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public string Reaction { get; set; }
+    }
+}

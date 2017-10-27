@@ -1,0 +1,48 @@
+<Project ToolsVersion="15.0" Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.0</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <!--Include Views-->
+        <Content Include="**/*.dothtml" Exclude="obj/**/*.*;bin/**/*.*">
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+        <!--Include MasterPage Views-->
+        <Content Include="**/*.dotmaster" Exclude="obj/**/*.*;bin/**/*.*">
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+        <!--Include Custom Control Views-->
+        <Content Include="**/*.dotcontrol" Exclude="obj/**/*.*;bin/**/*.*">
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+      <Content Remove="wwwroot\CodeEditor.ts" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Remove="dotvvm_serialized_config.json.tmp" />
+        <None Remove="Views\default.dothtml" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="AngleSharp" Version="0.9.9" />
+        <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.0" />
+        <PackageReference Include="DotVVM.AspNetCore" Version="1.1.6.3" />
+        
+    </ItemGroup>
+    <ItemGroup>
+        <DotNetCliToolReference Include="DotVVM.Compiler.Light" Version="1.1.5" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Bcs.Resolver.Data\Bcs.Resolver.Data.csproj" />
+      <ProjectReference Include="..\Bcs.Resolver\Bcs.Resolver.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <TypeScriptCompile Include="wwwroot\CodeEditor.ts" />
+      <TypeScriptCompile Include="wwwroot\lib\jquery\jquery.d.ts" />
+      <TypeScriptCompile Include="wwwroot\lib\knockout\knockout.d.ts" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="wwwroot\lib\NewFolder\" />
+    </ItemGroup>
+</Project>

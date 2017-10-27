@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bcs.Resolver.Data\Bcs.Resolver.Data.csproj" />
+    <ProjectReference Include="..\BcsAdmin.DAL\BcsAdmin.DAL.csproj" />
+  </ItemGroup>
+
+</Project>

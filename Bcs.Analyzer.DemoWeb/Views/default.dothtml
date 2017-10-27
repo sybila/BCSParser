@@ -1,0 +1,99 @@
+﻿@viewModel BcsAnalysisWeb.ViewModels.DefaultViewModel, Bcs.Analyzer.DemoWeb
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <dot:RequiredResource Name="bootstrap" />
+    <dot:RequiredResource Name="jquery" />
+    <dot:RequiredResource Name="site" />
+    <dot:RequiredResource Name="code-editor" />
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <dot:InlineScript Dependencies="knockout">
+        var editor = new CodeEditor();
+        editor.addKnockoutHandlers();
+    </dot:InlineScript>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>
+                    <dot:Literal Text="{value: Title}" />
+                </h1>
+                <div Visible="{value: ErrorMessage != null}" class="alert alert-danger">
+                    {{value: ErrorMessage}}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <dot:Repeater class="reaction-list" WrapperTagName="ul" DataSource="{value: Reactions}">
+                    <ItemTemplate>
+                        <li>
+                            {{value: Display}}
+                            <dot:Button class="btn btn-sm" Click="{command: _root.DrawTree(Id)}" Text="Syntax tree" />
+                            <dot:Button class="btn btn-sm" Click="{command: _root.DrawSemanticTree(Id)}" Text="Semantic tree" />
+                        </li>
+                    </ItemTemplate>
+                </dot:Repeater>
+            </div>
+            <div class="col-md-6">
+                <dot:GridView class="table" DataSource="{value: EntityDataSet}">
+                    <Columns>
+                        <dot:GridViewTextColumn HeaderText="Name" ValueBinding="{value: Name}" />
+                        <dot:GridViewTextColumn HeaderText="Type" ValueBinding="{value: Type}" />
+                        <dot:GridViewTemplateColumn HeaderText="Child entities">
+                            <dot:Repeater DataSource="{value: Children}">
+                                {{value: _this}}
+                            </dot:Repeater>
+                        </dot:GridViewTemplateColumn>
+                    </Columns>
+                </dot:GridView>
+            </div>
+            <div class="col-md-12">
+                <cc:CodeEditor class="form-control" Html="{value: TextEdit}" KeyUp="{command: DrawLive()}" />
+            </div>
+            <div class="col-md-12">
+                <cc:Tree class="tree"
+                         DataSource="{value: SyntaxToDraw}"
+                         NodeCollectionWrapperTag="ul"
+                         NodeWrapperTag="li"
+                         RenderSettings.Mode="Server"
+                         PostBack.Update="true">
+                    <ItemTemplate>
+                        <a class="{value: Data.HasErrors ? "error":""}" href="#">
+                            <h4>{{value: Data.NodeName}}</h4>
+                            {{value: Data.Dispaly}}
+                            <dot:Button Click="{command: _root.Click(_this)}" Text="Add" />
+                            <dot:Repeater class="error-list" WrapperTagName="ul" DataSource="{value: Data.Errors}">
+                                <li>
+                                    {{value: _this}}
+                                </li>
+                            </dot:Repeater>
+                        </a>
+                    </ItemTemplate>
+                </cc:Tree>
+
+                <dot:Repeater DataSource="{value: SemanticErrors}" WrapperTagName="ul">
+                    <li><span class="text-danger">{{value: AssociatedSyntax}}</span> {{value: Message}}</li>
+                </dot:Repeater>
+                <cc:Tree class="tree"
+                         DataSource="{value: SemanticToDraw}"
+                         NodeCollectionWrapperTag="ul"
+                         NodeWrapperTag="li"
+                         RenderSettings.Mode="Server"
+                         PostBack.Update="true">
+                    <ItemTemplate>
+                        <a href="#">
+                            <h4>{{value: Data.Type}}</h4>
+                            Syntax: {{value: Data.SyntaxNode}} <br />
+                            Symbol: {{value: Data.Symbol}} <br />
+                        </a>
+                    </ItemTemplate>
+                </cc:Tree>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
