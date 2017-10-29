@@ -1,6 +1,7 @@
 <Project ToolsVersion="15.0" Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
         <TargetFramework>netcoreapp2.0</TargetFramework>
+        <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
     </PropertyGroup>
     <ItemGroup>
         <!--Include Views-->
@@ -34,7 +35,7 @@
         <DotNetCliToolReference Include="DotVVM.Compiler.Light" Version="1.1.5" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Bcs.Resolver.Data\Bcs.Resolver.Data.csproj" />
+      <ProjectReference Include="..\Bcs.Resolver.Data\Bcs.Resolver.File.csproj" />
       <ProjectReference Include="..\Bcs.Resolver\Bcs.Resolver.csproj" />
     </ItemGroup>
     <ItemGroup>

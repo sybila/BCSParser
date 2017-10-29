@@ -17,6 +17,7 @@ namespace BcsResolver.Tests
     [TestClass]
     public class BcsParserTest
     {
+
         [TestMethod]
         public void Parser_StructuralAgentTwoAtomicAgentsInAccessor_Valid()
         {

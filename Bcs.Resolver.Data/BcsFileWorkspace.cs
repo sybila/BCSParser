@@ -9,16 +9,17 @@ using BcsResolver.SemanticModel;
 using BcsResolver.SemanticModel.Tree;
 using BcsResolver.Syntax.Parser;
 using BcsResolver.Syntax.Tokenizer;
+using BcsResolver.File;
 
 namespace BcsResolver.File
 {
 
-    public class BcsWorkspace : IBcsWorkspace
+    public class BcsFileWorkspace : IBcsWorkspace
     {
         private readonly IBcsEntityMetadataProvider entityMetadataProvider;
-        private BcsEntityBinder entityBinder;
+        private BcsFileEntityBinder entityBinder;
 
-        public BcsWorkspace(IBcsEntityMetadataProvider entityMetadataProvider)
+        public BcsFileWorkspace(IBcsEntityMetadataProvider entityMetadataProvider)
         {
             this.entityMetadataProvider = entityMetadataProvider;
         }
@@ -37,7 +38,7 @@ namespace BcsResolver.File
 
         public void CreateSemanticModel()
         {
-            entityBinder = new BcsEntityBinder(entityMetadataProvider);
+            entityBinder = new BcsFileEntityBinder(entityMetadataProvider);
 
             var resolvedSymbols = entityBinder.BindEntities().ToLookup(k => k.Type);
 

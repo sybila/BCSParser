@@ -25,7 +25,7 @@ namespace BcsAnalysisWeb.ViewModels
     {
         private static Dictionary<Guid, BcsReactionNode> reactions;
         private static BcsDefinitionFile document;
-        private static BcsWorkspace workspace;
+        private static BcsFileWorkspace workspace;
 
         public TextPresenter TextPresenter { get; set; } = new TextPresenter();
 
@@ -48,7 +48,7 @@ namespace BcsAnalysisWeb.ViewModels
             LoadBcsFile("D:\\yamada.txt");
             if (document != null)
             {
-                workspace = new BcsWorkspace(new BcsFileMetadataProvider(document));
+                workspace = new BcsFileWorkspace(new BcsFileMetadataProvider(document));
                 workspace.CreateSemanticModel();
             }
         }

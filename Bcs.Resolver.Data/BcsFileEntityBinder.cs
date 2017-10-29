@@ -5,16 +5,17 @@ using BcsResolver.Extensions;
 using BcsResolver.File;
 using BcsResolver.SemanticModel.Exceptions;
 using BcsResolver.SemanticModel.Tree;
+using BcsResolver.SemanticModel;
 
-namespace BcsResolver.SemanticModel
+namespace BcsResolver.File
 {
-    public class BcsEntityBinder
+    public class BcsFileEntityBinder
     {
         private readonly IBcsEntityMetadataProvider metadataProvider;
 
         private readonly ConcurrentDictionary<string, BcsNamedSymbol> resolvedSymbols = new ConcurrentDictionary<string, BcsNamedSymbol>();
 
-        public BcsEntityBinder(IBcsEntityMetadataProvider metadataProvider)
+        public BcsFileEntityBinder(IBcsEntityMetadataProvider metadataProvider)
         {
             this.metadataProvider = metadataProvider;
         }

@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bcs.Resolver.Data\Bcs.Resolver.Data.csproj" />
+    <ProjectReference Include="..\Bcs.Resolver.Data\Bcs.Resolver.File.csproj" />
     <ProjectReference Include="..\BcsAdmin.DAL\BcsAdmin.DAL.csproj" />
   </ItemGroup>
 

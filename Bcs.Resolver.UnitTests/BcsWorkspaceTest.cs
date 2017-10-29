@@ -24,7 +24,7 @@ namespace BcsResolver.Tests
             mock.Setup(p => p.GetAvailableEntityIds()).Returns(() => new[] { "cx1" });
 
 
-            var workspace = new BcsWorkspace(mock.Object);
+            var workspace = new BcsFileWorkspace(mock.Object);
 
             workspace.CreateSemanticModel();
 
@@ -45,7 +45,7 @@ namespace BcsResolver.Tests
             mock.Setup(p => p.GetAvailableEntityIds()).Returns(() => new[] { "ct1" });
 
 
-            var workspace = new BcsWorkspace(mock.Object);
+            var workspace = new BcsFileWorkspace(mock.Object);
 
             workspace.CreateSemanticModel();
 
@@ -66,7 +66,7 @@ namespace BcsResolver.Tests
             mock.Setup(p => p.GetAvailableEntityIds()).Returns(() => new[] { "ag1" });
 
 
-            var workspace = new BcsWorkspace(mock.Object);
+            var workspace = new BcsFileWorkspace(mock.Object);
 
             workspace.CreateSemanticModel();
 
@@ -91,7 +91,7 @@ namespace BcsResolver.Tests
             mock.Setup(p => p.GetAvailableEntityIds()).Returns(() => new[] { "ag2", "ag3", "ct2", "ct3", "cx2" });
 
 
-            var workspace = new BcsWorkspace(mock.Object);
+            var workspace = new BcsFileWorkspace(mock.Object);
 
             workspace.CreateSemanticModel();
 
@@ -140,7 +140,7 @@ namespace BcsResolver.Tests
             });
             mock.Setup(p => p.GetAvailableEntityIds()).Returns(() => new[] { "ctE" });
 
-            var workspace = new BcsWorkspace(mock.Object);
+            var workspace = new BcsFileWorkspace(mock.Object);
             workspace.CreateSemanticModel();
 
             var componentSymbol = workspace.StructuralAgents.AssertCount(1).First().Value;

@@ -18,13 +18,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BcsAdmin.BL", "BcsAdmin.BL\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bcs.Analyzer.DemoWeb", "Bcs.Analyzer.DemoWeb\Bcs.Analyzer.DemoWeb.csproj", "{12F0E4BA-0C84-4C46-9675-B14391DD4BD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bcs.Resolver.UnitTests", "Bcs.Resolver.UnitTests\Bcs.Resolver.UnitTests.csproj", "{9E554919-0EF0-4A11-8863-6095816A96E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bcs.Resolver.UnitTests", "Bcs.Resolver.UnitTests\Bcs.Resolver.UnitTests.csproj", "{9E554919-0EF0-4A11-8863-6095816A96E5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BcsAdmin.Tests.Smoke", "BcsAdmin.Tests.Smoke\BcsAdmin.Tests.Smoke.csproj", "{4DFBF6C9-1349-49BF-8246-13B1C1D0A2C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bcs.Resolver", "Bcs.Resolver\Bcs.Resolver.csproj", "{7C51FB0D-41C8-4D5C-ABF9-56E4BB3BEFE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bcs.Resolver", "Bcs.Resolver\Bcs.Resolver.csproj", "{7C51FB0D-41C8-4D5C-ABF9-56E4BB3BEFE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bcs.Resolver.Data", "Bcs.Resolver.Data\Bcs.Resolver.Data.csproj", "{D09EB94F-71C9-4DA1-AAC8-831D4F1287E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bcs.Resolver.File", "Bcs.Resolver.Data\Bcs.Resolver.File.csproj", "{D09EB94F-71C9-4DA1-AAC8-831D4F1287E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

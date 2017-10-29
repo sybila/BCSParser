@@ -4,8 +4,4 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Bcs.Resolver.Data\Bcs.Resolver.Data.csproj" />
-  </ItemGroup>
-
 </Project>
