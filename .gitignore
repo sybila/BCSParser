@@ -211,3 +211,4 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 /TreeControl.Sample.zip
+/BcsAdmin.DAL/Models/ConnectionString.cs

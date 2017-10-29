@@ -76,7 +76,7 @@ namespace BcsAdmin.DAL.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySql("server=ecyano.fi.muni.cz;user id=Mylan;Password=Duva!ha2EfRu;database=ecyano_new");
+                optionsBuilder.UseMySql(ConnectionString.FullString);
             }
         }
 
