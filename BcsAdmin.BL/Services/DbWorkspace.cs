@@ -4,36 +4,68 @@ using System.Collections.Generic;
 using System.Text;
 using BcsResolver.SemanticModel.Tree;
 using BcsAdmin.DAL.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using Bcs.Resolver.Common;
 
 namespace BcsAdmin.BL.Services
 {
-    class DbWorkspace : IBcsWorkspace, IDisposable
+    public class DbWorkspace : IBcsWorkspace
     {
-        private readonly EcyanoNewDbContext dbContext;
+        private readonly SemanticModelFactory semanticModelFactory;
 
-        public IReadOnlyDictionary<string, BcsComplexSymbol> Complexes => throw new NotImplementedException();
+        public IReadOnlyDictionary<string, BcsComplexSymbol> Complexes { get; private set; }
 
-        public IReadOnlyDictionary<string, BcsStructuralAgentSymbol> StructuralAgents => throw new NotImplementedException();
+        public IReadOnlyDictionary<string, BcsStructuralAgentSymbol> StructuralAgents { get; private set; }
 
-        public IReadOnlyDictionary<string, BcsAtomicAgentSymbol> AtomicAgents => throw new NotImplementedException();
+        public IReadOnlyDictionary<string, BcsAtomicAgentSymbol> AtomicAgents { get; private set; }
 
-        public IReadOnlyDictionary<string, BcsLocationSymbol> Locations => throw new NotImplementedException();
+        public IReadOnlyDictionary<string, BcsLocationSymbol> Locations { get; private set; }
 
-        public IReadOnlyDictionary<string, IReadOnlyList<BcsComposedSymbol>> LocationEntityMap => throw new NotImplementedException();
+        public IReadOnlyDictionary<string, IReadOnlyList<BcsComposedSymbol>> LocationEntityMap { get; private set; }
 
-        public DbWorkspace(EcyanoNewDbContext dbContext)
+        public DbWorkspace()
         {
-            this.dbContext = dbContext;
+            semanticModelFactory = new SemanticModelFactory();
         }
+
+        public IEnumerable<BcsComposedSymbol> GetAllEntities()
+           => AtomicAgents.Values
+               .Concat(StructuralAgents.Values.Cast<BcsComposedSymbol>())
+               .Concat(Complexes.Values);
 
         public void CreateSemanticModel()
         {
-            throw new NotImplementedException();
-        }
+            using (var dbContext = new EcyanoNewDbContext())
+            {
+                dbContext.EpEntity.Load();
+                dbContext.EpEntityComposition.Load();
+                dbContext.EpEntityLocation.Load();
+                dbContext.EpClassification.Load();
+                dbContext.EpEntityLocation.Load();
 
-        public void Dispose()
-        {
-            dbContext.Dispose();
+                var e = dbContext.EpEntity.ToList();
+
+                var symbols = dbContext.EpEntity.Select(semanticModelFactory.CreateSymbol).Distinct().ToList();
+
+                AtomicAgents = symbols
+                    .OfType<BcsAtomicAgentSymbol>()
+                    .ToDictionary(k => k.Name);
+
+                StructuralAgents = symbols
+                    .OfType<BcsStructuralAgentSymbol>()
+                    .ToDictionary(k => k.Name);
+
+                Complexes = symbols
+                    .OfType<BcsComplexSymbol>()
+                    .ToDictionary(k => k.Name);
+
+                Locations = symbols
+                    .OfType<BcsLocationSymbol>()
+                    .ToDictionary(k => k.Name);
+
+                LocationEntityMap = symbols.OfType<BcsComposedSymbol>().ToLocationSymbolMap();
+            }
         }
     }
 }

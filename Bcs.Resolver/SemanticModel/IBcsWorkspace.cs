@@ -10,7 +10,7 @@ namespace BcsResolver.File
         IReadOnlyDictionary<string, BcsAtomicAgentSymbol> AtomicAgents { get; }
         IReadOnlyDictionary<string, BcsLocationSymbol> Locations { get; }
         IReadOnlyDictionary<string, IReadOnlyList<BcsComposedSymbol>> LocationEntityMap { get; }
-
+        IEnumerable<BcsComposedSymbol> GetAllEntities();
         void CreateSemanticModel();
     }
 }

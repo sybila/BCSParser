@@ -18,6 +18,7 @@ using DotVVM.Framework.ViewModel;
 using MyTreeNode = Bcs.Analyzer.DemoWeb.ViewModels.TreeNode<string>;
 using Bcs.Analyzer.DemoWeb.Utils;
 using Bcs.Analyzer.DemoWeb.ViewModels;
+using BcsAdmin.BL.Services;
 
 namespace BcsAnalysisWeb.ViewModels
 {
@@ -25,7 +26,7 @@ namespace BcsAnalysisWeb.ViewModels
     {
         private static Dictionary<Guid, BcsReactionNode> reactions;
         private static BcsDefinitionFile document;
-        private static BcsFileWorkspace workspace;
+        private static IBcsWorkspace workspace;
 
         public TextPresenter TextPresenter { get; set; } = new TextPresenter();
 
@@ -48,7 +49,7 @@ namespace BcsAnalysisWeb.ViewModels
             LoadBcsFile("D:\\yamada.txt");
             if (document != null)
             {
-                workspace = new BcsFileWorkspace(new BcsFileMetadataProvider(document));
+                workspace = new DbWorkspace();
                 workspace.CreateSemanticModel();
             }
         }

@@ -293,6 +293,10 @@ namespace BcsAdmin.DAL.Models
             {
                 entity.ToTable("ep_entity");
 
+                entity.HasMany(e => e.Components).WithOne(co=> co.ParentEntity);
+                entity.HasMany(e => e.Locations).WithOne(l => l.ChildEntity);
+                entity.HasMany(e => e.Children).WithOne(e => e.Parent);
+
                 entity.HasIndex(e => e.ParentId)
                     .HasName("parentId");
 
@@ -327,6 +331,10 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Type)
                     .HasColumnName("type")
                     .HasMaxLength(40);
+
+                entity.Property(e => e.HierarchyType)
+                    .HasColumnName("hierarchy_type")
+                    .HasColumnType("int(4)");
 
                 entity.Property(e => e.VisualisationXml)
                     .HasColumnName("visualisationXml")

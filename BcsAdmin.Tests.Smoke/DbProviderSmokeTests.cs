@@ -1,5 +1,6 @@
 using BcsAdmin.BL.Services;
 using BcsAdmin.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
@@ -22,11 +23,9 @@ namespace BcsAdmin.Tests
         [TestMethod]
         public void EntityProvider_GetEntity()
         {
-            using (var c = new EcyanoNewDbContext())  {
-                var provider = new DbBcsEntityMetadataProvider(c);
-
-                var e = provider.GetEntity("ATP");
-            }
+            using (var w = new DbWorkspace(new EcyanoNewDbContext()))  {
+                w.CreateSemanticModel();
+             }
         }
 
     }

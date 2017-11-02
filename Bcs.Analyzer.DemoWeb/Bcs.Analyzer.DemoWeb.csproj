@@ -37,6 +37,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Bcs.Resolver.Data\Bcs.Resolver.File.csproj" />
       <ProjectReference Include="..\Bcs.Resolver\Bcs.Resolver.csproj" />
+      <ProjectReference Include="..\BcsAdmin.BL\BcsAdmin.BL.csproj" />
     </ItemGroup>
     <ItemGroup>
       <TypeScriptCompile Include="wwwroot\CodeEditor.ts" />

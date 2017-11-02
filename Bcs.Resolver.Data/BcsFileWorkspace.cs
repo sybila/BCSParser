@@ -10,6 +10,7 @@ using BcsResolver.SemanticModel.Tree;
 using BcsResolver.Syntax.Parser;
 using BcsResolver.Syntax.Tokenizer;
 using BcsResolver.File;
+using Bcs.Resolver.Common;
 
 namespace BcsResolver.File
 {
@@ -57,21 +58,7 @@ namespace BcsResolver.File
                 .Distinct()
                 .ToDictionary(k => k.Name);
 
-            LocationEntityMap = CreateLocationSymbolMap(allEntities);
-        }
-
-        private static IReadOnlyDictionary<string, IReadOnlyList<BcsComposedSymbol>> CreateLocationSymbolMap(List<BcsComposedSymbol> allEntities)
-        {
-            var symbolByLocation = new ConcurrentDictionary<string, List<BcsComposedSymbol>>();
-
-            foreach (var entity in allEntities)
-            {
-                foreach (var location in entity.Locations)
-                {
-                    symbolByLocation.GetOrAdd(location?.Name ?? "no-name", new List<BcsComposedSymbol>()).Add(entity);
-                }
-            }
-            return symbolByLocation.ToDictionary(k => k.Key, v => v.Value.As<IReadOnlyList<BcsComposedSymbol>>());
+            LocationEntityMap = allEntities.ToLocationSymbolMap();
         }
     }
 }
