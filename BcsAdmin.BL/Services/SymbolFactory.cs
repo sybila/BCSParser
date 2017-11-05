@@ -52,7 +52,7 @@ namespace BcsAdmin.BL.Services
             {
                 FullName = entity.Name,
                 Name = entity.Code,
-                Locations = entity.Locations.Select(el => CreateLocation(el.ParentEntity)).ToList(),
+                Locations = entity.Locations.Select(el => CreateLocation(el.Location)).ToList(),
                 Parts = entity.Children.Select(s => CreateSymbol<BcsStateSymbol>(s).CastTo<BcsNamedSymbol>()).ToList(),
                 BcsSymbolType = BcsSymbolType.Agent
             };
@@ -65,7 +65,7 @@ namespace BcsAdmin.BL.Services
                 FullName = entity.Name,
                 Name = entity.Code,
                 Locations = CreateEntityLocations(entity),
-                Parts = entity.Components.Select(s => CreateSymbol<BcsAtomicAgentSymbol>(s.ChildEntity).CastTo<BcsNamedSymbol>()).ToList(),
+                Parts = entity.Components.Select(s => CreateSymbol<BcsAtomicAgentSymbol>(s.Component).CastTo<BcsNamedSymbol>()).ToList(),
                 BcsSymbolType = BcsSymbolType.StructuralAgent
             };
         }
@@ -77,14 +77,14 @@ namespace BcsAdmin.BL.Services
                 FullName = entity.Name,
                 Name = entity.Code,
                 Locations = CreateEntityLocations(entity),
-                Parts = entity.Components.Select(s => CreateSymbol(s.ChildEntity).CastTo<BcsNamedSymbol>()).ToList(),
+                Parts = entity.Components.Select(s => CreateSymbol(s.Component).CastTo<BcsNamedSymbol>()).ToList(),
                 BcsSymbolType = BcsSymbolType.Complex
             };
         }
 
         protected virtual List<BcsLocationSymbol> CreateEntityLocations(EpEntity entity)
         {
-            return entity.Locations.Select(el => CreateSymbol<BcsLocationSymbol>(el.ParentEntity)).ToList();
+            return entity.Locations.Select(el => CreateSymbol<BcsLocationSymbol>(el.Location)).ToList();
         }
 
         protected virtual TExpectedSymbol CreateSymbol<TExpectedSymbol>(EpEntity entity)

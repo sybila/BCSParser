@@ -1,101 +1,80 @@
-﻿@viewModel BcsAnalysisWeb.ViewModels.DefaultViewModel, Bcs.Admin.Web
+﻿@viewModel Bcs.Admin.Web.ViewModels.Dashboard, Bcs.Admin.Web
+@masterPage Views/masterpage.dotmaster
 
-<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <dot:RequiredResource Name="bootstrap" />
-    <dot:RequiredResource Name="jquery" />
-    <dot:RequiredResource Name="site" />
-    <dot:RequiredResource Name="code-editor" />
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
-    <dot:InlineScript Dependencies="knockout">
-        var editor = new CodeEditor();
-        editor.addKnockoutHandlers();
-    </dot:InlineScript>
-    <div class="container">
-        <div class="row">
+<dot:Content ContentPlaceHolderID="MainContent">
+    <div class="col-md-5 col-sm-12">
+        <dot:Repeater class="nav nav nav-tabs" WrapperTagName="ul" DataSource="{value: Categories}">
+            <li Class-active="{value: _this.Name == _parent.Selected.Name}"><a href="#">{{value: _this.Name}}</a></li>
+        </dot:Repeater>
+        <div DataContext="{value: Selected}">
             <div class="col-md-12">
-                <h1>
-                    <dot:Literal Text="{value: Title}" />
-                </h1>
-                <div Visible="{value: ErrorMessage != null}" class="alert alert-danger">
-                    {{value: ErrorMessage}}
+                <h3>{{value: Name}}</h3>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <div class="input-group input-group-sm">
+                    <dot:TextBox class="form-control" Text="{value: SearchText}" />
+                    <div class="input-group-btn">
+                        <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: FilterCategory()}">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </dot:Button>
+                    </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <dot:Repeater class="reaction-list" WrapperTagName="ul" DataSource="{value: Reactions}">
-                    <ItemTemplate>
-                        <li>
-                            {{value: Display}}
-                            <dot:Button class="btn btn-sm" Click="{command: _root.DrawTree(Id)}" Text="Syntax tree" />
-                            <dot:Button class="btn btn-sm" Click="{command: _root.DrawSemanticTree(Id)}" Text="Semantic tree" />
-                        </li>
-                    </ItemTemplate>
+            <div class="col-md-6 col-sm-12">
+                <dot:Repeater class="row" DataSource="{value: EntityTypes}">
+                    <dot:CheckBox class="col-md-4" Text="{value: _this}" CheckedItems="{value: _parent.SelectedTypes}" CheckedValue="{value: _this}" />
                 </dot:Repeater>
             </div>
-            <div class="col-md-8">
-                <dot:GridView class="table" DataSource="{value: EntityDataSet}">
+            <div class="col-md-12">
+                <dot:GridView class="col-md-12 table" DataSource="{value: EntityDataSet}">
+                    <RowDecorators>
+                        <dot:Decorator Events.Click="{command: _root.EditEntity(_this.Id)}" />
+                    </RowDecorators>
                     <Columns>
-                        <dot:GridViewTextColumn HeaderText="Name" ValueBinding="{value: Name}" />
+                        <dot:GridViewTextColumn HeaderText="Code" ValueBinding="{value: Code}" />
                         <dot:GridViewTextColumn HeaderText="Type" ValueBinding="{value: Type}" />
-                        <dot:GridViewTemplateColumn HeaderText="Child entities">
+                        <dot:GridViewTextColumn HeaderText="Name" ValueBinding="{value: Name}" />
+                        <dot:GridViewTemplateColumn HeaderText="Components/States">
                             <dot:Repeater DataSource="{value: Children}">
-                                {{value: _this}}
+                                <dot:Button class="btn btn-primary" Text="{value: _this}" />
+                            </dot:Repeater>
+                        </dot:GridViewTemplateColumn>
+                        <dot:GridViewTemplateColumn HeaderText="Locations">
+                            <dot:Repeater DataSource="{value: Locations}">
+                                <dot:Button class="btn btn-default" Text="{value: _this}" />
                             </dot:Repeater>
                         </dot:GridViewTemplateColumn>
                     </Columns>
                 </dot:GridView>
+            </div>
+            <div class="col-md-12">
                 <dot:DataPager DataSet="{value: EntityDataSet}" class="pagination" />
-
-            </div>
-            <div class="col-md-12">
-                <cc:CodeEditor class="form-control" Html="{value: TextEdit}" KeyUp="{command: DrawLive()}" />
-            </div>
-            <div class="col-md-12">
-                <cc:Tree class="tree"
-                         DataSource="{value: SyntaxToDraw}"
-                         NodeCollectionWrapperTag="ul"
-                         NodeWrapperTag="li"
-                         RenderSettings.Mode="Server"
-                         PostBack.Update="true">
-                    <ItemTemplate>
-                        <a class="{value: Data.HasErrors ? "error":""}" href="#">
-                            <h4>{{value: Data.NodeName}}</h4>
-                            {{value: Data.Dispaly}}
-                            <dot:Button Click="{command: _root.Click(_this)}" Text="Add" />
-                            <dot:Repeater class="error-list" WrapperTagName="ul" DataSource="{value: Data.Errors}">
-                                <li>
-                                    {{value: _this}}
-                                </li>
-                            </dot:Repeater>
-                        </a>
-                    </ItemTemplate>
-                </cc:Tree>
-                
-                <dot:Repeater DataSource="{value: SemanticErrors}" WrapperTagName="ul">
-                    <li><span class="text-danger">{{value: AssociatedSyntax}}</span> {{value: Message}}</li>
-                </dot:Repeater>
-                <cc:Tree class="tree"
-                         DataSource="{value: SemanticToDraw}"
-                         NodeCollectionWrapperTag="ul"
-                         NodeWrapperTag="li"
-                         RenderSettings.Mode="Server"
-                         PostBack.Update="true">
-                    <ItemTemplate>
-                        <a href="#">
-                            <h4>{{value: Data.Type}}</h4>
-                            Syntax: {{value: Data.SyntaxNode}} <br />
-                            Symbol: {{value: Data.Symbol}} <br />
-                        </a>
-                    </ItemTemplate>
-                </cc:Tree>
             </div>
         </div>
     </div>
-</body>
-</html>
+    <div class="col-md-6 col-sm-12">
+        <div class="col-md-12" DataContext="{value: Detail}">
+            <div class="panel panel-info">
+                <%--<dd:DynamicEntity class="panel-body" DataContext="{value: _this}" />--%>
+                <dot:ListBox DataSource="{value: HierarchyTypes}" ValueMember="Id" SelectedValue="{value: SelectedHierarchyType}" />
+            </div>
+            <div class="panel pane-info">
+                <div class="panel-heading">{{value: SelectedHierarchyType == 0 ? "States" : "Components"}}</div>
+                <dot:Repeater class="panel-body" DataSource="{value: Components}">
+                    <div class="btn btn-primary">
+                        <a href="">{{value: Text}}</a>
+                    </div>
+                </dot:Repeater>
+            </div>
+            <div class="panel">
+                <div class="panel-heading">Locations:</div>
+                <dot:Repeater class="panel-body" DataSource="{value: Locations}">
+                    <div class="btn btn-primary">
+                        <a href="">{{value: Text}}</a>
+                    </div>
+                </dot:Repeater>
+            </div>
+        </div>
+    </div>
+</dot:Content>
+

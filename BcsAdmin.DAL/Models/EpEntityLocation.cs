@@ -10,10 +10,13 @@ namespace BcsAdmin.DAL.Models
         [Key]
         public int Id { get; set; }
 
+        [ForeignKey(nameof(Location))]
         public int? ParentEntityId { get; set; }
+
+        [ForeignKey(nameof(Entity))]
         public int? ChildEntityId { get; set; }
 
-        public EpEntity ParentEntity { get; set; }
-        public EpEntity ChildEntity { get; set; }
+        public EpEntity Location { get; set; }
+        public EpEntity Entity { get; set; }
     }
 }

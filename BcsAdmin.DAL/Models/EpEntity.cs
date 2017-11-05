@@ -15,7 +15,7 @@ namespace BcsAdmin.DAL.Models
         Atomic = 4,
     }
 
-    public partial class EpEntity
+    public class EpEntity
     {
         [Key]
         public int Id { get; set; }

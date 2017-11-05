@@ -1,0 +1,28 @@
+﻿@viewModel Bcs.Admin.Web.ViewModels.Masterpage, Bcs.Admin.Web
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <dot:RequiredResource Name="bootstrap"/>
+    <dot:RequiredResource Name="site" />
+    <title>{{value: Title}}</title>
+</head>
+<body>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{{value: Title}}</h1>
+            <div style="display: none;" Visible="{value: Errors.Count != 0}" class="alert alert-danger">
+                <dot:Repeater WrapperTagName="ul" DataSource="{value: Errors}">
+                    <li>{{value: _this}}</li>
+                </dot:Repeater>
+            </div>
+        </div>
+        <dot:ContentPlaceHolder ID="MainContent" />
+    </div>
+</body>
+</html>
+
+

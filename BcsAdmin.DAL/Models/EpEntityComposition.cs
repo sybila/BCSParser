@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BcsAdmin.DAL.Models
 {
@@ -8,13 +9,17 @@ namespace BcsAdmin.DAL.Models
     {
         [Key]
         public int Id { get; set; }
+
+        [ForeignKey(nameof(ComposedEntity))]
         public int? ParentEntityId { get; set; }
+
+        [ForeignKey(nameof(Component))]
         public int? ChildEntityId { get; set; }
         public string Type { get; set; }
 
-        public EpEntity ParentEntity { get; set; }
-        public EpEntity ChildEntity { get; set; }
+        public EpEntity ComposedEntity { get; set; }
+        public EpEntity Component { get; set; }
 
-        public override string ToString() => $"{ParentEntity.ToString()} <- {ChildEntity.ToString()}";
+        public override string ToString() => $"{ComposedEntity.ToString()} <- {Component.ToString()}";
     }
 }

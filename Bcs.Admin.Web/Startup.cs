@@ -7,6 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using DotVVM.Framework.Hosting;
+using AutoMapper;
+using Bcs.Admin.Web.ViewModels;
+using BcsAdmin.BL.Dto;
+using BcsAdmin.BL.Facades;
+using System;
+using BcsAdmin.BL;
 
 namespace Bcs.Analyzer.DemoWeb
 {
@@ -24,6 +30,14 @@ namespace Bcs.Analyzer.DemoWeb
             {
                 options.AddDefaultTempStorages("Temp");
             });
+            services.AddSingleton(ConfigureMapper().CreateMapper());
+            services.AddTransient<DashboardFacade, DashboardFacade>();
+            services.RegisterDependenciesBL();
+        }
+
+        private static MapperConfiguration ConfigureMapper()
+        {
+            return  new MapperConfiguration(cfg => cfg.CreateMap<BiochemicalEntityDetailDto, BiochemicalEntityDetail>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

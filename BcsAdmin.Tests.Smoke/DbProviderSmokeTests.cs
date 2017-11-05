@@ -12,7 +12,7 @@ namespace BcsAdmin.Tests
         [TestMethod]
         public void EntityProvider_GetAvailableEntityIds()
         {
-            using (var c = new EcyanoNewDbContext())
+            using (var c = new AppDbContext())
             {
                 var provider = new DbBcsEntityMetadataProvider(c);
 
@@ -23,9 +23,9 @@ namespace BcsAdmin.Tests
         [TestMethod]
         public void EntityProvider_GetEntity()
         {
-            using (var w = new DbWorkspace(new EcyanoNewDbContext()))  {
-                w.CreateSemanticModel();
-             }
+            //using (var w = new DbWorkspace(new EcyanoNewDbContext()))  {
+            //    w.CreateSemanticModel();
+            // }
         }
 
     }

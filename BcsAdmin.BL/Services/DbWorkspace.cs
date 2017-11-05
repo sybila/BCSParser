@@ -36,7 +36,7 @@ namespace BcsAdmin.BL.Services
 
         public void CreateSemanticModel()
         {
-            using (var dbContext = new EcyanoNewDbContext())
+            using (var dbContext = new AppDbContext())
             {
                 dbContext.EpEntity.Load();
                 dbContext.EpEntityComposition.Load();

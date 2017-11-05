@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BcsAdmin.DAL.Models
 {
-    public partial class EcyanoNewDbContext : DbContext
+    public partial class AppDbContext : DbContext
     {
         public virtual DbSet<EpAnnotation> EpAnnotation { get; set; }
         public virtual DbSet<EpAttribute> EpAttribute { get; set; }
@@ -293,8 +293,8 @@ namespace BcsAdmin.DAL.Models
             {
                 entity.ToTable("ep_entity");
 
-                entity.HasMany(e => e.Components).WithOne(co=> co.ParentEntity);
-                entity.HasMany(e => e.Locations).WithOne(l => l.ChildEntity);
+                entity.HasMany(e => e.Components).WithOne(co=> co.ComposedEntity);
+                entity.HasMany(e => e.Locations).WithOne(l => l.Entity);
                 entity.HasMany(e => e.Children).WithOne(e => e.Parent);
 
                 entity.HasIndex(e => e.ParentId)

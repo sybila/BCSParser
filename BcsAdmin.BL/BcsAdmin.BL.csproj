@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="6.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Bcs.Resolver.Data\Bcs.Resolver.File.csproj" />
     <ProjectReference Include="..\BcsAdmin.DAL\BcsAdmin.DAL.csproj" />
   </ItemGroup>

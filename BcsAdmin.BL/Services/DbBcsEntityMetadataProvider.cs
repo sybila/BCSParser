@@ -10,9 +10,9 @@ namespace BcsAdmin.BL.Services
 {
     public class DbBcsEntityMetadataProvider : IBcsEntityMetadataProvider
     {
-        private readonly EcyanoNewDbContext dbContext;
+        private readonly AppDbContext dbContext;
 
-        public DbBcsEntityMetadataProvider(EcyanoNewDbContext ecyanoNewDbContext)
+        public DbBcsEntityMetadataProvider(AppDbContext ecyanoNewDbContext)
         {
             this.dbContext = ecyanoNewDbContext;
         }

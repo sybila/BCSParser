@@ -1,7 +1,7 @@
 <Project ToolsVersion="15.0" Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
         <TargetFramework>netcoreapp2.0</TargetFramework>
-        <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
+        <TypeScriptToolsVersion>2.5</TypeScriptToolsVersion>
     </PropertyGroup>
     <ItemGroup>
         <!--Include Views-->
@@ -22,10 +22,10 @@
     </ItemGroup>
     <ItemGroup>
         <None Remove="dotvvm_serialized_config.json.tmp" />
-        <None Remove="Views\default.dothtml" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="AngleSharp" Version="0.9.9" />
+        <PackageReference Include="AutoMapper" Version="6.1.1" />
         <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.0" />
         <PackageReference Include="DotVVM.AspNetCore" Version="1.1.6.3" />
