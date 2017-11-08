@@ -1,10 +1,9 @@
-﻿using Bcs.Analyzer.DemoWeb.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Bcs.Analyzer.DemoWeb.ViewModels
+namespace Bcs.Admin.Web.Controls
 {
     public class TreeNode<TData> :ITreeItem
     {

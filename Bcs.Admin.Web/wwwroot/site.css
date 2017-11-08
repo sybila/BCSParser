@@ -1,4 +1,42 @@
-﻿﻿.btn {
+﻿.origin{
+    position:relative;
+}
+
+.transparent{
+    background: inherit;
+    border: 0;
+}
+
+.centered {
+    position: absolute;
+    left: 50%;
+}
+
+
+.label-alone{
+    margin:5px;
+}
+
+.main-board {
+    background-color: #d9edf7;
+}
+
+.table-list:hover {
+    background-color: #f5f5f5;
+}
+
+tr.table-list.active {
+    background-color: #d9edf7;
+}
+
+.sub-board {
+    background-color: white;
+    padding: 10px;
+    border-radius:5px;
+    margin-bottom: 10px;
+}
+
+﻿.btn {
     margin-left: 5px;
     border: 2px solid cornflowerblue;
     border-radius: 3px;

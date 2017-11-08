@@ -10,7 +10,7 @@ using DotVVM.Framework.Compilation.Javascript;
 using DotVVM.Framework.Controls;
 using DotVVM.Framework.Hosting;
 
-namespace Bcs.Analyzer.DemoWeb.Controls
+namespace Bcs.Admin.Web.Controls
 {
     public class KoWithPlaceHolder : DotvvmControl
     {

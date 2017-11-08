@@ -1,6 +1,8 @@
 ﻿using DotVVM.Framework.Configuration;
 using DotVVM.Framework.ResourceManagement;
 using DotVVM.Framework.Routing;
+using DotVVM.Framework.Controls.DynamicData;
+using DotVVM.Framework.Controls.DynamicData.Builders;
 
 namespace Bcs.Analyzer.DemoWeb
 {
@@ -22,7 +24,8 @@ namespace Bcs.Analyzer.DemoWeb
 
         private void ConfigureControls(DotvvmConfiguration config, string applicationPath)
         {
-            config.Markup.AddCodeControls("cc", "Bcs.Analyzer.DemoWeb.Controls", "Bcs.Admin.Web");
+            config.Markup.AddCodeControls("cc", "Bcs.Admin.Web.Controls", "Bcs.Admin.Web");
+            config.AddDynamicDataConfiguration();
         }
 
         private void ConfigureResources(DotvvmConfiguration config, string applicationPath)

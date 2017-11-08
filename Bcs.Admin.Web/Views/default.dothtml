@@ -2,77 +2,124 @@
 @masterPage Views/masterpage.dotmaster
 
 <dot:Content ContentPlaceHolderID="MainContent">
-    <div class="col-md-5 col-sm-12">
-        <dot:Repeater class="nav nav nav-tabs" WrapperTagName="ul" DataSource="{value: Categories}">
-            <li Class-active="{value: _this.Name == _parent.Selected.Name}"><a href="#">{{value: _this.Name}}</a></li>
-        </dot:Repeater>
-        <div DataContext="{value: Selected}">
-            <div class="col-md-12">
-                <h3>{{value: Name}}</h3>
-            </div>
-            <div class="col-md-6 col-sm-12">
-                <div class="input-group input-group-sm">
-                    <dot:TextBox class="form-control" Text="{value: SearchText}" />
-                    <div class="input-group-btn">
-                        <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: FilterCategory()}">
-                            <i class="glyphicon glyphicon-search"></i>
-                        </dot:Button>
+    <div class="col-lg-6 col-md-12">
+        <div class="sub-board col-md-12">
+            <ul class="nav nav nav-tabs">
+                <li class="active"><a href="#">Entities</a></li>
+            </ul>
+            <div DataContext="{value: EntitiesTab}">
+                <div class="col-md-12">
+                    <h3>{{value: Name}}</h3>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="input-group input-group-sm">
+                        <dot:TextBox Changed="{command: LoadGrid()}" class="form-control" Text="{value: SearchText}" />
+                        <div class="input-group-btn">
+                            <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: LoadGrid()}">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </dot:Button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6 col-sm-12">
-                <dot:Repeater class="row" DataSource="{value: EntityTypes}">
-                    <dot:CheckBox class="col-md-4" Text="{value: _this}" CheckedItems="{value: _parent.SelectedTypes}" CheckedValue="{value: _this}" />
-                </dot:Repeater>
-            </div>
-            <div class="col-md-12">
-                <dot:GridView class="col-md-12 table" DataSource="{value: EntityDataSet}">
-                    <RowDecorators>
-                        <dot:Decorator Events.Click="{command: _root.EditEntity(_this.Id)}" />
-                    </RowDecorators>
-                    <Columns>
-                        <dot:GridViewTextColumn HeaderText="Code" ValueBinding="{value: Code}" />
-                        <dot:GridViewTextColumn HeaderText="Type" ValueBinding="{value: Type}" />
-                        <dot:GridViewTextColumn HeaderText="Name" ValueBinding="{value: Name}" />
-                        <dot:GridViewTemplateColumn HeaderText="Components/States">
-                            <dot:Repeater DataSource="{value: Children}">
-                                <dot:Button class="btn btn-primary" Text="{value: _this}" />
-                            </dot:Repeater>
-                        </dot:GridViewTemplateColumn>
-                        <dot:GridViewTemplateColumn HeaderText="Locations">
-                            <dot:Repeater DataSource="{value: Locations}">
-                                <dot:Button class="btn btn-default" Text="{value: _this}" />
-                            </dot:Repeater>
-                        </dot:GridViewTemplateColumn>
-                    </Columns>
-                </dot:GridView>
-            </div>
-            <div class="col-md-12">
-                <dot:DataPager DataSet="{value: EntityDataSet}" class="pagination" />
+                <div class="col-lg-6 col-md-12">
+                    <dot:Repeater class="row" DataSource="{value: EntityTypes}">
+                        <dot:CheckBox class="col-md-4" Text="{value: _this}" Changed="{command: _parent.LoadGrid()}" CheckedItems="{value: _parent.SelectedTypes}" CheckedValue="{value: _this}" />
+                    </dot:Repeater>
+                </div>
+                <div class="col-md-12">
+                    <dot:GridView ShowHeaderWhenNoData class="col-md-12 table table-hover table-striped" DataSource="{value: EntityDataSet}">
+                        <EmptyDataTemplate>
+                            No results
+                        </EmptyDataTemplate>
+                        <RowDecorators>
+                            <dot:Decorator Class-active="{value: Id == _root.Detail.Id}" Events.Click="{command: _root.EditEntity(_this.Id)}" />
+                        </RowDecorators>
+                        <Columns>
+                            <dot:GridViewTextColumn AllowSorting HeaderText="Code" ValueBinding="{value: Code}" />
+                            <dot:GridViewTextColumn AllowSorting HeaderText="Type" ValueBinding="{value: Type}" />
+                            <dot:GridViewTextColumn AllowSorting HeaderText="Name" ValueBinding="{value: Name}" />
+                            <dot:GridViewTemplateColumn HeaderText="Components/States">
+                                <dot:Repeater DataSource="{value: Children}">
+                                    <dot:LinkButton class="btn btn-info btn-sm" Text="{value: _this}" />
+                                </dot:Repeater>
+                            </dot:GridViewTemplateColumn>
+                            <dot:GridViewTemplateColumn HeaderText="Locations">
+                                <dot:Repeater DataSource="{value: Locations}">
+                                    <dot:LinkButton class="btn btn-default btn-sm" Text="{value: _this}" />
+                                </dot:Repeater>
+                            </dot:GridViewTemplateColumn>
+                        </Columns>
+                    </dot:GridView>
+                </div>
+                <div class="col-md-12">
+                    <dot:DataPager DataSet="{value: EntityDataSet}" class="pagination" />
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-6 col-sm-12">
-        <div class="col-md-12" DataContext="{value: Detail}">
+    <div class="col-lg-5 col-md-12">
+        <div class="col-md-12 sub-board" DataContext="{value: Detail}">
             <div class="panel panel-info">
-                <%--<dd:DynamicEntity class="panel-body" DataContext="{value: _this}" />--%>
-                <dot:ListBox DataSource="{value: HierarchyTypes}" ValueMember="Id" SelectedValue="{value: SelectedHierarchyType}" />
+                <div class="panel-heading">Detail</div>
+                <div class="panel-body">
+                    <dd:DynamicEntity FormBuilderName="bootstrap" DataContext="{value: _this}" />
+                </div>
             </div>
-            <div class="panel pane-info">
-                <div class="panel-heading">{{value: SelectedHierarchyType == 0 ? "States" : "Components"}}</div>
-                <dot:Repeater class="panel-body" DataSource="{value: Components}">
-                    <div class="btn btn-primary">
-                        <a href="">{{value: Text}}</a>
-                    </div>
-                </dot:Repeater>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    {{value: SelectedHierarchyType == 1 ? "States" : "Components"}}
+                </div>
+                <div class="panel-body">
+                    <dd:DynamicDataGridViewDecorator ColumnPlacement="Left">
+                        <dot:GridView class="table table-bordered table-hover" DataSource="{value: Components}" FilterPlacement="ExtraRow">
+                            <Columns>                               
+                            </Columns>
+                        </dot:GridView>
+                    </dd:DynamicDataGridViewDecorator>
+                </div>
             </div>
-            <div class="panel">
-                <div class="panel-heading">Locations:</div>
-                <dot:Repeater class="panel-body" DataSource="{value: Locations}">
-                    <div class="btn btn-primary">
-                        <a href="">{{value: Text}}</a>
-                    </div>
-                </dot:Repeater>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    Locations:
+                </div>
+                <div class="panel-body">
+                    <dd:DynamicDataGridViewDecorator ColumnPlacement="Left">
+                        <dot:GridView class="table table-bordered table-hover" DataSource="{value: Locations}" FilterPlacement="ExtraRow">
+                            <Columns>
+                            </Columns>
+                        </dot:GridView>
+                    </dd:DynamicDataGridViewDecorator>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    Classifications:
+                </div>
+                <div class="panel-body">
+                    <dd:DynamicDataGridViewDecorator ColumnPlacement="Left">
+                        <dot:GridView class="table table-bordered table-hover" DataSource="{value: Classifications}" FilterPlacement="ExtraRow">
+                            <Columns>
+                            </Columns>
+                        </dot:GridView>
+                    </dd:DynamicDataGridViewDecorator>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel panel-heading">
+                    Notes
+                </div>
+                <div class="panel-body">
+                    <dot:Repeater DataSource="{value: Notes}">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <span class="label label-default label-alone">{{value: UserName}}:</span> {{value: Inserted}}
+                            </div>
+                            <div class="panel-body">
+                                {{value: Text}}
+                            </div>
+                        </div>
+                    </dot:Repeater>
+                </div>
             </div>
         </div>
     </div>

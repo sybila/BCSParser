@@ -22,9 +22,11 @@ namespace Bcs.Admin.Web.ViewModels
         public string Code { get; set; }
 
         [Display(Name = "Description")]
+        [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
         [Display(Name = "Xml for visualisation")]
+        [DataType(DataType.MultilineText)]
         public string VisualisationXml { get; set; }
 
         [Display(Name = "Active")]
@@ -41,11 +43,15 @@ namespace Bcs.Admin.Web.ViewModels
         public BiochemicalEntityLinkDto Parent { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public virtual ICollection<BiochemicalEntityLinkDto> Components { get; set; }
+        public virtual IList<BiochemicalEntityLinkDto> Components { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public virtual ICollection<BiochemicalEntityLinkDto> Locations { get; set; }
+        public virtual IList<BiochemicalEntityLinkDto> Locations { get; set; }
 
-        //public virtual ICollection<EpEntityClassification> Classifications { get; set; } = new List<EpEntityClassification>();
+        [Display(AutoGenerateField = false)]
+        public virtual IList<ClassificationDto> Classifications { get; set; }
+
+        [Display(AutoGenerateField = false)]
+        public virtual IList<EntityNoteDto> Notes { get; set; }
     }
 }

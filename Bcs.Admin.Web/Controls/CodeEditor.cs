@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DotVVM.Framework.Hosting;
 
-namespace Bcs.Analyzer.DemoWeb.Controls
+namespace Bcs.Admin.Web.Controls
 {
     public class CodeEditor : HtmlGenericControl
     {

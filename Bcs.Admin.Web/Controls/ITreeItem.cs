@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bcs.Analyzer.DemoWeb.Controls
+namespace Bcs.Admin.Web.Controls
 {
     public interface ITreeItem
     {

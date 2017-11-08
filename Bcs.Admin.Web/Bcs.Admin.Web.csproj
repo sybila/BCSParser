@@ -26,6 +26,7 @@
     <ItemGroup>
         <PackageReference Include="AngleSharp" Version="0.9.9" />
         <PackageReference Include="AutoMapper" Version="6.1.1" />
+        <PackageReference Include="DotVVM.DynamicData" Version="1.1.5.1" />
         <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.0" />
         <PackageReference Include="DotVVM.AspNetCore" Version="1.1.6.3" />

@@ -296,6 +296,8 @@ namespace BcsAdmin.DAL.Models
                 entity.HasMany(e => e.Components).WithOne(co=> co.ComposedEntity);
                 entity.HasMany(e => e.Locations).WithOne(l => l.Entity);
                 entity.HasMany(e => e.Children).WithOne(e => e.Parent);
+                entity.HasMany(e => e.Notes).WithOne(n=> n.Entity);
+                entity.HasMany(e => e.Classifications).WithOne(c=> c.Entity);
 
                 entity.HasIndex(e => e.ParentId)
                     .HasName("parentId");

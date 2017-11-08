@@ -13,6 +13,10 @@ using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Facades;
 using System;
 using BcsAdmin.BL;
+using DotVVM.Framework.Controls.DynamicData;
+using DotVVM.Framework.Controls.DynamicData.Configuration;
+using DotVVM.Framework.Controls.DynamicData.Builders;
+using Bcs.Admin.Web;
 
 namespace Bcs.Analyzer.DemoWeb
 {
@@ -28,16 +32,24 @@ namespace Bcs.Analyzer.DemoWeb
             services.AddWebEncoders();
             services.AddDotVVM(options =>
             {
+                var dynamicDataConfig = new AppDynamicDataConfiguration();
+                options.AddDynamicData(dynamicDataConfig);
                 options.AddDefaultTempStorages("Temp");
             });
             services.AddSingleton(ConfigureMapper().CreateMapper());
             services.AddTransient<DashboardFacade, DashboardFacade>();
+            services.AddTransient<EntitiesTab, EntitiesTab>();
             services.RegisterDependenciesBL();
+            services.AddSingleton<IFormBuilder, BootstrapFormGroupBuilder>();
         }
 
         private static MapperConfiguration ConfigureMapper()
         {
-            return  new MapperConfiguration(cfg => cfg.CreateMap<BiochemicalEntityDetailDto, BiochemicalEntityDetail>());
+            return new MapperConfiguration(cfg =>
+            {
+                cfg.RegisterMapperBL();
+                cfg.CreateMap<BiochemicalEntityDetailDto, BiochemicalEntityDetail>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,7 +59,7 @@ namespace Bcs.Analyzer.DemoWeb
 
             // use DotVVM
             var dotvvmConfiguration = app.UseDotVVM<DotvvmStartup>(env.ContentRootPath);
-            
+
             // use static files
             app.UseStaticFiles(new StaticFileOptions
             {

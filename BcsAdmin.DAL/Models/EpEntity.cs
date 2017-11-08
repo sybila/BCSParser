@@ -33,8 +33,8 @@ namespace BcsAdmin.DAL.Models
         public virtual ICollection<EpEntity> Children { get; set; } = new List<EpEntity>();
         public virtual ICollection<EpEntityLocation> Locations { get; set; } = new List<EpEntityLocation>();
         public virtual ICollection<EpEntityComposition> Components { get; set; } = new List<EpEntityComposition>();
-
         public virtual ICollection<EpEntityClassification> Classifications { get; set; } = new List<EpEntityClassification>();
+        public virtual ICollection<EpEntityNote> Notes { get; set; } = new List<EpEntityNote>();
 
         public override string ToString() => $"{HierarchyType.ToString()}: ({Code}) {Name}";
     }

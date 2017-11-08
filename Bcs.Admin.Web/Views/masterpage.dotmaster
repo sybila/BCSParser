@@ -9,7 +9,7 @@
     <dot:RequiredResource Name="site" />
     <title>{{value: Title}}</title>
 </head>
-<body>
+<body class="main-board">
 
     <div class="row">
         <div class="col-md-12">
@@ -20,7 +20,9 @@
                 </dot:Repeater>
             </div>
         </div>
-        <dot:ContentPlaceHolder ID="MainContent" />
+        <div class="col-md12">
+            <dot:ContentPlaceHolder ID="MainContent" />
+        </div>
     </div>
 </body>
 </html>

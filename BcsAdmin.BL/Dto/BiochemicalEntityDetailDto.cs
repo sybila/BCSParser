@@ -17,6 +17,7 @@ namespace BcsAdmin.BL.Dto
         public BiochemicalEntityLinkDto Parent { get; set; }
         public List<BiochemicalEntityLinkDto> Components { get; set; }
         public List<BiochemicalEntityLinkDto> Locations { get; set; }
-        //public virtual ICollection<EpEntityClassification> Classifications { get; set; } = new List<EpEntityClassification>();
+        public List<ClassificationDto> Classifications { get; set; }
+        public List<EntityNoteDto> Notes { get; set; }
     }
 }

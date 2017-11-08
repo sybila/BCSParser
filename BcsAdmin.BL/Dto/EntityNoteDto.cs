@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace BcsAdmin.DAL.Models
+namespace BcsAdmin.BL.Dto
 {
-    public partial class EpEntityNote
+    public class EntityNoteDto
     {
         public int Id { get; set; }
-        public int? EntityId { get; set; }
-        public int? UserId { get; set; }
+        public string UserName { get; set; }
         public string Text { get; set; }
         public DateTime? Inserted { get; set; }
         public DateTime? Updated { get; set; }
-
-        public EpEntity Entity { get; set; }
-        public EpUser User { get; set; }
     }
 }

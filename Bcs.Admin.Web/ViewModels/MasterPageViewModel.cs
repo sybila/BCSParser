@@ -21,34 +21,16 @@ namespace Bcs.Admin.Web.ViewModels
         private readonly DashboardFacade dashboardFacade;
         private readonly IMapper mapper;
 
-        public List<EntityCategory> Categories { get; set; }
-        public EntityCategory Selected { get; set; }
+        public EntitiesTab EntitiesTab { get; set; }
         public BiochemicalEntityDetail Detail { get; set; }
 
-        public Dashboard(DashboardFacade dashboardFacade, IMapper mapper)
+        public Dashboard(DashboardFacade dashboardFacade, IMapper mapper, EntitiesTab entitiesTab)
         {
             this.dashboardFacade = dashboardFacade;
             this.mapper = mapper;
+            EntitiesTab = entitiesTab;
 
             Title = "Dashboard";
-        }
-
-        public override Task PreRender()
-        {
-            if (!Context.IsPostBack) {
-                Categories = new List<EntityCategory>
-                {
-                    new EntityCategory()
-                    {
-                        Name = "Entities",
-                        EntityDataSet = GridViewDataSet.Create(dashboardFacade.GetBiochemicalEntityRows().GetDataFromQueryable, 20),
-                        EntityTypes = dashboardFacade.GetEntityTypes(),
-                        SelectedTypes = new List<string>()
-                    }
-                };
-                Selected = Selected ?? Categories.FirstOrDefault();
-            }
-            return base.PreRender();
         }
 
         public void EditEntity(int entityId)
@@ -56,27 +38,52 @@ namespace Bcs.Admin.Web.ViewModels
             var dto = dashboardFacade.GetEntityDetail(entityId);
             Detail = mapper.Map<BiochemicalEntityDetail>(dto);
         }
+
+        public override Task Init()
+        {
+            EntitiesTab.Init();
+            return base.Init();
+        }
     }
 
-    public class EntityCategory
+    public class EntitiesTab : DotvvmViewModelBase
     {
+        private readonly DashboardFacade dashboardFacade;
+
         public string Name { get; set; }
 
         public string SearchText { get; set; }
 
         public GridViewDataSet<BiochemicalEntityRowDto> EntityDataSet { get; set; }
 
-        public List<string> EntityTypes { get; set; }
+        public List<string> EntityTypes { get; set; } = new List<string>();
 
-        public List<string> SelectedTypes { get; set; }
+        public List<string> SelectedTypes { get; set; } = new List<string>();
 
-        public EntityCategory()
+        public EntitiesTab(DashboardFacade dashboardFacade)
         {
+            this.dashboardFacade = dashboardFacade;
+            Name = "Entities";
         }
 
-        public void FilterCategory()
+        public override Task Init()
         {
+            LoadGrid();
+            EntityTypes = dashboardFacade.GetEntityTypes();
+            return base.Init();
         }
+
+      
+        public void LoadGrid()
+        {
+            EntityDataSet = GridViewDataSet.Create(LoadEntities, 10);
+        }
+
+        private GridViewDataSetLoadedData<BiochemicalEntityRowDto> LoadEntities(IGridViewDataSetLoadOptions gridViewDataSetLoadOptions)
+        {
+            return dashboardFacade.GetBiochemicalEntityRows(gridViewDataSetLoadOptions, SearchText, SelectedTypes);
+        }
+
     }
 }
 

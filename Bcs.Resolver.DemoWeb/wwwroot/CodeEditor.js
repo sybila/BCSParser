@@ -1,6 +1,6 @@
 /// <reference path="lib/knockout/knockout.d.ts" />
 /// <reference path="lib/jquery/jquery.d.ts" />
-var CodeEditor = (function () {
+var CodeEditor = /** @class */ (function () {
     function CodeEditor() {
         var _this = this;
         this.lastCaret = 0;
