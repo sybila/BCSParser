@@ -5,8 +5,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="Web.config">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.1.1" />
     <PackageReference Include="DotVVM.Core" Version="1.1.7" />
+    <PackageReference Include="EntityFramework" Version="6.2.0" />
+    <PackageReference Include="Riganti.Utils.Infrastructure.AutoMapper.EntityFrameworkCore" Version="2.1.7" />
+    <PackageReference Include="Riganti.Utils.Infrastructure.Core" Version="2.1.7" />
+    <PackageReference Include="Riganti.Utils.Infrastructure.DotVVM" Version="2.1.7" />
+    <PackageReference Include="Riganti.Utils.Infrastructure.EntityFrameworkCore" Version="2.1.7" />
+    <PackageReference Include="Riganti.Utils.Infrastructure.Services" Version="2.1.7" />
   </ItemGroup>
 
   <ItemGroup>

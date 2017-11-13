@@ -1,23 +1,43 @@
 ﻿/// <reference path="lib/knockout/knockout.d.ts" />
 /// <reference path="lib/jquery/jquery.d.ts" />
 
-class CodeEditor {
-    private lastCaret = 0;
+class CarretHelper {
+    public static getCaretPosition = (node: Node) => {
+        let caretPos: number = 0;
+        let sel: Selection;
+        let range: Range;
 
-    public getCharacterOffsetWithin = (range, node) => {
+        const doc = document as any;
 
+        if (window.getSelection) {
+            sel = window.getSelection();
+            if (sel.rangeCount) {
+                range = sel.getRangeAt(0);
+                return CarretHelper.getCharacterOffsetWithin(range, node);
+            }
+        } else if (doc.selection && doc.createRange) {
+            range = doc.selection.createRange();
+            return CarretHelper.getCharacterOffsetWithin(range, node);
+        }
+        return caretPos;
+    }
+
+    private static getCharacterOffsetWithin = (range: Range, node: Node) => {
         var filterFunction =
             node => {
                 var nodeRange = document.createRange();
                 nodeRange.selectNode(node);
-                return nodeRange.compareBoundaryPoints(Range.END_TO_END, range) < 1 ?
-                    NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+                return nodeRange.compareBoundaryPoints(Range.END_TO_END, range) < 1
+                    ? NodeFilter.FILTER_ACCEPT
+                    : NodeFilter.FILTER_REJECT;
             }
 
         var treeWalker = document.createTreeWalker(
             node,
             NodeFilter.SHOW_TEXT,
-            { acceptNode: filterFunction },
+            {
+                acceptNode: filterFunction
+            },
             false
         );
 
@@ -30,85 +50,77 @@ class CodeEditor {
         }
         return charCount;
     }
+}
 
-    public getCaretPosition = (node) => {
-        var caretPos = 0, sel, range;
-
-        const doc = document as any;
-
-        if (window.getSelection) {
-            sel = window.getSelection();
-            if (sel.rangeCount) {
-                range = sel.getRangeAt(0);
-                return this.getCharacterOffsetWithin(range, node);
-            }
-        } else if (doc.selection && doc.createRange) {
-            range = doc.selection.createRange();
-            return this.getCharacterOffsetWithin(range, node);
-        }
-        return caretPos;
-    }
+class CodeEditor {
+    carretSet: boolean;
 
     public setCaret = (e, cp) => {
-        var carretSet = false;
+        this.setCaretCore(e, cp);
+        this.carretSet = false;
+    }
 
-        var placeCaret = function (item, position) {
-            var range = document.createRange();
-            range.setStart(item, position)
-            range.setEnd(item, position)
+    private setCaretCore = (element: Node, caretPosition: number) => {
+        var charsInNode = 0;
 
-            var sel = window.getSelection()
-            sel.removeAllRanges()
-            sel.addRange(range)
-            carretSet = true;
-        }
-
-        var setCaretCore = (element, caretPosition) => {
-            var charsInNode = 0;
-
-            element.childNodes.forEach(function (item, index) {
-                if (carretSet) { return 0; }
+        (element.childNodes as any).forEach(
+            (item: Node, index: number) => {
+                if (this.carretSet) {
+                    return 0;
+                }
 
                 if (item.nodeType === 3) {
                     var textContentLenght = item.textContent.length;
                     var relativeCaretPosition = caretPosition - charsInNode;
 
                     if (0 <= relativeCaretPosition && relativeCaretPosition <= textContentLenght) {
-                        placeCaret(item, relativeCaretPosition);
+                        this.placeCaret(item, relativeCaretPosition);
+                        this.carretSet = true;
                     }
                     else {
                         charsInNode += textContentLenght
                     }
                     return;
                 }
-                if (item.nodeType == 1) {
-                    charsInNode += setCaretCore(item, caretPosition - charsInNode)
+                else if (item.nodeType == 1) {
+                    var charsInChild: number = this.setCaretCore(item, caretPosition - charsInNode)
+                   
+                    charsInNode += charsInChild;
                 }
             });
-
-            if (carretSet) { return 0; }
-            return charsInNode;
+        if (this.carretSet) {
+            return 0;
         }
+        return charsInNode;
+    }
 
-        setCaretCore(e, cp);
+    private placeCaret = (item: Node, position: number): void => {
+        var range = document.createRange();
+        range.setStart(item, position);
+        range.setEnd(item, position);
+
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
     }
 
     public addKnockoutHandlers = () => {
         ko.bindingHandlers.htmlLazy = {
-            update: (element, valueAccessor) => {
+            update: (element: HTMLElement, valueAccessor: () => any) => {
                 var value = ko.unwrap(valueAccessor());
 
                 if (element.isContentEditable) {
-                    this.lastCaret = this.getCaretPosition(element)
-                    console.log(this.lastCaret);
+                    var dataAttribute = document.createAttribute("data-carretPosition");
+                    dataAttribute.value = CarretHelper.getCaretPosition(element).toString();
+                    element.attributes.setNamedItem(dataAttribute);
                     element.innerHTML = value;
-                    this.setCaret(element, this.lastCaret);
+                    this.setCaret(element, new Number(element.attributes.getNamedItem("data-carretPosition").value));
                 }
 
             }
         };
         ko.bindingHandlers.contentEditable = {
-            init: (element, valueAccessor, allBindingsAccessor) => {
+            init: (element: HTMLElement, valueAccessor, allBindingsAccessor) => {
                 var value = ko.unwrap(valueAccessor()),
                     htmlLazy = allBindingsAccessor().htmlLazy;
 

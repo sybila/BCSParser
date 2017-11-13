@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Riganti.Utils.Infrastructure.Core;
+using System;
 using System.Collections.Generic;
 
 namespace BcsAdmin.DAL.Models
 {
-    public partial class EpEntityNote
+    public partial class EpEntityNote : IEntity<int>
     {
         public int Id { get; set; }
         public int? EntityId { get; set; }

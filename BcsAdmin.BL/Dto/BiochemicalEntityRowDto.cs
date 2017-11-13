@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Riganti.Utils.Infrastructure.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Bcs.Admin.Web.ViewModels
 {
-    public class BiochemicalEntityRowDto
+    public class BiochemicalEntityRowDto : IEntity<int>
     {
         public int Id { get; set; }
 

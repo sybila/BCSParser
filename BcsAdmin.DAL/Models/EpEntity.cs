@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Riganti.Utils.Infrastructure.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,7 +16,7 @@ namespace BcsAdmin.DAL.Models
         Atomic = 4,
     }
 
-    public class EpEntity
+    public class EpEntity : IEntity<int>
     {
         [Key]
         public int Id { get; set; }

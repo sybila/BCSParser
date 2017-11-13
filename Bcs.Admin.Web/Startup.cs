@@ -36,8 +36,7 @@ namespace Bcs.Analyzer.DemoWeb
                 options.AddDynamicData(dynamicDataConfig);
                 options.AddDefaultTempStorages("Temp");
             });
-            services.AddSingleton(ConfigureMapper().CreateMapper());
-            services.AddTransient<DashboardFacade, DashboardFacade>();
+            services.AddSingleton<IMapper>(ConfigureMapper().CreateMapper());
             services.AddTransient<EntitiesTab, EntitiesTab>();
             services.RegisterDependenciesBL();
             services.AddSingleton<IFormBuilder, BootstrapFormGroupBuilder>();

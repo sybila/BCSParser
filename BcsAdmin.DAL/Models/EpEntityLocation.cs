@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Riganti.Utils.Infrastructure.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BcsAdmin.DAL.Models
 {
-    public partial class EpEntityLocation
+    public partial class EpEntityLocation : IEntity<int>
     {
         [Key]
         public int Id { get; set; }

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Riganti.Utils.Infrastructure.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BcsAdmin.DAL.Models
 {
-    public partial class EpEntityClassification
+    public partial class EpEntityClassification : IEntity<int>
     {
         [Key]
         public int Id { get; set; }

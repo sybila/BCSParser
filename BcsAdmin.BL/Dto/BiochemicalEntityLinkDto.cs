@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Riganti.Utils.Infrastructure.Core;
+using System.ComponentModel.DataAnnotations;
 
 namespace BcsAdmin.BL.Dto
 {
-    public class BiochemicalEntityLinkDto
+    public class BiochemicalEntityLinkDto : IEntity<int>
     {
         public int Id { get; set; }
         [Display(Name="Hierarchy type")]
