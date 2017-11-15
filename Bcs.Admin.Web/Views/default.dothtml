@@ -13,9 +13,9 @@
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="input-group input-group-sm">
-                        <dot:TextBox Changed="{command: null}" class="form-control" Text="{value: SearchText}" />
+                        <dot:TextBox Changed="{command: _parent.Refresh()}" class="form-control" Text="{value: SearchText}" />
                         <div class="input-group-btn">
-                            <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: null}">
+                            <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: _parent.Refresh()}">
                                 <i class="glyphicon glyphicon-search"></i>
                             </dot:Button>
                         </div>
@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <dot:Repeater class="row" DataSource="{value: EntityTypes}">
-                        <dot:CheckBox class="col-md-4" Text="{value: _this}" Changed="{command: null}" CheckedItems="{value: _parent.SelectedTypes}" CheckedValue="{value: _this}" />
+                        <dot:CheckBox class="col-md-4" Text="{value: _this}" Changed="{command: _parent2.Refresh()}" CheckedItems="{value: _parent.SelectedTypes}" CheckedValue="{value: _this}" />
                     </dot:Repeater>
                 </div>
                 <div class="col-md-12">
@@ -71,7 +71,7 @@
                 </div>
                 <div class="panel-body">
                     <dd:DynamicDataGridViewDecorator ColumnPlacement="Left">
-                        <dot:GridView class="table table-bordered table-hover" DataSource="{value: Components}" FilterPlacement="ExtraRow">
+                        <dot:GridView class="table table-bordered table-hover" DataSource="{value: Components.DataSet}" FilterPlacement="ExtraRow">
                             <Columns>                               
                             </Columns>
                         </dot:GridView>
@@ -82,13 +82,13 @@
                 <div class="panel-heading">
                     Locations:
                 </div>
-                <div class="panel-body">
+                <div DataContext="{value: Locations}" class="panel-body">
                     <dd:DynamicDataGridViewDecorator ColumnPlacement="Left">
-                        <dot:GridView class="table table-bordered table-hover" DataSource="{value: Locations}" FilterPlacement="ExtraRow">
+                        <dot:GridView class="table table-bordered table-hover" DataSource="{value: DataSet}" FilterPlacement="ExtraRow">
                             <Columns>
                                 <dot:GridViewTemplateColumn HeaderText="Child entities">
                                     <ContentTemplate>
-                                        <dot:Button ></dot:Button>
+                                        <dot:Button ButtonTagName="button" Click="{command: _parent.Edit(Id)}"><i class="glyphicon glyphicon-edit"></i></dot:Button>
                                     </ContentTemplate>
                                 </dot:GridViewTemplateColumn>
                             </Columns>
@@ -102,7 +102,7 @@
                 </div>
                 <div class="panel-body">
                     <dd:DynamicDataGridViewDecorator ColumnPlacement="Left">
-                        <dot:GridView class="table table-bordered table-hover" DataSource="{value: Classifications}" FilterPlacement="ExtraRow">
+                        <dot:GridView class="table table-bordered table-hover" DataSource="{value: Classifications.DataSet}" FilterPlacement="ExtraRow">
                             <Columns>
                             </Columns>
                         </dot:GridView>
@@ -114,7 +114,7 @@
                     Notes
                 </div>
                 <div class="panel-body">
-                    <dot:Repeater DataSource="{value: Notes}">
+                    <dot:Repeater DataSource="{value: Notes.DataSet}">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <span class="label label-default label-alone">{{value: UserName}}:</span> {{value: Inserted}}

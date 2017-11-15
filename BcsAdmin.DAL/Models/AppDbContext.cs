@@ -1,9 +1,45 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
+using System.IO;
 
 namespace BcsAdmin.DAL.Models
 {
+    public class MyLoggerProvider : ILoggerProvider
+    {
+        public ILogger CreateLogger(string categoryName)
+        {
+            return new MyLogger();
+        }
+
+        public void Dispose()
+        {
+        }
+
+        private class MyLogger : ILogger
+        {
+            public bool IsEnabled(LogLevel logLevel)
+            {
+                return true;
+            }
+
+            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+            {
+                File.AppendAllText(@"C:\temp\log.txt", $@"{formatter(state, exception)}
+>======
+");
+                Console.WriteLine(formatter(state, exception));
+            }
+
+            public IDisposable BeginScope<TState>(TState state)
+            {
+                return null;
+            }
+        }
+    }
+
     public partial class AppDbContext : DbContext
     {
         public virtual DbSet<EpAnnotation> EpAnnotation { get; set; }
@@ -76,6 +112,10 @@ namespace BcsAdmin.DAL.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
+                var lf = new LoggerFactory();
+                lf.AddProvider(new MyLoggerProvider());
+
+                optionsBuilder.UseLoggerFactory(lf);
                 optionsBuilder.UseMySql(ConnectionString.FullString);
             }
         }
@@ -293,11 +333,11 @@ namespace BcsAdmin.DAL.Models
             {
                 entity.ToTable("ep_entity");
 
-                entity.HasMany(e => e.Components).WithOne(co=> co.ComposedEntity);
+                entity.HasMany(e => e.Components).WithOne(co => co.ComposedEntity);
                 entity.HasMany(e => e.Locations).WithOne(l => l.Entity);
                 entity.HasMany(e => e.Children).WithOne(e => e.Parent);
-                entity.HasMany(e => e.Notes).WithOne(n=> n.Entity);
-                entity.HasMany(e => e.Classifications).WithOne(c=> c.Entity);
+                entity.HasMany(e => e.Notes).WithOne(n => n.Entity);
+                entity.HasMany(e => e.Classifications).WithOne(c => c.Entity);
 
                 entity.HasIndex(e => e.ParentId)
                     .HasName("parentId");

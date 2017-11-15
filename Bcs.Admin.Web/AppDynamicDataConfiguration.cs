@@ -23,14 +23,14 @@ namespace Bcs.Admin.Web
             var conventions = new ComboBoxConventions();
             conventions.Register(p => p.Name.Equals(nameof(BiochemicalEntityDetailDto.SelectedHierarchyType)), new ComboBoxSettingsAttribute()
             {
-                DataSourceBinding = nameof(BiochemicalEntityDetailDto.HierarchyTypes),
+                DataSourceBinding = $"_root.{nameof(Dashboard.HierarchyTypes)}",
                 DisplayMember = nameof(BiochemicalEntityTypeDto.Name),
                 ValueMember = nameof(BiochemicalEntityTypeDto.Id),
                 EmptyItemText = "(select entity type)"
             });
             conventions.Register(p => p.Name.Equals(nameof(BiochemicalEntityLinkDto.HierarchyType)), new ComboBoxSettingsAttribute()
             {
-                DataSourceBinding = $"_parent.{nameof(BiochemicalEntityDetailDto.HierarchyTypes)}",
+                DataSourceBinding = $"_root.{nameof(Dashboard.HierarchyTypes)}",
                 DisplayMember = nameof(BiochemicalEntityTypeDto.Name),
                 ValueMember = nameof(BiochemicalEntityTypeDto.Id),
                 EmptyItemText = "(select entity type)"

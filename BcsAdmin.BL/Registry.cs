@@ -6,6 +6,7 @@ using BcsAdmin.BL.Facades;
 using BcsAdmin.BL.Filters;
 using BcsAdmin.BL.Mappers;
 using BcsAdmin.BL.Queries;
+using BcsAdmin.BL.Repositories;
 using BcsAdmin.DAL.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Riganti.Utils.Infrastructure.Core;
@@ -31,16 +32,36 @@ namespace BcsAdmin.BL
 
             services.AddTransient<IRepository<EpEntity, int>, EntityRepisitory>();
 
-            services.RegisterFactory<IFilteredQuery<BiochemicalEntityRowDto, BiochemicalEntityFilter>, EntityGridQuery>();
-            services.RegisterFactory<EntityTypeQuery, EntityTypeQuery>();
+            services.AddTransient<EntityClassificationRepository, EntityClassificationRepository>();
+            services.AddTransient<EntityNoteRepository, EntityNoteRepository>();
+            services.AddTransient<EntityLocationRepository, EntityLocationRepository>();
+            services.AddTransient<EntityComponentRepository, EntityComponentRepository>();
 
-            services.AddTransient<Func<EntityTypeQuery>>(s => () => s.GetRequiredService<EntityTypeQuery>());
+            services.RegisterFactory<IFilteredQuery<BiochemicalEntityRowDto, BiochemicalEntityFilter>, EntityGridQuery>();
+            services.RegisterFactory<EntityTypeNamesQuery, EntityTypeNamesQuery>();
+            services.RegisterFactory<ClassificationQuery, ClassificationQuery>();
+            services.RegisterFactory<NoteQuery, NoteQuery>();
+            services.RegisterFactory<ComponentLinkQuery, ComponentLinkQuery>();
+            services.RegisterFactory<LocationLinkQuery, LocationLinkQuery>();
 
             services.AddTransient<DashboardFacade, DashboardFacade>();
             services.AddTransient<BasicListFacade, BasicListFacade>();
+            services.AddTransient<ClassificationGridFacade, ClassificationGridFacade>();
+            services.AddTransient<NoteGridFacade, NoteGridFacade>();
+            services.AddTransient<ComponentsGridFacade, ComponentsGridFacade>();
+            services.AddTransient<LocationGridFacade, LocationGridFacade>();
 
+            services.RegisterDependantFacade<ClassificationDto, ClassificationGridFacade>();
+            services.RegisterDependantFacade<EntityNoteDto, NoteGridFacade>();
+            services.RegisterDependantFacade<LocationLinkDto, LocationGridFacade>();
+            services.RegisterDependantFacade<ComponentLinkDto, ComponentsGridFacade>();
 
             services.AddTransient<IEntityDTOMapper<EpEntity, BiochemicalEntityDetailDto>, DetailMapper>();
+
+            services.AddTransient<IEntityDTOMapper<EpEntityClassification, ClassificationDto>, AutoDtoMapper<EpEntityClassification, ClassificationDto>>();
+            services.AddTransient<IEntityDTOMapper<EpEntityLocation, LocationLinkDto>, AutoDtoMapper<EpEntityLocation, LocationLinkDto>>();
+            services.AddTransient<IEntityDTOMapper<EpEntityComposition, ComponentLinkDto>, AutoDtoMapper<EpEntityComposition, ComponentLinkDto>>();
+            services.AddTransient<IEntityDTOMapper<EpEntityNote, EntityNoteDto>, AutoDtoMapper<EpEntityNote, EntityNoteDto>>();
         }
 
         public static void RegisterMapperBL(this IMapperConfigurationExpression cfg)
@@ -57,6 +78,13 @@ namespace BcsAdmin.BL
         {
             services.AddTransient<TContract, TImplementation>();
             services.AddTransient<Func<TContract>>(s => () => s.GetRequiredService<TContract>());
+        }
+
+        private static void RegisterDependantFacade<TGridEntity, TImpl>(this IServiceCollection services)
+            where TGridEntity : IEntity<int>
+            where TImpl : class, ICrudFilteredFacade<TGridEntity, TGridEntity, IdFilter, int>
+        {
+            services.AddTransient<ICrudFilteredFacade<TGridEntity, TGridEntity, IdFilter, int>, TImpl>();
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Bcs.Admin.Web.ViewModels
                     SortExpression = nameof(BiochemicalEntityRowDto.Name)
                 }
             };
-            EntityTypes = basicListFacade.GetEntityTypes();
+            EntityTypes = basicListFacade.GetEntityTypeNames();
             return base.Init();
         }
 

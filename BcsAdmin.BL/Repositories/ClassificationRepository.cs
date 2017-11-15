@@ -16,9 +16,25 @@ namespace BcsAdmin.BL.Repositories
         }
     }
 
-    public class ClassificationRepository : EntityFrameworkRepository<EpClassification, int>
+    public class EntityLocationRepository : EntityFrameworkRepository<EpEntityLocation, int>
     {
-        public ClassificationRepository(IUnitOfWorkProvider unitOfWorkProvider, IDateTimeProvider dateTimeProvider) 
+        public EntityLocationRepository(IUnitOfWorkProvider unitOfWorkProvider, IDateTimeProvider dateTimeProvider) 
+            : base(unitOfWorkProvider, dateTimeProvider)
+        {
+        }
+    }
+
+    public class EntityNoteRepository : EntityFrameworkRepository<EpEntityNote, int>
+    {
+        public EntityNoteRepository(IUnitOfWorkProvider unitOfWorkProvider, IDateTimeProvider dateTimeProvider)
+            : base(unitOfWorkProvider, dateTimeProvider)
+        {
+        }
+    }
+
+    public class EntityComponentRepository : EntityFrameworkRepository<EpEntityComposition, int>
+    {
+        public EntityComponentRepository(IUnitOfWorkProvider unitOfWorkProvider, IDateTimeProvider dateTimeProvider)
             : base(unitOfWorkProvider, dateTimeProvider)
         {
         }

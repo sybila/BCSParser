@@ -8,9 +8,9 @@ using Riganti.Utils.Infrastructure.Core;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class EntityTypeQuery : EntityFrameworkQuery<string, AppDbContext>
+    public class EntityTypeNamesQuery : EntityFrameworkQuery<string, AppDbContext>
     {
-        public EntityTypeQuery(IUnitOfWorkProvider unitOfWorkProvider) 
+        public EntityTypeNamesQuery(IUnitOfWorkProvider unitOfWorkProvider) 
             : base(unitOfWorkProvider)
         {
         }
@@ -18,8 +18,10 @@ namespace BcsAdmin.BL.Queries
         protected override IQueryable<string> GetQueryable()
         {
             return Context.EpEntity
-                .Select(e => e.HierarchyType.ToString("F"))
-                .Distinct();
+                .Select(e => e.HierarchyType)
+                .Distinct()
+                .Select(e=> e.ToString("F"));
+                
         }
     }
 }

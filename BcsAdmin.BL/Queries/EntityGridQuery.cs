@@ -22,15 +22,13 @@ namespace BcsAdmin.BL.Queries
 
         protected override IQueryable<BiochemicalEntityRowDto> GetQueryable()
         {
-             var queriable =
-                    Context.EpEntity
-                    .Include(e => e.Locations)
-                        .ThenInclude(el => el.Location)
-                    .Include(e => e.Components)
-                        .ThenInclude(el => el.Component)
-                     .Include(e => e.Classifications)
-                        .ThenInclude(el => el.Classification)
-                    .Include(e => e.Children)
+            Context.EpEntity.Load();
+            Context.EpEntityLocation.Load();
+            Context.EpEntityComposition.Load();
+
+            var queriable =
+                    Context
+                    .EpEntity
                     .Select(e => new BiochemicalEntityRowDto
                     {
                         Id = e.Id,

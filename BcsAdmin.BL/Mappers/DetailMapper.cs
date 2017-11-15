@@ -27,24 +27,7 @@ namespace BcsAdmin.BL.Mappers
                 Name = entity.Name,
                 Active = entity.Active == 0,
                 Description = entity.Description,
-                Parent = mapper.Map<BiochemicalEntityLinkDto>(entity.Parent),
                 SelectedHierarchyType = (int)entity.HierarchyType,
-                Components =
-                        entity.HierarchyType == HierarchyType.Atomic
-                        ? entity.Children.Select(mapper.Map<BiochemicalEntityLinkDto>).ToList()
-                        : entity.Components.Select(c => mapper.Map<BiochemicalEntityLinkDto>(c.Component)).ToList(),
-                HierarchyTypes =
-                        Enum.GetValues(typeof(HierarchyType))
-                        .Cast<HierarchyType>()
-                        .Select(v => new BiochemicalEntityTypeDto
-                        {
-                            Id = (int)v,
-                            Name = v.ToString("F")
-                        })
-                        .ToList(),
-                Locations = entity.Locations.Select(el => mapper.Map<BiochemicalEntityLinkDto>(el.Location)).ToList(),
-                Notes = entity.Notes.Select(mapper.Map<EntityNoteDto>).ToList(),
-                Classifications = entity.Classifications.Select(ec => mapper.Map<ClassificationDto>(ec.Classification)).ToList(),
                 VisualisationXml = entity.VisualisationXml
 
             };

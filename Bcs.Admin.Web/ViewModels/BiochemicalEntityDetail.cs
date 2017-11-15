@@ -1,5 +1,8 @@
 ﻿using BcsAdmin.BL.Dto;
+using BcsAdmin.BL.Facades;
+using BcsAdmin.BL.Filters;
 using DotVVM.Framework.Controls;
+using DotVVM.Framework.Hosting;
 using DotVVM.Framework.ViewModel;
 using Riganti.Utils.Infrastructure;
 using Riganti.Utils.Infrastructure.Core;
@@ -13,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Bcs.Admin.Web.ViewModels
 {
-    public class BiochemicalEntityDetail
+    public class BiochemicalEntityDetail : DotvvmViewModelBase
     {
         [Display(AutoGenerateField = false)]
         public int Id { get; set; }
@@ -42,30 +45,48 @@ namespace Bcs.Admin.Web.ViewModels
         public int SelectedHierarchyType { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public List<BiochemicalEntityTypeDto> HierarchyTypes { get; set; }
-
-        [Display(AutoGenerateField = false)]
         public BiochemicalEntityLinkDto Parent { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public IList<BiochemicalEntityLinkDto> Components { get; set; }
+        public EditableGrid<ComponentLinkDto> Components { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public IList<BiochemicalEntityLinkDto> Locations { get; set; }
+        public EditableGrid<LocationLinkDto> Locations { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public IList<ClassificationDto> Classifications { get; set; }
+        public EditableGrid<ClassificationDto> Classifications { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public IList<EntityNoteDto> Notes { get; set; }
+        public EditableGrid<EntityNoteDto> Notes { get; set; }
+
+        public BiochemicalEntityDetail(
+          EditableGrid<ComponentLinkDto> componentGrid,
+          EditableGrid<LocationLinkDto> locationGrid,
+          EditableGrid<ClassificationDto> classificationGrid,
+          EditableGrid<EntityNoteDto> noteGrid)
+        {
+            Components = componentGrid;
+            Locations = locationGrid;
+            Classifications = classificationGrid;
+            Notes = noteGrid;
+        }
+
+        public override Task Init()
+        {
+            Components.ParentEntityId = Id;
+            Classifications.ParentEntityId = Id;
+            Locations.ParentEntityId = Id;
+            Notes.ParentEntityId = Id;
+
+            return base.Init();
+        }
     }
 
-    public interface IEditableGrid<TGridEntity>
+    public interface IEditableGrid<TGridEntity> : IDotvvmViewModel
     {
-        GridViewDataSet<TGridEntity> DataSet { get; set; }
-
-        TGridEntity EditRow { get; set; }
-        TGridEntity NewRow { get; set; }
+        GridViewDataSet<TGridEntity> DataSet { get; }
+        TGridEntity EditRow { get; }
+        TGridEntity NewRow { get; }
 
         void Edit(int id);
         void Delete(int id);
@@ -73,21 +94,22 @@ namespace Bcs.Admin.Web.ViewModels
         void Save();
     }
 
-
-
     public class EditableGrid<TGridEntity> : DotvvmViewModelBase, IEditableGrid<TGridEntity>
         where TGridEntity : class, IEntity<int>
     {
-        private readonly ICrudFacade<TGridEntity, TGridEntity, int> facade;
+        private readonly ICrudFilteredFacade<TGridEntity, TGridEntity, IdFilter, int> facade;
 
-        public EditableGrid(ICrudFacade<TGridEntity, TGridEntity, int> facade)
+        [Bind(Direction.None)]
+        public int ParentEntityId { get; set; }
+
+        public GridViewDataSet<TGridEntity> DataSet { get; private set; }
+        public TGridEntity EditRow { get; private set; }
+        public TGridEntity NewRow { get; private set; }
+
+        public EditableGrid(ICrudFilteredFacade<TGridEntity, TGridEntity, IdFilter, int> facade)
         {
             this.facade = facade;
         }
-
-        public GridViewDataSet<TGridEntity> DataSet { get; set; }
-        public TGridEntity EditRow { get; set; }
-        public TGridEntity NewRow { get; set; }
 
         public void Add()
         {
@@ -97,6 +119,7 @@ namespace Bcs.Admin.Web.ViewModels
         public void Edit(int id)
         {
             EditRow = facade.GetDetail(id);
+            DataSet.RowEditOptions.EditRowId = id;
         }
 
         public void Delete(int id)
@@ -122,18 +145,20 @@ namespace Bcs.Admin.Web.ViewModels
         {
             DataSet = new GridViewDataSet<TGridEntity>()
             {
-                PagingOptions = { },
-                SortingOptions = new SortingOptions { }
+                PagingOptions = { PageSize = 10},
+                SortingOptions = new SortingOptions { },
+                RowEditOptions = new RowEditOptions
+                {
+                    PrimaryKeyPropertyName = "Id"
+                }
             };
             return base.Init();
         }
 
         public override Task PreRender()
         {
-            if (!Context.IsPostBack || DataSet.IsRefreshRequired)
-            {
-                facade.FillDataSet(DataSet);
-            }
+
+            facade.FillDataSet(DataSet, new IdFilter { Id = ParentEntityId });
             return base.PreRender();
         }
     }
