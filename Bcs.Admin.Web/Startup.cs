@@ -39,7 +39,7 @@ namespace Bcs.Analyzer.DemoWeb
             services.AddSingleton<IMapper>(ConfigureMapper().CreateMapper());
 
             services.AddTransient<EntitiesTab, EntitiesTab>();
-            services.AddTransient<BiochemicalEntityDetail, BiochemicalEntityDetail>();
+            services.RegisterFactory<BiochemicalEntityDetail, BiochemicalEntityDetail>();
             services.AddTransient<EditableGrid<ComponentLinkDto>, EditableGrid<ComponentLinkDto>>();
             services.AddTransient<EditableGrid<LocationLinkDto>, EditableGrid<LocationLinkDto>>();
             services.AddTransient<EditableGrid<ClassificationDto>, EditableGrid<ClassificationDto>>();

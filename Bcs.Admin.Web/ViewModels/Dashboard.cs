@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BcsAdmin.BL.Dto;
 using System.Collections.Generic;
+using System;
 
 namespace Bcs.Admin.Web.ViewModels
 {
@@ -11,6 +12,7 @@ namespace Bcs.Admin.Web.ViewModels
         private readonly BasicListFacade basicListFacade;
         private readonly DashboardFacade dashboardFacade;
         private readonly IMapper mapper;
+        private readonly BiochemicalEntityDetail detailFunc;
 
         public EntitiesTab EntitiesTab { get; set; }
         public BiochemicalEntityDetail Detail { get; set; }
@@ -21,13 +23,13 @@ namespace Bcs.Admin.Web.ViewModels
             DashboardFacade dashboardFacade,
             IMapper mapper, 
             EntitiesTab entitiesTab,
-            BiochemicalEntityDetail biochemicalEntityDetail)
+            BiochemicalEntityDetail detailFunc)
         {
             this.basicListFacade = basicListFacade;
             this.dashboardFacade = dashboardFacade;
             this.mapper = mapper;
             EntitiesTab = entitiesTab;
-            Detail = biochemicalEntityDetail;
+            Detail = detailFunc;
             Title = "Dashboard";
         }
 
@@ -35,7 +37,7 @@ namespace Bcs.Admin.Web.ViewModels
         {
             var dto = dashboardFacade.GetDetail(entityId);
             mapper.Map(dto, Detail);
-            Detail.Init();
+            Detail.Load();
         }
 
         public void Refresh()
@@ -51,6 +53,7 @@ namespace Bcs.Admin.Web.ViewModels
 
         public override Task PreRender()
         {
+            Detail?.PreRender();
             return base.PreRender();
         }
     }

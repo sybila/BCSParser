@@ -18,6 +18,7 @@ namespace Bcs.Admin.Web.ViewModels
 {
     public class BiochemicalEntityDetail : DotvvmViewModelBase
     {
+        [Protect(ProtectMode.SignData)]
         [Display(AutoGenerateField = false)]
         public int Id { get; set; }
 
@@ -71,12 +72,17 @@ namespace Bcs.Admin.Web.ViewModels
             Notes = noteGrid;
         }
 
-        public override Task Init()
+        public override Task Load()
         {
             Components.ParentEntityId = Id;
             Classifications.ParentEntityId = Id;
             Locations.ParentEntityId = Id;
             Notes.ParentEntityId = Id;
+
+            Components.Init();
+            Classifications.Init();
+            Locations.Init();
+            Notes.Init();
 
             return base.Init();
         }

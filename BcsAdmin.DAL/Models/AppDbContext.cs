@@ -115,7 +115,7 @@ namespace BcsAdmin.DAL.Models
                 var lf = new LoggerFactory();
                 lf.AddProvider(new MyLoggerProvider());
 
-                optionsBuilder.UseLoggerFactory(lf);
+                //optionsBuilder.UseLoggerFactory(lf);
                 optionsBuilder.UseMySql(ConnectionString.FullString);
             }
         }
