@@ -8,6 +8,7 @@ using BcsAdmin.BL.Mappers;
 using BcsAdmin.BL.Queries;
 using BcsAdmin.BL.Repositories;
 using BcsAdmin.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Riganti.Utils.Infrastructure.Core;
 using Riganti.Utils.Infrastructure.EntityFrameworkCore;
@@ -22,8 +23,8 @@ namespace BcsAdmin.BL
     {
         public static void RegisterDependenciesBL(this IServiceCollection services)
         {
-            services.AddTransient<Func<AppDbContext>>(s => () => new AppDbContext());
-            services.AddTransient<AppDbContext, AppDbContext>();
+            services.RegisterFactory<AppDbContext, AppDbContext>();
+            services.RegisterFactory<DbContext, AppDbContext>();
 
             services.AddTransient<IDateTimeProvider, UtcDateTimeProvider>();
             services.AddTransient<IEntityFrameworkUnitOfWorkProvider<AppDbContext>, EntityFrameworkUnitOfWorkProvider<AppDbContext>>();
@@ -51,11 +52,6 @@ namespace BcsAdmin.BL
             services.AddTransient<ComponentsGridFacade, ComponentsGridFacade>();
             services.AddTransient<LocationGridFacade, LocationGridFacade>();
 
-            services.RegisterDependantFacade<ClassificationDto, ClassificationGridFacade>();
-            services.RegisterDependantFacade<EntityNoteDto, NoteGridFacade>();
-            services.RegisterDependantFacade<LocationLinkDto, LocationGridFacade>();
-            services.RegisterDependantFacade<ComponentLinkDto, ComponentsGridFacade>();
-
             services.AddTransient<IEntityDTOMapper<EpEntity, BiochemicalEntityDetailDto>, DetailMapper>();
 
             services.AddTransient<IEntityDTOMapper<EpEntityClassification, ClassificationDto>, AutoDtoMapper<EpEntityClassification, ClassificationDto>>();
@@ -78,13 +74,6 @@ namespace BcsAdmin.BL
         {
             services.AddTransient<TContract, TImplementation>();
             services.AddTransient<Func<TContract>>(s => () => s.GetRequiredService<TContract>());
-        }
-
-        private static void RegisterDependantFacade<TGridEntity, TImpl>(this IServiceCollection services)
-            where TGridEntity : IEntity<int>
-            where TImpl : class, ICrudFilteredFacade<TGridEntity, TGridEntity, IdFilter, int>
-        {
-            services.AddTransient<ICrudFilteredFacade<TGridEntity, TGridEntity, IdFilter, int>, TImpl>();
         }
     }
 }

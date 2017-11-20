@@ -25,11 +25,13 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="AngleSharp" Version="0.9.9" />
-        <PackageReference Include="AutoMapper" Version="6.1.1" />
-        <PackageReference Include="DotVVM.DynamicData" Version="1.1.5.1" />
-        <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.0" />
-        <PackageReference Include="DotVVM.AspNetCore" Version="1.1.6.3" />
+        <PackageReference Include="AutoMapper" Version="6.2.0" />
+        <PackageReference Include="DotVVM.AspNetCore" Version="2.0.0-pre04" />
+        <PackageReference Include="DotVVM.DynamicData" Version="2.0.0-pre01" />
+        <PackageReference Include="DotVVM.DynamicData.Annotations" Version="2.0.0-pre01" />
+        <PackageReference Include="Microsoft.AspNetCore" Version="2.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.1" />
+        <PackageReference Include="T4.TemplateFileManager" Version="2.2.1" />
         
     </ItemGroup>
     <ItemGroup>
@@ -39,13 +41,11 @@
       <ProjectReference Include="..\Bcs.Resolver.Data\Bcs.Resolver.File.csproj" />
       <ProjectReference Include="..\Bcs.Resolver\Bcs.Resolver.csproj" />
       <ProjectReference Include="..\BcsAdmin.BL\BcsAdmin.BL.csproj" />
+      
     </ItemGroup>
     <ItemGroup>
       <TypeScriptCompile Include="wwwroot\CodeEditor.ts" />
       <TypeScriptCompile Include="wwwroot\lib\jquery\jquery.d.ts" />
       <TypeScriptCompile Include="wwwroot\lib\knockout\knockout.d.ts" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="wwwroot\lib\NewFolder\" />
     </ItemGroup>
 </Project>

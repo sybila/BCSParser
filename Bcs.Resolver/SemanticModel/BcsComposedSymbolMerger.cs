@@ -18,9 +18,9 @@ namespace BcsResolver.SemanticModel
                 var childAtomicAgent = childBoundSymbol.As<BcsBoundAtomicAgent>();
 
                 var candidateMatches =
-                    parentStructuralAgent.StatedContent.GetValueOrDefault(childAtomicAgent.Symbol.Name);
+                    parentStructuralAgent.StatedContent.GetValue(childAtomicAgent.Symbol.Name);
 
-                if (candidateMatches.Count > 0)
+                if (candidateMatches.Count() > 0)
                 {
                     AddError(parentStructuralAgent.Syntax, "More than one Atomic agent of the same name.", SemanticErrorSeverity.Error);
                 }

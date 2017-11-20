@@ -107,10 +107,9 @@ namespace Bcs.Admin.Web.Controls
         {
             Children.Clear();
 
-            var dataSource = DataSource;
-            if (dataSource != null)
+            if (DataSource != null)
             {
-                var items = GetIEnumerableFromDataSource(dataSource).Cast<ITreeItem>().ToList();
+                var items = GetIEnumerableFromDataSource().Cast<ITreeItem>().ToList();
                 nodeCount = 0;
                 CreateChildrenCollectionIfAny(context,items, this, $"{GetDataSourceBinding().GetKnockoutBindingExpression()}()");
             }

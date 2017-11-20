@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authentication.Cookies;
+//using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -17,6 +17,8 @@ using DotVVM.Framework.Controls.DynamicData;
 using DotVVM.Framework.Controls.DynamicData.Configuration;
 using DotVVM.Framework.Controls.DynamicData.Builders;
 using Bcs.Admin.Web;
+using System.Composition.Hosting;
+using System.Reflection;
 
 namespace Bcs.Analyzer.DemoWeb
 {
@@ -27,8 +29,8 @@ namespace Bcs.Analyzer.DemoWeb
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDataProtection();
-            services.AddAuthorization();
+            //services.AddDataProtection();
+            //services.AddAuthorization();
             services.AddWebEncoders();
             services.AddDotVVM(options =>
             {
@@ -36,6 +38,13 @@ namespace Bcs.Analyzer.DemoWeb
                 options.AddDynamicData(dynamicDataConfig);
                 options.AddDefaultTempStorages("Temp");
             });
+
+            //var configuration = new ContainerConfiguration()
+            //    .WithAssembly(typeof(Startup).GetTypeInfo().Assembly)
+            //    .WithAssembly(typeof(Registry).GetTypeInfo().Assembly); ;
+
+            //var container = configuration.CreateContainer();
+
             services.AddSingleton<IMapper>(ConfigureMapper().CreateMapper());
 
             services.AddTransient<EntitiesTab, EntitiesTab>();
@@ -65,7 +74,6 @@ namespace Bcs.Analyzer.DemoWeb
 
             // use DotVVM
             var dotvvmConfiguration = app.UseDotVVM<DotvvmStartup>(env.ContentRootPath);
-
             // use static files
             app.UseStaticFiles(new StaticFileOptions
             {

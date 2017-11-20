@@ -22,11 +22,11 @@ namespace Bcs.Admin.Web.ViewModels
         [Display(AutoGenerateField = false)]
         public int Id { get; set; }
 
-        [Required]
+        //[Required]
         [Display(Name = "Name")]
         public string Name { get; set; }
 
-        [Required]
+        //[Required]
         [Display(Name = "Code")]
         public string Code { get; set; }
 
@@ -72,7 +72,7 @@ namespace Bcs.Admin.Web.ViewModels
             Notes = noteGrid;
         }
 
-        public override Task Load()
+        public void PoputateGrids()
         {
             Components.ParentEntityId = Id;
             Classifications.ParentEntityId = Id;
@@ -83,68 +83,67 @@ namespace Bcs.Admin.Web.ViewModels
             Classifications.Init();
             Locations.Init();
             Notes.Init();
-
-            return base.Init();
         }
     }
 
     public interface IEditableGrid<TGridEntity> : IDotvvmViewModel
     {
         GridViewDataSet<TGridEntity> DataSet { get; }
-        TGridEntity EditRow { get; }
         TGridEntity NewRow { get; }
 
         void Edit(int id);
         void Delete(int id);
         void Add();
-        void Save();
+        void SaveEdit(TGridEntity entity);
+        void SaveNew();
     }
 
     public class EditableGrid<TGridEntity> : DotvvmViewModelBase, IEditableGrid<TGridEntity>
         where TGridEntity : class, IEntity<int>
     {
-        private readonly ICrudFilteredFacade<TGridEntity, TGridEntity, IdFilter, int> facade;
+        private readonly IGridFacade<TGridEntity> facade;
 
-        [Bind(Direction.None)]
+        [Bind(Direction.Both)]
         public int ParentEntityId { get; set; }
 
-        public GridViewDataSet<TGridEntity> DataSet { get; private set; }
-        public TGridEntity EditRow { get; private set; }
-        public TGridEntity NewRow { get; private set; }
+        public GridViewDataSet<TGridEntity> DataSet { get; set; }
+        public TGridEntity NewRow { get; set; }
 
-        public EditableGrid(ICrudFilteredFacade<TGridEntity, TGridEntity, IdFilter, int> facade)
+        public EditableGrid(IGridFacade<TGridEntity> facade)
         {
             this.facade = facade;
         }
 
         public void Add()
         {
-            NewRow = facade.InitializeNew();
+            NewRow = facade.CreateAssociated();
         }
 
         public void Edit(int id)
         {
-            EditRow = facade.GetDetail(id);
+            NewRow = null;
             DataSet.RowEditOptions.EditRowId = id;
         }
 
         public void Delete(int id)
         {
-            facade.Delete(id);
+            facade.Unlink(id);
         }
 
-        public void Save()
+        public void Cancel()
         {
-            if (NewRow != null)
-            {
-                facade.Save(NewRow);
-                NewRow = null;
-            }
-            else if (EditRow != null)
-            {
-                facade.Save(EditRow);
-                EditRow = null;
-            }
+            NewRow = null;
+            DataSet.RowEditOptions.EditRowId = null;
+        }
+
+        public void SaveNew()
+        {
+            facade.CreateAndLink(NewRow, ParentEntityId);
+        }
+
+        public void SaveEdit(TGridEntity entity)
+        {
+            facade.Edit(entity);
         }
 
         public override Task Init()

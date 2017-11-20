@@ -28,6 +28,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bcs.Resolver.DemoWeb", "Bcs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bcs.Admin.Web", "Bcs.Admin.Web\Bcs.Admin.Web.csproj", "{4DCD3288-477F-48FC-ADA9-F407A5774AB9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{4A6A0C1F-E449-4817-88B0-155CF405BE73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bcs.Admin.Generator", "Bcs.Admin.Generator\Bcs.Admin.Generator.csproj", "{56F64182-DF0C-4D46-88AA-51883026A96F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +70,10 @@ Global
 		{4DCD3288-477F-48FC-ADA9-F407A5774AB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DCD3288-477F-48FC-ADA9-F407A5774AB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DCD3288-477F-48FC-ADA9-F407A5774AB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56F64182-DF0C-4D46-88AA-51883026A96F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56F64182-DF0C-4D46-88AA-51883026A96F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56F64182-DF0C-4D46-88AA-51883026A96F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56F64182-DF0C-4D46-88AA-51883026A96F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,6 +83,7 @@ Global
 		{4DFBF6C9-1349-49BF-8246-13B1C1D0A2C5} = {3E490B77-565B-4EEE-9E1F-148E77F9437D}
 		{50EAA6C6-3120-4B00-B056-9EECAF7172DA} = {AA31DC00-6B69-4051-B850-25B1997E403F}
 		{4DCD3288-477F-48FC-ADA9-F407A5774AB9} = {AA31DC00-6B69-4051-B850-25B1997E403F}
+		{56F64182-DF0C-4D46-88AA-51883026A96F} = {4A6A0C1F-E449-4817-88B0-155CF405BE73}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {770065D1-F720-48D1-AAC1-AF0B882674FB}

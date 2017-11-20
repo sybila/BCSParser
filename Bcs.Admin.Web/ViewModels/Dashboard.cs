@@ -37,12 +37,13 @@ namespace Bcs.Admin.Web.ViewModels
         {
             var dto = dashboardFacade.GetDetail(entityId);
             mapper.Map(dto, Detail);
-            Detail.Load();
+            Detail.PoputateGrids();
         }
 
-        public void Refresh()
+        public async Task Refresh()
         {
-            EntitiesTab.EntityDataSet.RequestRefresh();
+            await EntitiesTab.EntityDataSet.RequestRefreshAsync();
+            await EntitiesTab.EntityDataSet.GoToFirstPageAsync();
         }
 
         public override Task Init()

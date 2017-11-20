@@ -55,7 +55,7 @@ namespace BcsResolver.SemanticModel
 
             if (parameter == null)
             {
-                BcsLocationSymbol locationSymbol = Workspace.Locations.GetValueOrDefault(nameToBind);
+                BcsLocationSymbol locationSymbol = Workspace.Locations.GetValue(nameToBind);
 
                 if (locationSymbol == null)
                 {
@@ -392,7 +392,7 @@ namespace BcsResolver.SemanticModel
 
             if (!string.IsNullOrEmpty(location?.Symbol?.Name))
             {
-                var symbol = Workspace.LocationEntityMap.GetValueOrDefault(location?.Symbol?.Name)?
+                var symbol = Workspace.LocationEntityMap.GetValue(location?.Symbol?.Name)?
                     .FirstOrDefault(s => s.Type == expectedType && s.Name == nameToBind);
 
                 if (symbol == null)

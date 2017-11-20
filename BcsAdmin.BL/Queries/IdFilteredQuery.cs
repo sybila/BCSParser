@@ -33,10 +33,10 @@ namespace BcsAdmin.BL.Queries
             Context.EpEntity.Load();
             return Context.EpEntityLocation.Where(e => e.Entity.Id == Filter.Id).Select(e => new LocationLinkDto
             {
-                Id = e.Entity.Id,
-                Code = e.Entity.Code,
-                HierarchyType = (int)e.Entity.HierarchyType,
-                Name = e.Entity.Name
+                Id = e.Location.Id,
+                Code = e.Location.Code,
+                HierarchyType = (int)e.Location.HierarchyType,
+                Name = e.Location.Name
             });
         }
     }
