@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace BcsAdmin.BL.Repositories
 {
-    public class EntityClassificationRepository : EntityFrameworkRepository<EpEntityClassification, int, AppDbContext>
+    public class EntityClassificationRepository : EntityFrameworkRepository<EpEntityClassification, int>
     {
         public EntityClassificationRepository(IUnitOfWorkProvider unitOfWorkProvider, IDateTimeProvider dateTimeProvider)
             : base(unitOfWorkProvider, dateTimeProvider)
@@ -16,7 +16,7 @@ namespace BcsAdmin.BL.Repositories
         }
     }
 
-    public class EntityLocationRepository : EntityFrameworkRepository<EpEntityLocation, int, AppDbContext>
+    public class EntityLocationRepository : EntityFrameworkRepository<EpEntityLocation, int>
     {
         public EntityLocationRepository(IUnitOfWorkProvider unitOfWorkProvider, IDateTimeProvider dateTimeProvider) 
             : base(unitOfWorkProvider, dateTimeProvider)
@@ -24,7 +24,7 @@ namespace BcsAdmin.BL.Repositories
         }
     }
 
-    public class EntityNoteRepository : EntityFrameworkRepository<EpEntityNote, int, AppDbContext>
+    public class EntityNoteRepository : EntityFrameworkRepository<EpEntityNote, int>
     {
         public EntityNoteRepository(IUnitOfWorkProvider unitOfWorkProvider, IDateTimeProvider dateTimeProvider)
             : base(unitOfWorkProvider, dateTimeProvider)
@@ -32,9 +32,17 @@ namespace BcsAdmin.BL.Repositories
         }
     }
 
-    public class EntityComponentRepository : EntityFrameworkRepository<EpEntityComposition, int, AppDbContext>
+    public class EntityComponentRepository : EntityFrameworkRepository<EpEntityComposition, int>
     {
         public EntityComponentRepository(IUnitOfWorkProvider unitOfWorkProvider, IDateTimeProvider dateTimeProvider)
+            : base(unitOfWorkProvider, dateTimeProvider)
+        {
+        }
+    }
+
+    public class ClassificationRepository : EntityFrameworkRepository<EpClassification, int>
+    {
+        public ClassificationRepository(IUnitOfWorkProvider unitOfWorkProvider, IDateTimeProvider dateTimeProvider)
             : base(unitOfWorkProvider, dateTimeProvider)
         {
         }

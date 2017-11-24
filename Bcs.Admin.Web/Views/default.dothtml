@@ -1,5 +1,5 @@
 ﻿@viewModel Bcs.Admin.Web.ViewModels.Dashboard, Bcs.Admin.Web
-@masterPage Views/masterpage.dotmaster 
+@masterPage Views/masterpage.dotmaster
 
 <dot:Content ContentPlaceHolderID="MainContent">
     <div class="col-lg-6 col-md-12">
@@ -62,7 +62,7 @@
             <div class="panel panel-info">
                 <div class="panel-heading">Detail</div>
                 <div class="panel-body">
-                    <dd:DynamicEntity FormBuilderName="bootstrap" DataContext="{value: _this}" />
+                    <dd:DynamicEntity Validator.InvalidCssClass="has-error" FormBuilderName="bootstrap" DataContext="{value: _this}" />
                 </div>
             </div>
             <div class="panel panel-info">
@@ -84,7 +84,7 @@
                 </div>
                 <div DataContext="{value: Locations}" class="panel-body">
                     <dd:DynamicDataGridViewDecorator ColumnPlacement="Left">
-                        <dot:GridView class="table table-bordered table-hover"  DataSource="{value: DataSet}" FilterPlacement="ExtraRow">
+                        <dot:GridView class="table table-bordered table-hover" DataSource="{value: DataSet}" FilterPlacement="ExtraRow">
                             <Columns>
                                 <dot:GridViewTemplateColumn HeaderText="Child entities">
                                     <ContentTemplate>
@@ -96,20 +96,23 @@
                     </dd:DynamicDataGridViewDecorator>
                 </div>
             </div>
-            <div class="panel panel-info">
+            <div DataContext="{value: Classifications}" class="panel panel-info">
                 <div class="panel-heading">
                     Classifications:
                 </div>
-                <div DataContext="{value: Classifications}" class="panel-body">
+                <div class="panel-body">
                     <dd:DynamicDataGridViewDecorator ColumnPlacement="Left">
-                        <dot:GridView class="table table-bordered table-hover" InlineEditing="true" DataSource="{value: DataSet}" FilterPlacement="ExtraRow">
+                        <dot:GridView class="table table-bordered table-hover" InlineEditing="true" DataSource="{value: DataSet}">
+                            <EmptyDataTemplate>
+                                No records
+                            </EmptyDataTemplate>
                             <Columns>
                                 <dot:GridViewTemplateColumn HeaderText="">
                                     <ContentTemplate>
                                         <dot:Button ButtonTagName="button" class="btn btn-sm btn-info" Click="{command: _parent.Edit(Id)}">
                                             <i class="glyphicon glyphicon-edit"></i>
                                         </dot:Button>
-                                        <dot:Button ButtonTagName="button" class="btn btn-sm btn-info" Click="{command: _parent.Delete(Id)}">
+                                        <dot:Button ButtonTagName="button" class="btn btn-sm btn-info" Click="{command: _parent.Delete(IntermediateEntityId)}">
                                             <i class="glyphicon glyphicon-trash"></i>
                                         </dot:Button>
                                     </ContentTemplate>
@@ -122,9 +125,37 @@
                                         </dot:Button>
                                     </EditTemplate>
                                 </dot:GridViewTemplateColumn>
-                            </Columns>
+                            </Columns>                         
                         </dot:GridView>
                     </dd:DynamicDataGridViewDecorator>
+                </div>
+                <div class="panel-footer">
+                    <div class="row" Visible="{value: NewRow == null}">
+                        <div class="col-md-9">
+                            <div class="input-group input-group-sm">
+                                <dot:TextBox Text="{value: ""}" class="form-control" />
+                                <div class="input-group-btn">
+                                    <dot:Button ButtonTagName="button" class="btn btn-sm btn-info" Click="{command: Add()}">
+                                        <i class="glyphicon glyphicon-link"></i> Link existing
+                                    </dot:Button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <dot:Button ButtonTagName="button" class="btn btn-sm btn-info" Click="{command: Add()}">
+                                <i class="glyphicon glyphicon-plus"></i> Add new
+                            </dot:Button>
+                        </div>
+                    </div>
+                    <div Visible="{value: NewRow != null}">
+                        <dd:DynamicEntity FormBuilderName="bootstrap" DataContext="{value: NewRow}" />
+                        <dot:Button ButtonTagName="button" class="btn btn-sm btn-info" Click="{command: SaveNew()}">
+                            <i class="glyphicon glyphicon-save"></i> Save
+                        </dot:Button>
+                        <dot:Button ButtonTagName="button" class="btn btn-sm btn-info" Click="{command: Cancel()}">
+                            <i class="glyphicon glyphicon-remove"></i> Cancel
+                        </dot:Button>
+                    </div>
                 </div>
             </div>
             <div class="panel panel-info">
@@ -132,7 +163,7 @@
                     Notes
                 </div>
                 <div class="panel-body">
-                    <dot:Repeater DataSource="{value: Notes.DataSet}">
+                    <%--<dot:Repeater DataSource="{value: Notes.DataSet}">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <span class="label label-default label-alone">{{value: UserName}}:</span> {{value: Inserted}}
@@ -141,7 +172,7 @@
                                 {{value: Text}}
                             </div>
                         </div>
-                    </dot:Repeater>
+                    </dot:Repeater>--%>
                 </div>
             </div>
         </div>

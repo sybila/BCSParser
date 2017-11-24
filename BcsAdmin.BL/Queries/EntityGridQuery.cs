@@ -11,7 +11,7 @@ using BcsAdmin.BL.Filters;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class EntityGridQuery : EntityFrameworkQuery<BiochemicalEntityRowDto, AppDbContext>, IFilteredQuery<BiochemicalEntityRowDto, BiochemicalEntityFilter>
+    public class EntityGridQuery : EntityFrameworkQuery<BiochemicalEntityRowDto>, IFilteredQuery<BiochemicalEntityRowDto, BiochemicalEntityFilter>
     {
         public BiochemicalEntityFilter Filter { get; set; }
 
@@ -22,12 +22,14 @@ namespace BcsAdmin.BL.Queries
 
         protected override IQueryable<BiochemicalEntityRowDto> GetQueryable()
         {
-            Context.EpEntity.Load();
-            Context.EpEntityLocation.Load();
-            Context.EpEntityComposition.Load();
+            var context = Context.CastTo<AppDbContext>();
+
+            context.EpEntity.Load();
+            context.EpEntityLocation.Load();
+            context.EpEntityComposition.Load();
 
             var queriable =
-                    Context
+                    context
                     .EpEntity
                     .Select(e => new BiochemicalEntityRowDto
                     {

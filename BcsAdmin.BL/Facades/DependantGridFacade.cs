@@ -86,10 +86,12 @@ namespace BcsAdmin.BL.Facades
             using (var uow = UnitOfWorkProvider.Create())
             {
                 var newEntity = associatedEntityRepository.InitializeNew();
+                newEntity.Id = -1;
                 mapper.Map(entity, newEntity);
                 associatedEntityRepository.Insert(newEntity);
+                uow.Commit();
 
-                Link(new EntityLinkDto { DetailId = detailId, AssociatedId = newEntity.Id});
+                Link(new EntityLinkDto { DetailId = detailId, AssociatedId = newEntity.Id });
                 uow.Commit();
             }
         }
@@ -109,7 +111,7 @@ namespace BcsAdmin.BL.Facades
         {
             using (var uow = UnitOfWorkProvider.Create())
             {
-                associatedEntityRepository.Delete(intermediateId);
+                intermediateRepository.Delete(intermediateId);
                 uow.Commit();
             }
         }
@@ -130,9 +132,13 @@ namespace BcsAdmin.BL.Facades
         }
     }
 
-    public class ClassificationGridFacade : DependantGridFacade<EpEntityClassification, ClassificationDto, ClassificationDto>
+    public class ClassificationGridFacade : DependantGridFacade<EpEntityClassification, EpClassification, ClassificationDto>
     {
-        public ClassificationGridFacade(IRepository<EpEntityClassification, int> intermediateRepository, IRepository<ClassificationDto, int> associatedEntityRepository, Func<IdFilteredQuery<ClassificationDto>> queryFactory, IUnitOfWorkProvider unitOfWorkProvider, IMapper mapper)
+        public ClassificationGridFacade(
+            IRepository<EpEntityClassification, int> intermediateRepository, 
+            IRepository<EpClassification, int> associatedEntityRepository,
+            Func<IdFilteredQuery<ClassificationDto>> queryFactory, 
+            IUnitOfWorkProvider unitOfWorkProvider, IMapper mapper)
             : base(intermediateRepository, associatedEntityRepository, queryFactory, unitOfWorkProvider, mapper)
         {
         }

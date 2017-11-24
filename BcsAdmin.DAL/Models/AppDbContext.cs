@@ -129,7 +129,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Active)
                     .HasColumnName("active")
@@ -174,7 +174,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Active)
                     .HasColumnName("active")
@@ -225,7 +225,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.AttributeId)
                     .HasColumnName("attributeId")
@@ -257,7 +257,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
@@ -275,7 +275,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Content)
                     .HasColumnName("content")
@@ -298,7 +298,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Active)
                     .HasColumnName("active")
@@ -348,7 +348,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Active)
                     .HasColumnName("active")
@@ -393,7 +393,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ClassificationId)
                     .HasColumnName("classificationId")
@@ -411,7 +411,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ChildEntityId)
                     .HasColumnName("childEntityId")
@@ -433,7 +433,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CompositionId)
                     .HasColumnName("compositionId")
@@ -461,7 +461,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ChildEntityId)
                     .HasColumnName("childEntityId")
@@ -482,7 +482,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.EntityId)
                     .HasColumnName("entityId")
@@ -512,7 +512,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.EntityId)
                     .HasColumnName("entityId")
@@ -540,7 +540,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Description)
                     .HasColumnName("description")
@@ -581,7 +581,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ExperimentId)
                     .HasColumnName("experimentId")
@@ -604,7 +604,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Code)
                     .HasColumnName("code")
@@ -644,7 +644,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Description)
                     .HasColumnName("description")
@@ -681,7 +681,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ExperimentId)
                     .HasColumnName("experimentId")
@@ -712,7 +712,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Inserted)
                     .HasColumnName("inserted")
@@ -752,7 +752,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.EntityId)
                     .HasColumnName("entityId")
@@ -776,7 +776,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ExperimentId)
                     .HasColumnName("experimentId")
@@ -805,7 +805,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Code)
                     .HasColumnName("code")
@@ -849,7 +849,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.EntityId)
                     .HasColumnName("entityId")
@@ -873,7 +873,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ExperimentVariableId)
                     .HasColumnName("experimentVariableId")
@@ -897,7 +897,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ExperimentVariableId)
                     .HasColumnName("experimentVariableId")
@@ -915,7 +915,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
@@ -940,7 +940,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.FunctionId)
                     .HasColumnName("functionId")
@@ -970,7 +970,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Desc)
                     .HasColumnName("desc")
@@ -996,7 +996,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Abbr)
                     .IsRequired()
@@ -1028,7 +1028,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Content)
                     .HasColumnName("content")
@@ -1066,7 +1066,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Active)
                     .HasColumnName("active")
@@ -1131,7 +1131,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Date)
                     .HasColumnName("date")
@@ -1153,7 +1153,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Description)
                     .HasColumnName("description")
@@ -1195,7 +1195,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Data)
                     .HasColumnName("data")
@@ -1233,7 +1233,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Active)
                     .HasColumnName("active")
@@ -1262,7 +1262,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.GraphsetId)
                     .HasColumnName("graphsetId")
@@ -1287,7 +1287,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Code)
                     .HasColumnName("code")
@@ -1321,7 +1321,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.FunctionId)
                     .HasColumnName("functionId")
@@ -1349,7 +1349,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.FunctionItemId)
                     .HasColumnName("functionItemId")
@@ -1387,7 +1387,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ModelReactionItemId)
                     .HasColumnName("modelReactionItemId")
@@ -1411,7 +1411,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ModelReactionId)
                     .HasColumnName("modelReactionId")
@@ -1438,7 +1438,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.DynExpression)
                     .HasColumnName("dynExpression")
@@ -1489,7 +1489,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.EntityId)
                     .HasColumnName("entityId")
@@ -1514,7 +1514,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.BcsId)
                     .HasColumnName("bcs_id")
@@ -1577,7 +1577,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
@@ -1598,7 +1598,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.AttributeId)
                     .HasColumnName("attribute_id")
@@ -1653,7 +1653,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Code)
                     .HasColumnName("code")
@@ -1671,7 +1671,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Active)
                     .HasColumnName("active")
@@ -1716,7 +1716,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ClassificationId)
                     .HasColumnName("classificationId")
@@ -1737,7 +1737,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Count)
                     .HasColumnName("count")
@@ -1780,7 +1780,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.EndPos)
                     .HasColumnName("endPos")
@@ -1811,7 +1811,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.EntityId)
                     .HasColumnName("entityId")
@@ -1853,7 +1853,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ChildEntityId)
                     .HasColumnName("childEntityId")
@@ -1875,7 +1875,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CompositionId)
                     .HasColumnName("compositionId")
@@ -1897,7 +1897,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ChildEntityId)
                     .HasColumnName("childEntityId")
@@ -1922,7 +1922,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Inserted)
                     .HasColumnName("inserted")
@@ -1952,7 +1952,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.OrganismId)
                     .HasColumnName("organismId")
@@ -1970,7 +1970,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Active)
                     .HasColumnName("active")
@@ -1992,7 +1992,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Default)
                     .HasColumnName("default")
@@ -2026,7 +2026,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.LangId)
                     .HasColumnName("langId")
@@ -2050,7 +2050,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Code)
                     .HasColumnName("code")
@@ -2078,7 +2078,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .UseMySqlIdentityColumn();
 
                 entity.Property(e => e.Access)
                     .HasColumnName("access")
@@ -2193,7 +2193,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Active)
                     .HasColumnName("active")
@@ -2225,7 +2225,7 @@ namespace BcsAdmin.DAL.Models
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ItemId)
                     .HasColumnName("itemId")

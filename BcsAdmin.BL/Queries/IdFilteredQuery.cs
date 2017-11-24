@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BcsAdmin.BL.Queries
 {
-    public abstract class IdFilteredQuery<TEntityDto> : EntityFrameworkQuery<TEntityDto, AppDbContext>, IFilteredQuery<TEntityDto, IdFilter>
+    public abstract class IdFilteredQuery<TEntityDto> : EntityFrameworkQuery<TEntityDto>, IFilteredQuery<TEntityDto, IdFilter>
     {
         public IdFilteredQuery(IUnitOfWorkProvider unitOfWorkProvider)
             : base(unitOfWorkProvider)
@@ -30,8 +30,9 @@ namespace BcsAdmin.BL.Queries
 
         protected override IQueryable<LocationLinkDto> GetQueryable()
         {
-            Context.EpEntity.Load();
-            return Context.EpEntityLocation.Where(e => e.Entity.Id == Filter.Id).Select(e => new LocationLinkDto
+            var context = Context.CastTo<AppDbContext>();
+            context.EpEntity.Load();
+            return context.EpEntityLocation.Where(e => e.Entity.Id == Filter.Id).Select(e => new LocationLinkDto
             {
                 Id = e.Location.Id,
                 Code = e.Location.Code,
@@ -50,30 +51,38 @@ namespace BcsAdmin.BL.Queries
 
         protected override IQueryable<ComponentLinkDto> GetQueryable()
         {
-            Context.EpEntity.Load();
-            Context.EpEntityComposition.Load();
+            var context = Context.CastTo<AppDbContext>();
+            context.EpEntity.Load();
+            context.EpEntityComposition.Load();
 
-            var parentEntity = Context.EpEntity.Find(Filter.Id);
+            var parentEntity = context.EpEntity.Find(Filter.Id);
 
             if (parentEntity == null) { return Enumerable.Empty<ComponentLinkDto>().AsQueryable(); }
 
-            IQueryable<EpEntity> q = null;
+            IQueryable<ComponentLinkDto> q = null;
             if (parentEntity.HierarchyType == HierarchyType.Atomic)
             {
-                q = Context.EpEntity.Where(e => e.ParentId == parentEntity.Id);
+                q = context.EpEntity.Where(e => e.ParentId == parentEntity.Id).Select(e => new ComponentLinkDto
+                {
+                    Id = e.Id,
+                    Code = e.Code,
+                    HierarchyType = (int)e.HierarchyType,
+                    Name = e.Name,
+                    IntermediateEntityId = null
+                });
             }
             else
             {
-                q = Context.EpEntityComposition.Where(e => e.ComposedEntity.Id == Filter.Id).Select(e => e.Component);
+                q = context.EpEntityComposition.Where(e => e.ComposedEntity.Id == Filter.Id).Select(e => new ComponentLinkDto
+                {
+                    Id = e.Component.Id,
+                    Code = e.Component.Code,
+                    HierarchyType = (int)e.Component.HierarchyType,
+                    Name = e.Component.Name,
+                    IntermediateEntityId = e.Id
+                });
             }
-
-            return q.Select(e => new ComponentLinkDto
-            {
-                Id = e.Id,
-                Code = e.Code,
-                HierarchyType = (int)e.HierarchyType,
-                Name = e.Name
-            });
+            return q;
         }
     }
 
@@ -86,13 +95,15 @@ namespace BcsAdmin.BL.Queries
 
         protected override IQueryable<ClassificationDto> GetQueryable()
         {
-            Context.EpEntity.Load();
-            Context.EpClassification.Load();
-            return Context.EpEntityClassification.Where(e => e.Entity.Id == Filter.Id).Select(e => new ClassificationDto
+            var context = Context.CastTo<AppDbContext>();
+            context.EpEntity.Load();
+            context.EpClassification.Load();
+            return context.EpEntityClassification.Where(e => e.Entity.Id == Filter.Id).Select(e => new ClassificationDto
             {
                 Id = e.Classification.Id,
                 Name = e.Classification.Name,
-                Type = e.Classification.Type
+                Type = e.Classification.Type,
+                IntermediateEntityId = e.Id
             });
         }
     }
@@ -106,9 +117,10 @@ namespace BcsAdmin.BL.Queries
 
         protected override IQueryable<EntityNoteDto> GetQueryable()
         {
-            Context.EpUser.Load();
-            Context.EpEntity.Load();
-            return Context.EpEntityNote.Where(e => e.Entity.Id == Filter.Id).Select(e => new EntityNoteDto
+            var context = Context.CastTo<AppDbContext>();
+            context.EpUser.Load();
+            context.EpEntity.Load();
+            return context.EpEntityNote.Where(e => e.Entity.Id == Filter.Id).Select(e => new EntityNoteDto
             {
                 Id = e.Id,
                 Text = e.Text,

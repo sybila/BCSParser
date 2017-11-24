@@ -25,6 +25,7 @@ namespace Bcs.Analyzer.DemoWeb
         private void ConfigureControls(DotvvmConfiguration config, string applicationPath)
         {
             config.Markup.AddCodeControls("cc", "Bcs.Admin.Web.Controls", "Bcs.Admin.Web");
+            config.Markup.AddCodeControls("dde", "Bcs.Admin.Web.Controls.Dynamic", "Bcs.Admin.Web");
             config.AddDynamicDataConfiguration();
         }
 

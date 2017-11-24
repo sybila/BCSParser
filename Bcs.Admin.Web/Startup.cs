@@ -19,6 +19,15 @@ using DotVVM.Framework.Controls.DynamicData.Builders;
 using Bcs.Admin.Web;
 using System.Composition.Hosting;
 using System.Reflection;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using BcsAdmin.DAL.Models;
+using Microsoft.EntityFrameworkCore;
+using Riganti.Utils.Infrastructure.Core;
+using Riganti.Utils.Infrastructure.EntityFrameworkCore;
+using System.Linq;
+using System.Collections.Generic;
+using Bcs.Admin.Web.ViewModels.Grids;
 
 namespace Bcs.Analyzer.DemoWeb
 {
@@ -27,7 +36,7 @@ namespace Bcs.Analyzer.DemoWeb
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             //services.AddDataProtection();
             //services.AddAuthorization();
@@ -39,23 +48,38 @@ namespace Bcs.Analyzer.DemoWeb
                 options.AddDefaultTempStorages("Temp");
             });
 
-            //var configuration = new ContainerConfiguration()
-            //    .WithAssembly(typeof(Startup).GetTypeInfo().Assembly)
-            //    .WithAssembly(typeof(Registry).GetTypeInfo().Assembly); ;
+            services.AddSingleton(ConfigureMapper().CreateMapper());
 
-            //var container = configuration.CreateContainer();
+            var builder = new ContainerBuilder();
 
-            services.AddSingleton<IMapper>(ConfigureMapper().CreateMapper());
+            builder.RegisterAssemblyModules(typeof(Startup).GetTypeInfo().Assembly);
+            builder.RegisterAssemblyModules(typeof(Registry).GetTypeInfo().Assembly);
+            builder.RegisterAssemblyModules(typeof(AppDbContext).GetTypeInfo().Assembly);
 
-            services.AddTransient<EntitiesTab, EntitiesTab>();
-            services.RegisterFactory<BiochemicalEntityDetail, BiochemicalEntityDetail>();
-            services.AddTransient<EditableGrid<ComponentLinkDto>, EditableGrid<ComponentLinkDto>>();
-            services.AddTransient<EditableGrid<LocationLinkDto>, EditableGrid<LocationLinkDto>>();
-            services.AddTransient<EditableGrid<ClassificationDto>, EditableGrid<ClassificationDto>>();
-            services.AddTransient<EditableGrid<EntityNoteDto>, EditableGrid<EntityNoteDto>>();
+            builder.RegisterType(typeof(AppDbContext)).As<DbContext>();
+            builder.RegisterType(typeof(EntityFrameworkUnitOfWorkProvider)).As<IUnitOfWorkProvider>();
+            builder.RegisterType(typeof(EntityFrameworkUnitOfWork)).As<IUnitOfWork>();
+            builder.RegisterType(typeof(UtcDateTimeProvider)).As<IDateTimeProvider>();
+            builder.RegisterType(typeof(ThreadLocalUnitOfWorkRegistry)).As<IUnitOfWorkRegistry>().InstancePerLifetimeScope();
 
-            services.RegisterDependenciesBL();
-            services.AddSingleton<IFormBuilder, BootstrapFormGroupBuilder>();
+            builder.RegisterType<BootstrapFormGroupBuilder>().As<IFormBuilder>();
+
+            builder.RegisterGeneric(typeof(EditableGrid<>)).As(typeof(IEditableGrid<>));
+
+            builder.RegisterAllByNamespace(typeof(Startup).Assembly, "Bcs.Admin.Web.ViewModels");
+            builder.RegisterAllBySuffix(typeof(Registry).Assembly, "Query");
+            builder.RegisterAllBySuffix(typeof(Registry).Assembly, "Repository");
+            builder.RegisterAllBySuffix(typeof(Registry).Assembly, "Facade");
+
+            builder.RegisterAssemblyTypes(typeof(Registry).Assembly)
+             .Where(t => t.Name.EndsWith("Mapper"))
+             .AsImplementedInterfaces()
+             .AsSelf();
+
+            builder.Populate(services);
+
+            var applicationContainer = builder.Build();
+            return new AutofacServiceProvider(applicationContainer);
         }
 
         private static MapperConfiguration ConfigureMapper()
@@ -82,5 +106,45 @@ namespace Bcs.Analyzer.DemoWeb
         }
 
         public const string AuthenticationScheme = "Cookie";
+    }
+
+    public static class BilderExtensions
+    {
+        public static void RegisterAllBySuffix(this ContainerBuilder builder, Assembly assembly, string suffix)
+            => builder.RegisterAllWhere(assembly, t => t.Name.EndsWith(suffix));
+
+        public static void RegisterAllByNamespace(this ContainerBuilder builder, Assembly assembly, string namespaceName)
+            => builder.RegisterAllWhere(assembly, t => t.Namespace == namespaceName);
+
+        public static void RegisterAllWhere(this ContainerBuilder builder, Assembly assembly, Func<Type, bool> filter)
+        {
+            var types = assembly.DefinedTypes.Where(filter).ToList();
+
+            foreach (var implementationType in types)
+            {
+                var allTypes = implementationType.GetBaseTypesAndSelf().Where(t => t.Namespace != "System").ToList();
+
+                var interfaces = allTypes.SelectMany(t => t.GetTypeInfo().ImplementedInterfaces).Distinct().ToList();
+
+                foreach (var t in allTypes)
+                {
+                    builder.RegisterType(implementationType).As(t);
+                }
+                foreach (var i in interfaces)
+                {
+
+                    builder.RegisterType(implementationType).As(i);
+                }
+            }
+        }
+
+        public static IEnumerable<Type> GetBaseTypesAndSelf(this Type type)
+        {
+            while (type != null)
+            {
+                yield return type;
+                type = type.BaseType;
+            }
+        }
     }
 }

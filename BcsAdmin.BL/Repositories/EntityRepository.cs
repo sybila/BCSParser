@@ -7,9 +7,9 @@ using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 
 namespace BcsAdmin.BL.Dto.Repositories
 {
-    public class EntityRepisitory : EntityFrameworkRepository<EpEntity, int, AppDbContext>
+    public class EntityRepository : EntityFrameworkRepository<EpEntity, int>, IRepository<EpEntity, int>
     {
-        public EntityRepisitory(IEntityFrameworkUnitOfWorkProvider<AppDbContext> unitOfWorkProvider, IDateTimeProvider dateTimeProvider)
+        public EntityRepository(IUnitOfWorkProvider unitOfWorkProvider, IDateTimeProvider dateTimeProvider)
             : base(unitOfWorkProvider, dateTimeProvider)
         {
         }

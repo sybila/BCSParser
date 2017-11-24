@@ -3,11 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace Bcs.Admin.Web.ViewModels
 {
     public class BiochemicalEntityRowDto : IEntity<int>
     {
+        [Display(AutoGenerateField = false)]
         public int Id { get; set; }
 
         public string Name { get; set; }

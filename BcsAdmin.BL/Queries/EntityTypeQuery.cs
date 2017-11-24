@@ -8,7 +8,7 @@ using Riganti.Utils.Infrastructure.Core;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class EntityTypeNamesQuery : EntityFrameworkQuery<string, AppDbContext>
+    public class EntityTypeNamesQuery : EntityFrameworkQuery<string>
     {
         public EntityTypeNamesQuery(IUnitOfWorkProvider unitOfWorkProvider) 
             : base(unitOfWorkProvider)
@@ -17,7 +17,7 @@ namespace BcsAdmin.BL.Queries
 
         protected override IQueryable<string> GetQueryable()
         {
-            return Context.EpEntity
+            return Context.CastTo<AppDbContext>().EpEntity
                 .Select(e => e.HierarchyType)
                 .Distinct()
                 .Select(e=> e.ToString("F"));

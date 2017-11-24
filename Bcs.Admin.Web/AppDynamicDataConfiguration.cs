@@ -40,6 +40,7 @@ namespace Bcs.Admin.Web
             var columnProvider = new ConventionComboBoxGridColumnProvider(conventions);
             FormEditorProviders.Insert(0, provider);
             GridColumnProviders.Insert(0, columnProvider);
+            FormBuilders.Add("horisontal", new HorisontalTableFormBuilder());
         }
     }
 }
