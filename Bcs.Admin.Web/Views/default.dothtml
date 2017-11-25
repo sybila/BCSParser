@@ -86,50 +86,20 @@
                     <dd:DynamicDataGridViewDecorator ColumnPlacement="Left">
                         <dot:GridView class="table table-bordered table-hover" DataSource="{value: DataSet}" FilterPlacement="ExtraRow">
                             <Columns>
-                                <dot:GridViewTemplateColumn HeaderText="Child entities">
-                                    <ContentTemplate>
-                                        <dot:Button ButtonTagName="button" Click="{command: _parent.Edit(Id)}"><i class="glyphicon glyphicon-edit"></i></dot:Button>
-                                    </ContentTemplate>
-                                </dot:GridViewTemplateColumn>
                             </Columns>
                         </dot:GridView>
                     </dd:DynamicDataGridViewDecorator>
                 </div>
             </div>
-            <div DataContext="{value: Classifications}" class="panel panel-info">
-                <div class="panel-heading">
-                    Classifications:
-                </div>
-                <div class="panel-body">
-                    <dd:DynamicDataGridViewDecorator ColumnPlacement="Left">
-                        <dot:GridView class="table table-bordered table-hover" InlineEditing="true" DataSource="{value: DataSet}">
-                            <EmptyDataTemplate>
-                                No records
-                            </EmptyDataTemplate>
-                            <Columns>
-                                <dot:GridViewTemplateColumn HeaderText="">
-                                    <ContentTemplate>
-                                        <dot:Button ButtonTagName="button" class="btn btn-sm btn-info" Click="{command: _parent.Edit(Id)}">
-                                            <i class="glyphicon glyphicon-edit"></i>
-                                        </dot:Button>
-                                        <dot:Button ButtonTagName="button" class="btn btn-sm btn-info" Click="{command: _parent.Delete(IntermediateEntityId)}">
-                                            <i class="glyphicon glyphicon-trash"></i>
-                                        </dot:Button>
-                                    </ContentTemplate>
-                                    <EditTemplate>
-                                        <dot:Button ButtonTagName="button" class="btn btn-sm btn-info" Click="{command: _parent.Cancel()}">
-                                            <i class="glyphicon glyphicon-remove"></i>
-                                        </dot:Button>
-                                        <dot:Button ButtonTagName="button" class="btn btn-sm btn-info" Click="{command: _parent.SaveEdit(_this)}">
-                                            <i class="glyphicon glyphicon-save"></i>
-                                        </dot:Button>
-                                    </EditTemplate>
-                                </dot:GridViewTemplateColumn>
-                            </Columns>                         
-                        </dot:GridView>
-                    </dd:DynamicDataGridViewDecorator>
-                </div>
-                <div class="panel-footer">
+
+            <dde:EditableDynamicGridPanel HeadingText="Classifications:"
+                                         DataSourceBinding="{value: DataSet}"
+                                         DataContext="{value: Classifications}" 
+                                          EditCommand="{command: _parent.Edit(_this)}"
+                                          DeleteCommand="{command: _parent.Delete(_this)}"
+                                          CancelCommand="{command: _parent.Cancel()}"
+                                          SaveCommand="{command: _parent.SaveEdit(_this)}">
+                <FooterTemplate>
                     <div class="row" Visible="{value: NewRow == null}">
                         <div class="col-md-9">
                             <div class="input-group input-group-sm">
@@ -156,8 +126,8 @@
                             <i class="glyphicon glyphicon-remove"></i> Cancel
                         </dot:Button>
                     </div>
-                </div>
-            </div>
+                </FooterTemplate>
+            </dde:EditableDynamicGridPanel>
             <div class="panel panel-info">
                 <div class="panel panel-heading">
                     Notes

@@ -26,6 +26,7 @@ namespace Bcs.Analyzer.DemoWeb
         {
             config.Markup.AddCodeControls("cc", "Bcs.Admin.Web.Controls", "Bcs.Admin.Web");
             config.Markup.AddCodeControls("dde", "Bcs.Admin.Web.Controls.Dynamic", "Bcs.Admin.Web");
+            config.Markup.AddCodeControls("dde", "Bcs.Admin.Web.Controls.EditPanel", "Bcs.Admin.Web");
             config.AddDynamicDataConfiguration();
         }
 

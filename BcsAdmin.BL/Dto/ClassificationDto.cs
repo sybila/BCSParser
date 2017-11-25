@@ -6,12 +6,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BcsAdmin.BL.Dto
 {
-    public class ClassificationDto : IEntity<int>
+    public class ClassificationDto : IManyToManyEntity
     {
-        [Display(AutoGenerateField = false)]
+       // [Display(AutoGenerateField = false)]
         public int Id { get; set; }
         [Display(AutoGenerateField = false)]
-        public int IntermediateEntityId { get; set; }
+        public int? IntermediateEntityId { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
     }

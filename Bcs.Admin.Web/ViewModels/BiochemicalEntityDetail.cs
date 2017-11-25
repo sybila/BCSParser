@@ -52,6 +52,7 @@ namespace Bcs.Admin.Web.ViewModels
 
         [Display(AutoGenerateField = false)]
         public IEditableGrid<ClassificationDto> Classifications { get; set; }
+        public bool IsVisible { get; internal set; }
 
         //[Display(AutoGenerateField = false)]
         //public EditableGrid<EntityNoteDto> Notes { get; set; }

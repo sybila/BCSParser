@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BcsAdmin.BL.Dto
 {
-    public abstract class BiochemicalEntityLinkDto : IEntity<int>
+    public abstract class BiochemicalEntityLinkDto : IManyToManyEntity
     {
         [Display(AutoGenerateField =false)]
         public int Id { get; set; }

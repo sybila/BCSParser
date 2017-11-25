@@ -12,8 +12,8 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         GridViewDataSet<TGridEntity> DataSet { get; }
         TGridEntity NewRow { get; }
 
-        void Edit(int id);
-        void Delete(int id);
+        void Edit(TGridEntity entity);
+        void Delete(TGridEntity entity);
         void Add();
         void SaveEdit(TGridEntity entity);
         void SaveNew();

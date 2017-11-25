@@ -94,8 +94,11 @@ namespace Bcs.Admin.Web.Controls
             var comboBox = new ComboBox();
             comboBox.SetBinding(Selector.SelectedValueProperty, GetValueBinding(SelectedValueBindingProperty));
             
+            //TODO prekopirovat value member
+
             comboBox.DisplayMember = DisplayMember;
             comboBox.EmptyItemText = EmptyItemText;
+            //Remove this
             comboBox.ValueMember = ValueMember;
             comboBox.Enabled = enabled;
             comboBox.SetBinding(ItemsControl.DataSourceProperty, GetValueBinding(DataSourceBindingProperty));

@@ -4,11 +4,12 @@ using DotVVM.Framework.Controls;
 using DotVVM.Framework.ViewModel;
 using Riganti.Utils.Infrastructure.Core;
 using System.Threading.Tasks;
+using BcsAdmin.BL.Dto;
 
 namespace Bcs.Admin.Web.ViewModels.Grids
 {
     public class EditableGrid<TGridEntity> : DotvvmViewModelBase, IEditableGrid<TGridEntity>
-        where TGridEntity : class, IEntity<int>
+        where TGridEntity : class, IEntity<int>, IManyToManyEntity
     {
         private readonly IGridFacade<TGridEntity> facade;
 
@@ -28,15 +29,15 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             NewRow = facade.CreateAssociated();
         }
 
-        public void Edit(int id)
+        public void Edit(TGridEntity entity)
         {
             NewRow = null;
-            DataSet.RowEditOptions.EditRowId = id;
+            DataSet.RowEditOptions.EditRowId = entity.Id;
         }
 
-        public void Delete(int id)
+        public void Delete(TGridEntity entity)
         {
-            facade.Unlink(id);
+            facade.Unlink(entity.IntermediateEntityId ?? -1);
         }
 
         public void Cancel()
@@ -52,7 +53,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public void SaveEdit(TGridEntity entity)
         {
-            facade.Edit(entity);
+            facade.Edit(NewRow);
             DataSet.RowEditOptions.EditRowId = null;
         }
 

@@ -12,7 +12,6 @@ namespace Bcs.Admin.Web.ViewModels
         private readonly BasicListFacade basicListFacade;
         private readonly DashboardFacade dashboardFacade;
         private readonly IMapper mapper;
-        private readonly BiochemicalEntityDetail detailFunc;
 
         public EntitiesTab EntitiesTab { get; set; }
         public BiochemicalEntityDetail Detail { get; set; }
@@ -23,18 +22,19 @@ namespace Bcs.Admin.Web.ViewModels
             DashboardFacade dashboardFacade,
             IMapper mapper, 
             EntitiesTab entitiesTab,
-            BiochemicalEntityDetail detailFunc)
+            BiochemicalEntityDetail detail)
         {
             this.basicListFacade = basicListFacade;
             this.dashboardFacade = dashboardFacade;
             this.mapper = mapper;
             EntitiesTab = entitiesTab;
-            Detail = detailFunc;
+            Detail = detail;
             Title = "Dashboard";
         }
 
         public void EditEntity(int entityId)
         {
+            Detail.IsVisible = true;
             var dto = dashboardFacade.GetDetail(entityId);
             mapper.Map(dto, Detail);
             Detail.PoputateGrids();
@@ -48,13 +48,12 @@ namespace Bcs.Admin.Web.ViewModels
 
         public override Task Init()
         {
-            HierarchyTypes = basicListFacade.GetEntityTypes();;
+            HierarchyTypes = basicListFacade.GetEntityTypes();
             return base.Init();
         }
 
         public override Task PreRender()
         {
-            Detail?.PreRender();
             return base.PreRender();
         }
     }
