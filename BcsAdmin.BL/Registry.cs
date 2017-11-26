@@ -29,12 +29,33 @@ namespace BcsAdmin.BL
             cfg.CreateMap<EpEntityNote, EntityNoteDto>();
             cfg.CreateMap<EpEntity, ComponentLinkDto>()
                 .ForMember(t => t.HierarchyType, a => a.MapFrom(s => s.HierarchyType));
+            cfg.CreateMap<ComponentLinkDto, EpEntity>()
+                .ForMember(t=> t.Code, m=> m.MapFrom(s=> s.Code))
+                .ForMember(t => t.Name, m => m.MapFrom(s => s.Name))
+                .ForMember(t => t.HierarchyType, m => m.MapFrom(s => s.HierarchyType))
+                .ForMember(t => t.Id, m => m.MapFrom(s => s.Id))
+                .ForAllOtherMembers(a=> a.Ignore());
+
+            cfg.CreateMap<EpEntity, LocationLinkDto>()
+                .ForMember(t => t.HierarchyType, a => a.MapFrom(s => s.HierarchyType));
+            cfg.CreateMap<LocationLinkDto, EpEntity>()
+                .ForMember(t => t.Code, m => m.MapFrom(s => s.Code))
+                .ForMember(t => t.Name, m => m.MapFrom(s => s.Name))
+                .ForMember(t => t.HierarchyType, m => m.MapFrom(s => s.HierarchyType))
+                .ForMember(t => t.Id, m => m.MapFrom(s => s.Id))
+                .ForAllOtherMembers(a => a.Ignore());
+
             cfg.CreateMap<EpEntity, LocationLinkDto>()
                .ForMember(t => t.HierarchyType, a => a.MapFrom(s => s.HierarchyType));
-
             cfg.CreateMap<EntityLinkDto, EpEntityClassification>()
                 .ForMember(s => s.ClassificationId, a => a.MapFrom(s => s.AssociatedId))
                 .ForMember(s => s.EntityId, a => a.MapFrom(s => s.DetailId));
+             cfg.CreateMap<EntityLinkDto, EpEntityComposition>()
+                .ForMember(s => s.ChildEntityId, a => a.MapFrom(s => s.AssociatedId))
+                .ForMember(s => s.ParentEntityId, a => a.MapFrom(s => s.DetailId));
+            cfg.CreateMap<EntityLinkDto, EpEntityLocation>()
+                .ForMember(s => s.ParentEntityId, a => a.MapFrom(s => s.AssociatedId))
+                .ForMember(s => s.ChildEntityId, a => a.MapFrom(s => s.DetailId));
         }
 
         public static void RegisterFactory<TContract, TImplementation>(this IServiceCollection services)

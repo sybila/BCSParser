@@ -87,7 +87,7 @@ namespace Bcs.Analyzer.DemoWeb
             return new MapperConfiguration(cfg =>
             {
                 cfg.RegisterMapperBL();
-                cfg.CreateMap<BiochemicalEntityDetailDto, BiochemicalEntityDetail>();
+                cfg.CreateMap<BiochemicalEntityDetailDto, BiochemicalEntityDetail>();           
             });
         }
 

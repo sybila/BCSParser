@@ -9,11 +9,16 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Bcs.Admin.Web.ViewModels.Grids;
+using BcsAdmin.BL.Facades;
+using AutoMapper;
 
 namespace Bcs.Admin.Web.ViewModels
 {
     public class BiochemicalEntityDetail : DotvvmViewModelBase
     {
+        private readonly DashboardFacade dashboardFacade;
+        private readonly IMapper mapper;
+
         [Protect(ProtectMode.SignData)]
         [Display(AutoGenerateField = false)]
         public int Id { get; set; }
@@ -57,11 +62,15 @@ namespace Bcs.Admin.Web.ViewModels
         //public EditableGrid<EntityNoteDto> Notes { get; set; }
 
         public BiochemicalEntityDetail(
-          IEditableGrid<ComponentLinkDto> componentGrid,
-          IEditableGrid<LocationLinkDto> locationGrid,
-          IEditableGrid<ClassificationDto> classificationGrid
-          /*EditableGrid<EntityNoteDto> noteGrid*/)
+            DashboardFacade dashboardFacade,
+            IMapper mapper,
+            IEditableGrid<ComponentLinkDto> componentGrid,
+            IEditableGrid<LocationLinkDto> locationGrid,
+            IEditableGrid<ClassificationDto> classificationGrid
+            /*EditableGrid<EntityNoteDto> noteGrid*/)
         {
+            this.dashboardFacade = dashboardFacade;
+            this.mapper = mapper;
             Components = componentGrid;
             Locations = locationGrid;
             Classifications = classificationGrid;
@@ -87,6 +96,12 @@ namespace Bcs.Admin.Web.ViewModels
             Classifications.Cancel();
             Locations.Cancel();
             Components.Cancel();
+        }
+
+        public void Save()
+        {
+            var dto = mapper.Map<BiochemicalEntityDetailDto>(this);
+            dashboardFacade.Save(dto);
         }
     }
 }

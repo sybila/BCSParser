@@ -35,12 +35,25 @@ namespace BcsAdmin.BL.Mappers
 
         public EpEntity MapToEntity(BiochemicalEntityDetailDto source)
         {
-            throw new NotImplementedException();
+            var target = new EpEntity();
+            PopulateEntity(source, target);
+            return target;
         }
 
         public void PopulateEntity(BiochemicalEntityDetailDto source, EpEntity target)
         {
-            throw new NotImplementedException();
+            target.Active = !source.Active ? (int?)null : 1;
+            target.Code = source.Code;
+            target.Name = source.Name;
+            target.Description = source.Description;
+            target.HierarchyType = (HierarchyType)source.SelectedHierarchyType;
+            target.VisualisationXml = source.VisualisationXml;
+            target.Type = 
+                source.SelectedHierarchyType == 0
+                ? "state"
+                : "entity";
+
+
         }
     }
 }
