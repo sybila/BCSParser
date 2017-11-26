@@ -8,7 +8,7 @@ namespace BcsAdmin.BL.Dto
 {
     public class ClassificationDto : IManyToManyEntity
     {
-       // [Display(AutoGenerateField = false)]
+        [Display(AutoGenerateField = false)]
         public int Id { get; set; }
         [Display(AutoGenerateField = false)]
         public int? IntermediateEntityId { get; set; }

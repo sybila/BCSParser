@@ -27,8 +27,10 @@ namespace BcsAdmin.BL
         {
             cfg.CreateMap<EpClassification, ClassificationDto>();
             cfg.CreateMap<EpEntityNote, EntityNoteDto>();
-            cfg.CreateMap<EpEntity, BiochemicalEntityLinkDto>()
+            cfg.CreateMap<EpEntity, ComponentLinkDto>()
                 .ForMember(t => t.HierarchyType, a => a.MapFrom(s => s.HierarchyType));
+            cfg.CreateMap<EpEntity, LocationLinkDto>()
+               .ForMember(t => t.HierarchyType, a => a.MapFrom(s => s.HierarchyType));
 
             cfg.CreateMap<EntityLinkDto, EpEntityClassification>()
                 .ForMember(s => s.ClassificationId, a => a.MapFrom(s => s.AssociatedId))

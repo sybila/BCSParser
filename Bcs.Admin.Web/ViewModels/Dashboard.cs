@@ -34,10 +34,10 @@ namespace Bcs.Admin.Web.ViewModels
 
         public void EditEntity(int entityId)
         {
-            Detail.IsVisible = true;
             var dto = dashboardFacade.GetDetail(entityId);
             mapper.Map(dto, Detail);
             Detail.PoputateGrids();
+            Detail.CancelAllActions();
         }
 
         public async Task Refresh()

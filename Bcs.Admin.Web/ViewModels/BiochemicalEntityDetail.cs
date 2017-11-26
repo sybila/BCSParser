@@ -18,11 +18,11 @@ namespace Bcs.Admin.Web.ViewModels
         [Display(AutoGenerateField = false)]
         public int Id { get; set; }
 
-        [Required]
+        //[Required]
         [Display(Name = "Name")]
         public string Name { get; set; }
 
-        [Required]
+        //[Required]
         [Display(Name = "Code")]
         public string Code { get; set; }
 
@@ -52,7 +52,6 @@ namespace Bcs.Admin.Web.ViewModels
 
         [Display(AutoGenerateField = false)]
         public IEditableGrid<ClassificationDto> Classifications { get; set; }
-        public bool IsVisible { get; internal set; }
 
         //[Display(AutoGenerateField = false)]
         //public EditableGrid<EntityNoteDto> Notes { get; set; }
@@ -80,6 +79,14 @@ namespace Bcs.Admin.Web.ViewModels
             Classifications.Init();
             Locations.Init();
             //Notes.Init();
+        }
+
+        public void CancelAllActions()
+        {
+            Components.Cancel();
+            Classifications.Cancel();
+            Locations.Cancel();
+            Components.Cancel();
         }
     }
 }

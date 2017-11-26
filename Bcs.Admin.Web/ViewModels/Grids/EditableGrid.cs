@@ -49,11 +49,12 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         public void SaveNew()
         {
             facade.CreateAndLink(NewRow, ParentEntityId);
+            NewRow = null;
         }
 
         public void SaveEdit(TGridEntity entity)
         {
-            facade.Edit(NewRow);
+            facade.Edit(entity);
             DataSet.RowEditOptions.EditRowId = null;
         }
 

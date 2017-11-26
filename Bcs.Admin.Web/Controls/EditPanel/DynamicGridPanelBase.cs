@@ -16,14 +16,14 @@ namespace Bcs.Admin.Web.Controls
     public abstract class DynamicGridPanelBase : PanelControl
     {
         [MarkupOptions(AllowHardCodedValue = false, Required = true)]
-        public IBinding DataSourceBinding
+        public IValueBinding DataSourceBinding
         {
-            get { return GetValue<IBinding>(DataSourceBindingProperty); }
+            get { return GetValue<IValueBinding>(DataSourceBindingProperty); }
             set { SetValue(DataSourceBindingProperty, value); }
         }
 
         public static readonly DotvvmProperty DataSourceBindingProperty =
-            DotvvmProperty.Register<IBinding, DynamicGridPanelBase>(t => t.DataSourceBinding, null);
+            DotvvmProperty.Register<IValueBinding, DynamicGridPanelBase>(t => t.DataSourceBinding, null);
 
         protected override void CreateContent(IDotvvmRequestContext context, HtmlGenericControl bodyDiv, HtmlGenericControl footerDiv)
         {
