@@ -11,6 +11,7 @@ using System.Linq;
 using Bcs.Admin.Web.ViewModels.Grids;
 using BcsAdmin.BL.Facades;
 using AutoMapper;
+using BcsAdmin.BL.Queries;
 
 namespace Bcs.Admin.Web.ViewModels
 {
@@ -50,13 +51,13 @@ namespace Bcs.Admin.Web.ViewModels
         public BiochemicalEntityLinkDto Parent { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public IEditableGrid<ComponentLinkDto> Components { get; set; }
+        public IEntityLinkEditableGrid<ComponentLinkDto, EntitySuggestionQuery> Components { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public IEditableGrid<LocationLinkDto> Locations { get; set; }
+        public IEntityLinkEditableGrid<LocationLinkDto, EntitySuggestionQuery> Locations { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public IEditableGrid<ClassificationDto> Classifications { get; set; }
+        public IEntityLinkEditableGrid<ClassificationDto, ClassificationSuggestionQuery> Classifications { get; set; }
 
         //[Display(AutoGenerateField = false)]
         //public EditableGrid<EntityNoteDto> Notes { get; set; }
@@ -64,9 +65,9 @@ namespace Bcs.Admin.Web.ViewModels
         public BiochemicalEntityDetail(
             DashboardFacade dashboardFacade,
             IMapper mapper,
-            IEditableGrid<ComponentLinkDto> componentGrid,
-            IEditableGrid<LocationLinkDto> locationGrid,
-            IEditableGrid<ClassificationDto> classificationGrid
+            IEntityLinkEditableGrid<ComponentLinkDto, EntitySuggestionQuery> componentGrid,
+            IEntityLinkEditableGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid,
+             IEntityLinkEditableGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid
             /*EditableGrid<EntityNoteDto> noteGrid*/)
         {
             this.dashboardFacade = dashboardFacade;

@@ -15,6 +15,27 @@ namespace Bcs.Admin.Web.Controls.EditPanel
 {
     public class EditableDynamicGridPanel : DynamicGridPanelBase
     {
+
+        [MarkupOptions(AllowHardCodedValue = false)]
+        public IValueBinding LinkEntitySearchSelect
+        {
+            get { return GetValue<IValueBinding>(LinkEntitySearchSelectProperty); }
+            set { SetValue(LinkEntitySearchSelectProperty, value); }
+        }
+        public static readonly DotvvmProperty LinkEntitySearchSelectProperty
+            = DotvvmProperty.Register<IValueBinding, EditableDynamicGridPanel>(c => c.LinkEntitySearchSelect, null);
+
+        [MarkupOptions(AllowHardCodedValue = false)]
+        public ICommandBinding LinkEntity
+        {
+            get { return (ICommandBinding)GetValue(LinkEntityProperty); }
+            set { SetValue(LinkEntityProperty, value); }
+        }
+        public static readonly DotvvmProperty LinkEntityProperty
+            = DotvvmProperty.Register<ICommandBinding, EditableDynamicGridPanel>(c => c.LinkEntity, null);
+
+
+
         [MarkupOptions(AllowHardCodedValue = false)]
         [ControlPropertyBindingDataContextChange(nameof(DataSourceBinding))]
         [CollectionElementDataContextChange(1)]
@@ -134,8 +155,15 @@ namespace Bcs.Admin.Web.Controls.EditPanel
 
         protected override void SetUpFooter(IDotvvmRequestContext context, HtmlGenericControl footerDiv)
         {
-            var inputGroupBtn = CreateDivWithClass("input-group-btn", CreateIconButton("link", "Link existing", AddCommand));
-            var inputGroup = CreateDivWithClass("input-group input-group-sm", inputGroupBtn);
+            var inputGroupBtn = CreateDivWithClass("input-group-btn", CreateIconButton("link", "Link existing", LinkEntity));
+
+            var searchDropDown = new SearchDropDown();
+            searchDropDown.TextBoxSize = SearchDropDown.Size.Small;
+            searchDropDown.SetBinding(DataContextProperty, LinkEntitySearchSelect);
+            searchDropDown.SetDataContextType(this.CreateChildStack(LinkEntitySearchSelect.ResultType));
+
+            var inputGroup = CreateDivWithClass("input-group", searchDropDown, inputGroupBtn);
+
             var leftDiv = CreateDivWithClass("col-md-9", inputGroup);
             var rightDiv = CreateDivWithClass("col-md-3", CreateIconButton("plus", "Add new", AddCommand));
             var row = CreateDivWithClass("row", leftDiv, rightDiv);
@@ -160,15 +188,15 @@ namespace Bcs.Admin.Web.Controls.EditPanel
 
         private static HtmlGenericControl CreateDivWithClass(string classValue, params DotvvmControl [] children)
         {
-            var row = new HtmlGenericControl("div");
-            row.Attributes["class"] = classValue;
+            var div = new HtmlGenericControl("div");
+            div.Attributes["class"] = classValue;
             
             foreach(var c in children)
             {
-                row.Children.Add(c);
+                div.Children.Add(c);
             }
 
-            return row;
+            return div;
         }
 
         protected virtual Button CreateIconButton(string iconName, string buttonText, ICommandBinding command)

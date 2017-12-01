@@ -64,7 +64,8 @@ namespace Bcs.Analyzer.DemoWeb
 
             builder.RegisterType<BootstrapFormGroupBuilder>().As<IFormBuilder>();
 
-            builder.RegisterGeneric(typeof(EditableGrid<>)).As(typeof(IEditableGrid<>));
+            builder.RegisterGeneric(typeof(EditableGrid<,>)).As(typeof(IEntityLinkEditableGrid<,>));
+            builder.RegisterGeneric(typeof(SuggestionsFacade<>)).As(typeof(SuggestionsFacade<>));
 
             builder.RegisterAllByNamespace(typeof(Startup).Assembly, "Bcs.Admin.Web.ViewModels");
             builder.RegisterAllBySuffix(typeof(Registry).Assembly, "Query");

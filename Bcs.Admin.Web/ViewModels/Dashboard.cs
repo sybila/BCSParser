@@ -17,6 +17,8 @@ namespace Bcs.Admin.Web.ViewModels
         public BiochemicalEntityDetail Detail { get; set; }
         public List<BiochemicalEntityTypeDto> HierarchyTypes { get; set; }
 
+        public List<SuggestionDto> EntitySuggestions { get; set; }
+
         public Dashboard(
             BasicListFacade basicListFacade,
             DashboardFacade dashboardFacade,

@@ -8,10 +8,14 @@ using BcsAdmin.BL.Dto;
 
 namespace Bcs.Admin.Web.ViewModels.Grids
 {
-    public class EditableGrid<TGridEntity> : DotvvmViewModelBase, IEditableGrid<TGridEntity>
+    public class EditableGrid<TGridEntity, TSuggestionQuery> : DotvvmViewModelBase, IEntityLinkEditableGrid<TGridEntity, TSuggestionQuery>
         where TGridEntity : class, IEntity<int>, IManyToManyEntity
+        where TSuggestionQuery : IFilteredQuery<SuggestionDto, SuggestionFilter>
     {
         private readonly IGridFacade<TGridEntity> facade;
+
+        [Bind(Direction.None)]
+        public SuggestionsFacade<TSuggestionQuery> SuggestionsFacade { get; }
 
         [Bind(Direction.Both)]
         public int ParentEntityId { get; set; }
@@ -19,9 +23,14 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         public GridViewDataSet<TGridEntity> DataSet { get; set; }
         public TGridEntity NewRow { get; set; }
 
-        public EditableGrid(IGridFacade<TGridEntity> facade)
+        public EntitySearchSelect EntitySearchSelect { get; set; }
+
+        public EditableGrid(IGridFacade<TGridEntity> facade, EntitySearchSelect entitySearchSelect, SuggestionsFacade<TSuggestionQuery> suggestionsFacade)
         {
             this.facade = facade;
+            this.EntitySearchSelect =  entitySearchSelect;
+            this.SuggestionsFacade = suggestionsFacade;
+            EntitySearchSelect.SuggestionProvider = suggestionsFacade.GetSuggestions;
         }
 
         public void Add()
@@ -56,6 +65,15 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         {
             facade.Edit(entity);
             DataSet.RowEditOptions.EditRowId = null;
+        }
+
+        public void Link()
+        {
+            var associateId = EntitySearchSelect?.SelectedLink?.Id;
+
+            if (associateId == null) return;
+
+            facade.Link(new EntityLinkDto {DetailId= ParentEntityId, AssociatedId= associateId.Value});
         }
 
         public override Task Init()

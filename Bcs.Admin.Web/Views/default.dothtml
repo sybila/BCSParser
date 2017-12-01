@@ -79,8 +79,10 @@
                                           SaveNewCommand="{command: SaveNew()}"
                                           CancelNew="{command: Cancel()}"
                                           AddCommand="{command: Add()}"
+                                          LinkEntity="{command: Link()}"
                                           NewEntityFormVisible="{value: NewRow != null}"
-                                          NewEntityDto="{value: NewRow}" />
+                                          NewEntityDto="{value: NewRow}" 
+                                          LinkEntitySearchSelect="{value: EntitySearchSelect}"/>
 
             <dde:EditableDynamicGridPanel HeadingText="Locations:"
                                           DataContext="{value: Locations}"
@@ -93,7 +95,9 @@
                                           CancelNew="{command: Cancel()}"
                                           AddCommand="{command: Add()}"
                                           NewEntityFormVisible="{value: NewRow != null}"
-                                          NewEntityDto="{value: NewRow}" />
+                                          NewEntityDto="{value: NewRow}" 
+                                          LinkEntitySearchSelect="{value: EntitySearchSelect}"
+                                          LinkEntity="{command: Link()}"/>
 
             <dde:EditableDynamicGridPanel HeadingText="Classifications:"
                                           DataContext="{value: Classifications}"
@@ -106,7 +110,9 @@
                                           CancelNew="{command: Cancel()}"
                                           AddCommand="{command: Add()}"
                                           NewEntityFormVisible="{value: NewRow != null}"
-                                          NewEntityDto="{value: NewRow}" />
+                                          NewEntityDto="{value: NewRow}" 
+                                          LinkEntitySearchSelect="{value: EntitySearchSelect}"
+                                          LinkEntity="{command: Link()}"/>
             <div class="panel panel-info">
                 <div class="panel panel-heading">
                     Notes
