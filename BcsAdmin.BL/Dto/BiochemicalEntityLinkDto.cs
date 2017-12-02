@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BcsAdmin.BL.Dto
 {
-    public abstract class BiochemicalEntityLinkDto : IManyToManyEntity
+    public abstract class BiochemicalEntityLinkDto : IAssociatedEntity
     {
         [Display(AutoGenerateField =false)]
         public int Id { get; set; }
         [Display(AutoGenerateField = false)]
-        public int? IntermediateEntityId { get; set; }
+        public int? DetailEntityId { get; set; }
         [Display(Name="Hierarchy type")]
         public int HierarchyType { get; set; }
         public string Code { get; set; }

@@ -1,86 +1,76 @@
-﻿using BcsAdmin.BL.Facades;
-using BcsAdmin.BL.Filters;
-using DotVVM.Framework.Controls;
-using DotVVM.Framework.ViewModel;
-using Riganti.Utils.Infrastructure.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BcsAdmin.BL.Dto;
+using BcsAdmin.BL.Facades;
+using BcsAdmin.BL.Filters;
+using DotVVM.Framework.Controls;
+using DotVVM.Framework.Hosting;
+using DotVVM.Framework.ViewModel;
+using Riganti.Utils.Infrastructure;
+using Riganti.Utils.Infrastructure.Core;
 
 namespace Bcs.Admin.Web.ViewModels.Grids
 {
-    public class EditableGrid<TGridEntity, TSuggestionQuery> : DotvvmViewModelBase, IEntityLinkEditableGrid<TGridEntity, TSuggestionQuery>
-        where TGridEntity : class, IEntity<int>, IManyToManyEntity
-        where TSuggestionQuery : IFilteredQuery<SuggestionDto, SuggestionFilter>
+    public class EditableGrid<TGridEntity> : DotvvmViewModelBase, IEditableGrid<TGridEntity>
+        where TGridEntity : class, IEntity<int>, IAssociatedEntity
     {
         private readonly IGridFacade<TGridEntity> facade;
 
-        [Bind(Direction.None)]
-        public SuggestionsFacade<TSuggestionQuery> SuggestionsFacade { get; }
-
-        [Bind(Direction.Both)]
         public int ParentEntityId { get; set; }
 
         public GridViewDataSet<TGridEntity> DataSet { get; set; }
+
         public TGridEntity NewRow { get; set; }
 
-        public EntitySearchSelect EntitySearchSelect { get; set; }
-
-        public EditableGrid(IGridFacade<TGridEntity> facade, EntitySearchSelect entitySearchSelect, SuggestionsFacade<TSuggestionQuery> suggestionsFacade)
+        public EditableGrid(IGridFacade<TGridEntity> facade)
         {
             this.facade = facade;
-            this.EntitySearchSelect =  entitySearchSelect;
-            this.SuggestionsFacade = suggestionsFacade;
-            EntitySearchSelect.SuggestionProvider = suggestionsFacade.GetSuggestions;
         }
 
         public void Add()
         {
-            NewRow = facade.CreateAssociated();
-        }
-
-        public void Edit(TGridEntity entity)
-        {
-            NewRow = null;
-            DataSet.RowEditOptions.EditRowId = entity.Id;
-        }
-
-        public void Delete(TGridEntity entity)
-        {
-            facade.Unlink(entity.IntermediateEntityId ?? -1);
+            NewRow = facade.InitializeNew();
+            NewRow.DetailEntityId = ParentEntityId;
         }
 
         public void Cancel()
         {
             NewRow = null;
-            DataSet.RowEditOptions.EditRowId = null;
+            DataSet.RowEditOptions.EditRowId = -1;
+        }
+
+        public void Delete(TGridEntity entity)
+        {
+            facade.Delete(entity.Id);
+        }
+
+        public void Edit(TGridEntity entity)
+        {
+            Cancel();
+            entity.DetailEntityId = ParentEntityId;
+            DataSet.RowEditOptions.EditRowId = entity.Id;
         }
 
         public void SaveNew()
         {
-            facade.CreateAndLink(NewRow, ParentEntityId);
-            NewRow = null;
+            facade.Save(NewRow);
+            Cancel();
         }
 
         public void SaveEdit(TGridEntity entity)
         {
-            facade.Edit(entity);
-            DataSet.RowEditOptions.EditRowId = null;
-        }
-
-        public void Link()
-        {
-            var associateId = EntitySearchSelect?.SelectedLink?.Id;
-
-            if (associateId == null) return;
-
-            facade.Link(new EntityLinkDto {DetailId= ParentEntityId, AssociatedId= associateId.Value});
+            entity.DetailEntityId = ParentEntityId;
+            facade.Save(entity);
+            Cancel();
         }
 
         public override Task Init()
         {
             DataSet = new GridViewDataSet<TGridEntity>()
             {
-                PagingOptions = { PageSize = 10},
+                PagingOptions = { PageSize = 10 },
                 SortingOptions = new SortingOptions { },
                 RowEditOptions = new RowEditOptions
                 {
@@ -92,7 +82,6 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public override Task PreRender()
         {
-
             facade.FillDataSet(DataSet, new IdFilter { Id = ParentEntityId });
             return base.PreRender();
         }

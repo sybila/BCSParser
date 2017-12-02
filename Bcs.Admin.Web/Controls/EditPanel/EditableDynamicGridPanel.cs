@@ -155,16 +155,23 @@ namespace Bcs.Admin.Web.Controls.EditPanel
 
         protected override void SetUpFooter(IDotvvmRequestContext context, HtmlGenericControl footerDiv)
         {
-            var inputGroupBtn = CreateDivWithClass("input-group-btn", CreateIconButton("link", "Link existing", LinkEntity));
+            var leftDiv = CreateDivWithClass("col-md-9");
 
-            var searchDropDown = new SearchDropDown();
-            searchDropDown.TextBoxSize = SearchDropDown.Size.Small;
-            searchDropDown.SetBinding(DataContextProperty, LinkEntitySearchSelect);
-            searchDropDown.SetDataContextType(this.CreateChildStack(LinkEntitySearchSelect.ResultType));
+            if (LinkEntitySearchSelect != null && LinkEntity != null)
+            {
+                var inputGroupBtn = CreateDivWithClass("input-group-btn", CreateIconButton("link", "Link existing", LinkEntity));
 
-            var inputGroup = CreateDivWithClass("input-group", searchDropDown, inputGroupBtn);
+                var searchDropDown = new SearchDropDown();
+                searchDropDown.TextBoxSize = SearchDropDown.Size.Small;
+                searchDropDown.SetBinding(DataContextProperty, LinkEntitySearchSelect);
+                searchDropDown.SetDataContextType(this.CreateChildStack(LinkEntitySearchSelect.ResultType));
 
-            var leftDiv = CreateDivWithClass("col-md-9", inputGroup);
+                var inputGroup = CreateDivWithClass("input-group", searchDropDown, inputGroupBtn);
+
+                leftDiv.Children.Add(inputGroup);
+            }
+
+          
             var rightDiv = CreateDivWithClass("col-md-3", CreateIconButton("plus", "Add new", AddCommand));
             var row = CreateDivWithClass("row", leftDiv, rightDiv);
 

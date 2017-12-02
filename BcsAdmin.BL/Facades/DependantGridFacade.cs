@@ -15,7 +15,7 @@ using Riganti.Utils.Infrastructure;
 
 namespace BcsAdmin.BL.Facades
 {
-    public class DependantGridFacade<TIntermediateEntity, TEntity, TEntityDto> : FacadeBase, IGridFacade<TEntityDto> 
+    public class DependantLinkGridFacade<TIntermediateEntity, TEntity, TEntityDto> : FacadeBase, ILinkGridFacade<TEntityDto>
         where TIntermediateEntity : IEntity<int>
         where TEntity : IEntity<int>
         where TEntityDto : IEntity<int>
@@ -26,7 +26,7 @@ namespace BcsAdmin.BL.Facades
         private readonly IRepository<TIntermediateEntity, int> intermediateRepository;
         private readonly IMapper mapper;
 
-        public DependantGridFacade(
+        public DependantLinkGridFacade(
             IRepository<TIntermediateEntity, int> intermediateRepository,
             IRepository<TEntity, int> associatedEntityRepository,
             Func<IdFilteredQuery<TEntityDto>> queryFactory,
@@ -40,7 +40,7 @@ namespace BcsAdmin.BL.Facades
             this.mapper = mapper;
         }
 
-        public void FillDataSet(GridViewDataSet<TEntityDto> dataSet, IdFilter filter) 
+        public void FillDataSet(GridViewDataSet<TEntityDto> dataSet, IdFilter filter)
         {
             using (UnitOfWorkProvider.Create())
             {
@@ -122,41 +122,49 @@ namespace BcsAdmin.BL.Facades
         }
     }
 
-    public class LocationGridFacade : DependantGridFacade<EpEntityLocation, EpEntity, LocationLinkDto>
+    public class LocationGridFacade : DependantLinkGridFacade<EpEntityLocation, EpEntity, LocationLinkDto>
     {
         public LocationGridFacade(IRepository<EpEntityLocation, int> intermediateRepository, IRepository<EpEntity, int> associatedEntityRepository, Func<IdFilteredQuery<LocationLinkDto>> queryFactory, IUnitOfWorkProvider unitOfWorkProvider, IMapper mapper) : base(intermediateRepository, associatedEntityRepository, queryFactory, unitOfWorkProvider, mapper)
         {
         }
     }
 
-    public class ComponentsGridFacade : DependantGridFacade<EpEntityComposition, EpEntity, ComponentLinkDto>
+    public class ComponentsGridFacade : DependantLinkGridFacade<EpEntityComposition, EpEntity, ComponentLinkDto>
     {
-        public ComponentsGridFacade(IRepository<EpEntityComposition, int> intermediateRepository, IRepository<EpEntity, int> associatedEntityRepository, Func<IdFilteredQuery<ComponentLinkDto>> queryFactory, IUnitOfWorkProvider unitOfWorkProvider, IMapper mapper) 
+        public ComponentsGridFacade(IRepository<EpEntityComposition, int> intermediateRepository, IRepository<EpEntity, int> associatedEntityRepository, Func<IdFilteredQuery<ComponentLinkDto>> queryFactory, IUnitOfWorkProvider unitOfWorkProvider, IMapper mapper)
             : base(intermediateRepository, associatedEntityRepository, queryFactory, unitOfWorkProvider, mapper)
         {
         }
     }
 
-    public class ClassificationGridFacade : DependantGridFacade<EpEntityClassification, EpClassification, ClassificationDto>
+    public class ClassificationGridFacade : DependantLinkGridFacade<EpEntityClassification, EpClassification, ClassificationDto>
     {
         public ClassificationGridFacade(
-            IRepository<EpEntityClassification, int> intermediateRepository, 
+            IRepository<EpEntityClassification, int> intermediateRepository,
             IRepository<EpClassification, int> associatedEntityRepository,
-            Func<IdFilteredQuery<ClassificationDto>> queryFactory, 
+            Func<IdFilteredQuery<ClassificationDto>> queryFactory,
             IUnitOfWorkProvider unitOfWorkProvider, IMapper mapper)
             : base(intermediateRepository, associatedEntityRepository, queryFactory, unitOfWorkProvider, mapper)
         {
         }
     }
 
-    public class NoteGridFacade : FilteredCrudFacadeBase<EpEntityNote, int, EntityNoteDto, EntityNoteDto, IdFilter>
+    public interface IGridFacade<TEntityDto> : ICrudFilteredFacade<TEntityDto, TEntityDto, IdFilter, int>
+          where TEntityDto : IEntity<int>
     {
-        protected NoteGridFacade(
-            Func<IFilteredQuery<EntityNoteDto, IdFilter>> queryFactory, 
-            IRepository<EpEntityNote, int> repository, 
-            IEntityDTOMapper<EpEntityNote, EntityNoteDto> mapper) 
+
+    }
+
+    public class NoteGridFacade : FilteredCrudFacadeBase<EpEntityNote, int, EntityNoteDto, EntityNoteDto, IdFilter>, IGridFacade<EntityNoteDto>
+    {
+        public NoteGridFacade(
+            IUnitOfWorkProvider unitOfWorkProvider,
+            Func<IFilteredQuery<EntityNoteDto, IdFilter>> queryFactory,
+            IRepository<EpEntityNote, int> repository,
+            IEntityDTOMapper<EpEntityNote, EntityNoteDto> mapper)
             : base(queryFactory, repository, mapper)
         {
+            UnitOfWorkProvider = unitOfWorkProvider;
         }
     }
 }

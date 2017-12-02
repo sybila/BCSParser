@@ -56,6 +56,15 @@ namespace BcsAdmin.BL
             cfg.CreateMap<EntityLinkDto, EpEntityLocation>()
                 .ForMember(s => s.ParentEntityId, a => a.MapFrom(s => s.AssociatedId))
                 .ForMember(s => s.ChildEntityId, a => a.MapFrom(s => s.DetailId));
+
+            cfg.CreateMap<EpEntityNote, EntityNoteDto>()
+                .ForMember(m => m.DetailEntityId, a => a.MapFrom(s => s.EntityId));
+            cfg.CreateMap<EntityNoteDto, EpEntityNote>()
+                .ForMember(m => m.EntityId, a => a.MapFrom(s => s.DetailEntityId))
+                .ForMember(m => m.Inserted, a => a.Ignore())
+                .ForMember(m => m.Updated, a => a.Ignore())
+                .ForMember(m=> m.User, a=> a.Ignore())
+                .ForMember(m => m.UserId, a => a.Ignore());
         }
 
         public static void RegisterFactory<TContract, TImplementation>(this IServiceCollection services)

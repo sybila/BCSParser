@@ -113,23 +113,19 @@
                                           NewEntityDto="{value: NewRow}" 
                                           LinkEntitySearchSelect="{value: EntitySearchSelect}"
                                           LinkEntity="{command: Link()}"/>
-            <div class="panel panel-info">
-                <div class="panel panel-heading">
-                    Notes
-                </div>
-                <div class="panel-body">
-                    <%--<dot:Repeater DataSource="{value: Notes.DataSet}">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <span class="label label-default label-alone">{{value: UserName}}:</span> {{value: Inserted}}
-                            </div>
-                            <div class="panel-body">
-                                {{value: Text}}
-                            </div>
-                        </div>
-                    </dot:Repeater>--%>
-                </div>
-            </div>
+
+            <dde:EditableDynamicGridPanel HeadingText="Notes:"
+                                          DataContext="{value: Notes}"
+                                          DataSourceBinding="{value: DataSet}"
+                                          EditCommand="{command: _parent.Edit(_this)}"
+                                          DeleteCommand="{command: _parent.Delete(_this)}"
+                                          CancelCommand="{command: _parent.Cancel()}"
+                                          SaveCommand="{command: _parent.SaveEdit(_this)}"
+                                          SaveNewCommand="{command: SaveNew()}"
+                                          CancelNew="{command: Cancel()}"
+                                          AddCommand="{command: Add()}"
+                                          NewEntityFormVisible="{value: NewRow != null}"
+                                          NewEntityDto="{value: NewRow}"/>          
         </div>
     </div>
 </dot:Content>

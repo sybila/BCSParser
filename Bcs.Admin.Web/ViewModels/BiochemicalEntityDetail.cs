@@ -51,31 +51,31 @@ namespace Bcs.Admin.Web.ViewModels
         public BiochemicalEntityLinkDto Parent { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public IEntityLinkEditableGrid<ComponentLinkDto, EntitySuggestionQuery> Components { get; set; }
+        public IEditableLinkGrid<ComponentLinkDto, EntitySuggestionQuery> Components { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public IEntityLinkEditableGrid<LocationLinkDto, EntitySuggestionQuery> Locations { get; set; }
+        public IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> Locations { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public IEntityLinkEditableGrid<ClassificationDto, ClassificationSuggestionQuery> Classifications { get; set; }
+        public IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> Classifications { get; set; }
 
-        //[Display(AutoGenerateField = false)]
-        //public EditableGrid<EntityNoteDto> Notes { get; set; }
+        [Display(AutoGenerateField = false)]
+        public IEditableGrid<EntityNoteDto> Notes { get; set; }
 
         public BiochemicalEntityDetail(
             DashboardFacade dashboardFacade,
             IMapper mapper,
-            IEntityLinkEditableGrid<ComponentLinkDto, EntitySuggestionQuery> componentGrid,
-            IEntityLinkEditableGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid,
-             IEntityLinkEditableGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid
-            /*EditableGrid<EntityNoteDto> noteGrid*/)
+            IEditableLinkGrid<ComponentLinkDto, EntitySuggestionQuery> componentGrid,
+            IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid,
+            IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid,
+            IEditableGrid<EntityNoteDto> noteGrid)
         {
             this.dashboardFacade = dashboardFacade;
             this.mapper = mapper;
             Components = componentGrid;
             Locations = locationGrid;
             Classifications = classificationGrid;
-            //Notes = noteGrid;
+            Notes = noteGrid;
         }
 
         public void PoputateGrids()
@@ -83,12 +83,12 @@ namespace Bcs.Admin.Web.ViewModels
             Components.ParentEntityId = Id;
             Classifications.ParentEntityId = Id;
             Locations.ParentEntityId = Id;
-            //Notes.ParentEntityId = Id;
+            Notes.ParentEntityId = Id;
 
             Components.Init();
             Classifications.Init();
             Locations.Init();
-            //Notes.Init();
+            Notes.Init();
         }
 
         public void CancelAllActions()

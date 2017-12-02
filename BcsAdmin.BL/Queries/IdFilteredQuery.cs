@@ -68,7 +68,7 @@ namespace BcsAdmin.BL.Queries
                     Code = e.Code,
                     HierarchyType = (int)e.HierarchyType,
                     Name = e.Name,
-                    IntermediateEntityId = null
+                    DetailEntityId = null
                 });
             }
             else
@@ -79,7 +79,7 @@ namespace BcsAdmin.BL.Queries
                     Code = e.Component.Code,
                     HierarchyType = (int)e.Component.HierarchyType,
                     Name = e.Component.Name,
-                    IntermediateEntityId = e.Id
+                    DetailEntityId = e.Id
                 });
             }
             return q;
@@ -103,7 +103,7 @@ namespace BcsAdmin.BL.Queries
                 Id = e.Classification.Id,
                 Name = e.Classification.Name,
                 Type = e.Classification.Type,
-                IntermediateEntityId = e.Id
+                DetailEntityId = e.Id
             });
         }
     }

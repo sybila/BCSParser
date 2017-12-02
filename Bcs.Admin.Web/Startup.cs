@@ -28,6 +28,8 @@ using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 using System.Linq;
 using System.Collections.Generic;
 using Bcs.Admin.Web.ViewModels.Grids;
+using Riganti.Utils.Infrastructure.Services.Facades;
+using BcsAdmin.BL.Mappers;
 
 namespace Bcs.Analyzer.DemoWeb
 {
@@ -64,8 +66,10 @@ namespace Bcs.Analyzer.DemoWeb
 
             builder.RegisterType<BootstrapFormGroupBuilder>().As<IFormBuilder>();
 
-            builder.RegisterGeneric(typeof(EditableGrid<,>)).As(typeof(IEntityLinkEditableGrid<,>));
+            builder.RegisterGeneric(typeof(EditableLinkGrid<,>)).As(typeof(IEditableLinkGrid<,>));
+            builder.RegisterGeneric(typeof(EditableGrid<>)).As(typeof(IEditableGrid<>));
             builder.RegisterGeneric(typeof(SuggestionsFacade<>)).As(typeof(SuggestionsFacade<>));
+            builder.RegisterGeneric(typeof(AutoDtoMapper<,>)).As(typeof(IEntityDTOMapper<,>));
 
             builder.RegisterAllByNamespace(typeof(Startup).Assembly, "Bcs.Admin.Web.ViewModels");
             builder.RegisterAllBySuffix(typeof(Registry).Assembly, "Query");

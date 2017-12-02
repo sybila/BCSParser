@@ -9,7 +9,7 @@ using DotVVM.Framework.Controls;
 
 namespace BcsAdmin.BL.Facades
 {
-    public interface IGridFacade<TEntityDto> : ICrudFilteredListFacade<TEntityDto, IdFilter>
+    public interface ILinkGridFacade<TEntityDto> : ICrudFilteredListFacade<TEntityDto, IdFilter>
         where TEntityDto : IEntity<int>
     {
         void FillDataSet(GridViewDataSet<TEntityDto> dataSet, IdFilter filter);
