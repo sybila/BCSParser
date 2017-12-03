@@ -30,11 +30,14 @@ namespace BcsAdmin.BL
             cfg.CreateMap<EpEntity, ComponentLinkDto>()
                 .ForMember(t => t.HierarchyType, a => a.MapFrom(s => s.HierarchyType));
             cfg.CreateMap<ComponentLinkDto, EpEntity>()
-                .ForMember(t=> t.Code, m=> m.MapFrom(s=> s.Code))
+                .ForMember(t => t.Code, m => m.MapFrom(s => s.Code))
                 .ForMember(t => t.Name, m => m.MapFrom(s => s.Name))
                 .ForMember(t => t.HierarchyType, m => m.MapFrom(s => s.HierarchyType))
                 .ForMember(t => t.Id, m => m.MapFrom(s => s.Id))
-                .ForAllOtherMembers(a=> a.Ignore());
+                .ForAllOtherMembers(a => a.Ignore());
+            cfg.CreateMap<EpOrganism, EntityOrganismDto>()
+                .ForMember(m => m.GeneGroup, a => a.Ignore())
+                .ForMember(m=> m.IntermediateEntityId, a=> a.Ignore());
 
             cfg.CreateMap<EpEntity, LocationLinkDto>()
                 .ForMember(t => t.HierarchyType, a => a.MapFrom(s => s.HierarchyType));
@@ -50,20 +53,23 @@ namespace BcsAdmin.BL
             cfg.CreateMap<EntityLinkDto, EpEntityClassification>()
                 .ForMember(s => s.ClassificationId, a => a.MapFrom(s => s.AssociatedId))
                 .ForMember(s => s.EntityId, a => a.MapFrom(s => s.DetailId));
-             cfg.CreateMap<EntityLinkDto, EpEntityComposition>()
-                .ForMember(s => s.ChildEntityId, a => a.MapFrom(s => s.AssociatedId))
-                .ForMember(s => s.ParentEntityId, a => a.MapFrom(s => s.DetailId));
+            cfg.CreateMap<EntityLinkDto, EpEntityComposition>()
+               .ForMember(s => s.ChildEntityId, a => a.MapFrom(s => s.AssociatedId))
+               .ForMember(s => s.ParentEntityId, a => a.MapFrom(s => s.DetailId));
             cfg.CreateMap<EntityLinkDto, EpEntityLocation>()
                 .ForMember(s => s.ParentEntityId, a => a.MapFrom(s => s.AssociatedId))
                 .ForMember(s => s.ChildEntityId, a => a.MapFrom(s => s.DetailId));
+            cfg.CreateMap<EntityLinkDto, EpEntityOrganism>()
+                .ForMember(s=> s.EntityId, a=> a.MapFrom(s=> s.DetailId))
+                .ForMember(s => s.OrganismId, a => a.MapFrom(s => s.AssociatedId));
 
             cfg.CreateMap<EpEntityNote, EntityNoteDto>()
-                .ForMember(m => m.DetailEntityId, a => a.MapFrom(s => s.EntityId));
+                .ForMember(m => m.IntermediateEntityId, a => a.MapFrom(s => s.EntityId));
             cfg.CreateMap<EntityNoteDto, EpEntityNote>()
-                .ForMember(m => m.EntityId, a => a.MapFrom(s => s.DetailEntityId))
+                .ForMember(m => m.EntityId, a => a.MapFrom(s => s.IntermediateEntityId))
                 .ForMember(m => m.Inserted, a => a.Ignore())
                 .ForMember(m => m.Updated, a => a.Ignore())
-                .ForMember(m=> m.User, a=> a.Ignore())
+                .ForMember(m => m.User, a => a.Ignore())
                 .ForMember(m => m.UserId, a => a.Ignore());
         }
 

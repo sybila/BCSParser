@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using Bcs.Admin.Web.ViewModels.Grids;
 using Riganti.Utils.Infrastructure.Services.Facades;
 using BcsAdmin.BL.Mappers;
+using BcsAdmin.BL.Repositories;
 
 namespace Bcs.Analyzer.DemoWeb
 {
@@ -70,6 +71,7 @@ namespace Bcs.Analyzer.DemoWeb
             builder.RegisterGeneric(typeof(EditableGrid<>)).As(typeof(IEditableGrid<>));
             builder.RegisterGeneric(typeof(SuggestionsFacade<>)).As(typeof(SuggestionsFacade<>));
             builder.RegisterGeneric(typeof(AutoDtoMapper<,>)).As(typeof(IEntityDTOMapper<,>));
+            builder.RegisterGeneric(typeof(AppGenericRepository<>)).As(typeof(IRepository<,>));
 
             builder.RegisterAllByNamespace(typeof(Startup).Assembly, "Bcs.Admin.Web.ViewModels");
             builder.RegisterAllBySuffix(typeof(Registry).Assembly, "Query");

@@ -32,7 +32,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         public void Add()
         {
             NewRow = facade.InitializeNew();
-            NewRow.DetailEntityId = ParentEntityId;
+            NewRow.IntermediateEntityId = ParentEntityId;
         }
 
         public void Cancel()
@@ -49,7 +49,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         public void Edit(TGridEntity entity)
         {
             Cancel();
-            entity.DetailEntityId = ParentEntityId;
+            entity.IntermediateEntityId = ParentEntityId;
             DataSet.RowEditOptions.EditRowId = entity.Id;
         }
 
@@ -61,7 +61,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public void SaveEdit(TGridEntity entity)
         {
-            entity.DetailEntityId = ParentEntityId;
+            entity.IntermediateEntityId = ParentEntityId;
             facade.Save(entity);
             Cancel();
         }

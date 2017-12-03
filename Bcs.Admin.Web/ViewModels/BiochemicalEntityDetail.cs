@@ -60,6 +60,9 @@ namespace Bcs.Admin.Web.ViewModels
         public IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> Classifications { get; set; }
 
         [Display(AutoGenerateField = false)]
+        public IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> Organisms { get; set; }
+
+        [Display(AutoGenerateField = false)]
         public IEditableGrid<EntityNoteDto> Notes { get; set; }
 
         public BiochemicalEntityDetail(
@@ -68,6 +71,7 @@ namespace Bcs.Admin.Web.ViewModels
             IEditableLinkGrid<ComponentLinkDto, EntitySuggestionQuery> componentGrid,
             IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid,
             IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid,
+            IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> organisms,
             IEditableGrid<EntityNoteDto> noteGrid)
         {
             this.dashboardFacade = dashboardFacade;
@@ -76,6 +80,7 @@ namespace Bcs.Admin.Web.ViewModels
             Locations = locationGrid;
             Classifications = classificationGrid;
             Notes = noteGrid;
+            Organisms = organisms;
         }
 
         public void PoputateGrids()
@@ -84,11 +89,14 @@ namespace Bcs.Admin.Web.ViewModels
             Classifications.ParentEntityId = Id;
             Locations.ParentEntityId = Id;
             Notes.ParentEntityId = Id;
+            Organisms.ParentEntityId = Id;
 
             Components.Init();
             Classifications.Init();
+            Organisms.Init();
             Locations.Init();
             Notes.Init();
+            
         }
 
         public void CancelAllActions()
@@ -96,6 +104,7 @@ namespace Bcs.Admin.Web.ViewModels
             Components.Cancel();
             Classifications.Cancel();
             Locations.Cancel();
+            Organisms.Cancel();
             Components.Cancel();
         }
 

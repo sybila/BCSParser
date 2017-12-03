@@ -23,6 +23,6 @@ namespace BcsAdmin.BL.Dto
         public DateTime? Updated { get; set; }
 
         [Display(AutoGenerateField = false)]
-        public int? DetailEntityId { get; set; }
+        public int? IntermediateEntityId { get; set; }
     }
 }

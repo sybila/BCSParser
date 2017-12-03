@@ -32,7 +32,7 @@
                             No results
                         </EmptyDataTemplate>
                         <RowDecorators>
-                            <dot:Decorator Class-active="{value: Id == _root.Detail.Id}" Events.Click="{command: _root.EditEntity(_this.Id)}" />
+                            <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.Detail.Id}" Events.Click="{command: _root.EditEntity(_this.Id)}" />
                         </RowDecorators>
                         <Columns>
                             <dot:GridViewTextColumn AllowSorting HeaderText="Code" ValueBinding="{value: Code}" />
@@ -99,8 +99,8 @@
                                           LinkEntitySearchSelect="{value: EntitySearchSelect}"
                                           LinkEntity="{command: Link()}"/>
 
-            <dde:EditableDynamicGridPanel HeadingText="Classifications:"
-                                          DataContext="{value: Classifications}"
+            <dde:EditableDynamicGridPanel HeadingText="Organisms:"
+                                          DataContext="{value: Organisms}"
                                           DataSourceBinding="{value: DataSet}"
                                           EditCommand="{command: _parent.Edit(_this)}"
                                           DeleteCommand="{command: _parent.Delete(_this)}"
@@ -113,6 +113,21 @@
                                           NewEntityDto="{value: NewRow}" 
                                           LinkEntitySearchSelect="{value: EntitySearchSelect}"
                                           LinkEntity="{command: Link()}"/>
+
+            <dde:EditableDynamicGridPanel HeadingText="Classifications:"
+                                          DataContext="{value: Classifications}"
+                                          DataSourceBinding="{value: DataSet}"
+                                          EditCommand="{command: _parent.Edit(_this)}"
+                                          DeleteCommand="{command: _parent.Delete(_this)}"
+                                          CancelCommand="{command: _parent.Cancel()}"
+                                          SaveCommand="{command: _parent.SaveEdit(_this)}"
+                                          SaveNewCommand="{command: SaveNew()}"
+                                          CancelNew="{command: Cancel()}"
+                                          AddCommand="{command: Add()}"
+                                          NewEntityFormVisible="{value: NewRow != null}"
+                                          NewEntityDto="{value: NewRow}"
+                                          LinkEntitySearchSelect="{value: EntitySearchSelect}"
+                                          LinkEntity="{command: Link()}" />
 
             <dde:EditableDynamicGridPanel HeadingText="Notes:"
                                           DataContext="{value: Notes}"

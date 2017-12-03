@@ -8,7 +8,7 @@ namespace BcsAdmin.BL.Dto
         [Display(AutoGenerateField =false)]
         public int Id { get; set; }
         [Display(AutoGenerateField = false)]
-        public int? DetailEntityId { get; set; }
+        public int? IntermediateEntityId { get; set; }
         [Display(Name="Hierarchy type")]
         public int HierarchyType { get; set; }
         public string Code { get; set; }

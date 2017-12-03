@@ -10,5 +10,8 @@ namespace BcsAdmin.DAL.Models
         public int? OrganismId { get; set; }
         public int? EntityId { get; set; }
         public string GeneGroup { get; set; }
+
+        public EpOrganism Organism { get; set; }
+        public EpEntity Entity { get; set; }
     }
 }

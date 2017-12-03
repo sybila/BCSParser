@@ -1,18 +1,19 @@
-﻿using Riganti.Utils.Infrastructure.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
+using Riganti.Utils.Infrastructure.Core;
 
 namespace BcsAdmin.BL.Dto
 {
-    public class ClassificationDto : IAssociatedEntity
+    public class EntityOrganismDto : IEntity<int>, IAssociatedEntity
     {
         [Display(AutoGenerateField = false)]
         public int Id { get; set; }
         [Display(AutoGenerateField = false)]
         public int? IntermediateEntityId { get; set; }
+        public string Code { get; set; }
         public string Name { get; set; }
-        public string Type { get; set; }
+        public string GeneGroup { get; set; }
     }
 }

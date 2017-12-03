@@ -149,6 +149,17 @@ namespace BcsAdmin.BL.Facades
         }
     }
 
+    public class OrganismFacade : DependantLinkGridFacade<EpEntityOrganism, EpOrganism, EntityOrganismDto>
+    {
+        public OrganismFacade(IRepository<EpEntityOrganism, int> intermediateRepository,
+            IRepository<EpOrganism, int> associatedEntityRepository,
+            Func<IdFilteredQuery<EntityOrganismDto>> queryFactory,
+            IUnitOfWorkProvider unitOfWorkProvider, IMapper mapper)
+            : base(intermediateRepository, associatedEntityRepository, queryFactory, unitOfWorkProvider, mapper)
+        {
+        }
+    }
+
     public interface IGridFacade<TEntityDto> : ICrudFilteredFacade<TEntityDto, TEntityDto, IdFilter, int>
           where TEntityDto : IEntity<int>
     {

@@ -46,7 +46,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public void Delete(TGridEntity entity)
         {
-            facade.Unlink(entity.DetailEntityId ?? -1);
+            facade.Unlink(entity.IntermediateEntityId ?? -1);
         }
 
         public void Cancel()

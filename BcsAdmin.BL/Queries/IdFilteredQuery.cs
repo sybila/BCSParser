@@ -68,7 +68,7 @@ namespace BcsAdmin.BL.Queries
                     Code = e.Code,
                     HierarchyType = (int)e.HierarchyType,
                     Name = e.Name,
-                    DetailEntityId = null
+                    IntermediateEntityId = null
                 });
             }
             else
@@ -79,7 +79,7 @@ namespace BcsAdmin.BL.Queries
                     Code = e.Component.Code,
                     HierarchyType = (int)e.Component.HierarchyType,
                     Name = e.Component.Name,
-                    DetailEntityId = e.Id
+                    IntermediateEntityId = e.Id
                 });
             }
             return q;
@@ -103,7 +103,30 @@ namespace BcsAdmin.BL.Queries
                 Id = e.Classification.Id,
                 Name = e.Classification.Name,
                 Type = e.Classification.Type,
-                DetailEntityId = e.Id
+                IntermediateEntityId = e.Id
+            });
+        }
+    }
+
+    public class OrganismQuery : IdFilteredQuery<EntityOrganismDto>
+    {
+        public OrganismQuery(IUnitOfWorkProvider unitOfWorkProvider)
+            : base(unitOfWorkProvider)
+        {
+        }
+
+        protected override IQueryable<EntityOrganismDto> GetQueryable()
+        {
+            var context = Context.CastTo<AppDbContext>();
+            context.EpEntity.Load();
+            context.EpOrganism.Load();
+            return context.EpEntityOrganism.Where(e => e.EntityId == Filter.Id).Select(e => new EntityOrganismDto
+            {
+                Id = e.Organism.Id,
+                Name = e.Organism.Name,
+                Code = e.Organism.Code,
+                GeneGroup = e.GeneGroup,
+                IntermediateEntityId = e.Id
             });
         }
     }
@@ -126,7 +149,8 @@ namespace BcsAdmin.BL.Queries
                 Text = e.Text,
                 Inserted = e.Inserted,
                 Updated = e.Updated,
-                UserName = e.User.Name
+                UserName = e.User.Name,
+                IntermediateEntityId = e.Id
             });
         }
     }

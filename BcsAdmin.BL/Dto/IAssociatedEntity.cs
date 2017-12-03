@@ -7,6 +7,6 @@ namespace BcsAdmin.BL.Dto
 {
     public interface IAssociatedEntity : IEntity<int>
     {
-        int? DetailEntityId { get; set; }
+        int? IntermediateEntityId { get; set; }
     }
 }
