@@ -4,9 +4,8 @@ using System.Text;
 
 namespace BcsAdmin.BL.Filters
 {
-    public class BiochemicalEntityFilter
+    public class ReactionFilter
     {
-        public List<string> EntityTypeFilter { get; set; } = new List<string>();
         public string SearchText { get; set; }
     }
 }

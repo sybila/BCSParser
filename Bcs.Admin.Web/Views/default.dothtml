@@ -5,15 +5,16 @@
     <div class="col-lg-6 col-md-12">
         <div class="sub-board col-md-12">
             <ul class="nav nav nav-tabs">
-                <li class="active"><a href="#">Entities</a></li>
+                <li Class-active="{value: EntitiesSelected}"><dot:LinkButton Click="{command: ActiveTabName = EntitiesTab.Name}">Entities</dot:LinkButton></li>
+                <li Class-active="{value: ReactionsSelected}"><dot:LinkButton Click="{command: ActiveTabName = ReactionsTab.Name}">Reactions</dot:LinkButton></li>
             </ul>
-            <div DataContext="{value: EntitiesTab}">
+            <div DataContext="{value: EntitiesTab}" Visible="{value: _root.EntitiesSelected}">
                 <div class="col-md-12">
                     <h3>{{value: Name}}</h3>
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="input-group input-group-sm">
-                        <dot:TextBox Changed="{command: _parent.Refresh()}" class="form-control" Text="{value: SearchText}" />
+                        <dot:TextBox Changed="{command: _parent.Refresh()}" class="form-control" Text="{value: Filter.SearchText}" />
                         <div class="input-group-btn">
                             <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: _parent.Refresh()}">
                                 <i class="glyphicon glyphicon-search"></i>
@@ -23,11 +24,11 @@
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <dot:Repeater class="row" DataSource="{value: EntityTypes}">
-                        <dot:CheckBox class="col-md-4" Text="{value: _this}" Changed="{command: _parent2.Refresh()}" CheckedItems="{value: _parent.SelectedTypes}" CheckedValue="{value: _this}" />
+                        <dot:CheckBox class="col-md-4" Text="{value: _this}" Changed="{command: _parent2.Refresh()}" CheckedItems="{value: _parent.Filter.EntityTypeFilter}" CheckedValue="{value: _this}" />
                     </dot:Repeater>
                 </div>
                 <div class="col-md-12">
-                    <dot:GridView ShowHeaderWhenNoData class="col-md-12 table table-hover table-striped" DataSource="{value: EntityDataSet}">
+                    <dot:GridView ShowHeaderWhenNoData class="col-md-12 table table-hover table-striped" DataSource="{value: DataSet}">
                         <EmptyDataTemplate>
                             No results
                         </EmptyDataTemplate>
@@ -52,7 +53,42 @@
                     </dot:GridView>
                 </div>
                 <div class="col-md-12">
-                    <dot:DataPager DataSet="{value: EntityDataSet}" class="pagination" />
+                    <dot:DataPager DataSet="{value: DataSet}" class="pagination" />
+                </div>
+            </div>
+            <div DataContext="{value: ReactionsTab}" Visible="{value: _root.ReactionsSelected}">
+                <div class="col-md-12">
+                    <h3>{{value: Name}}</h3>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="input-group input-group-sm">
+                        <dot:TextBox Changed="{command: _parent.Refresh()}" class="form-control" Text="{value: Filter.SearchText}" />
+                        <div class="input-group-btn">
+                            <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: _parent.Refresh()}">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </dot:Button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                </div>
+                <div class="col-md-12">
+                    <dot:GridView ShowHeaderWhenNoData class="col-md-12 table table-hover table-striped" DataSource="{value: DataSet}">
+                        <EmptyDataTemplate>
+                            No results
+                        </EmptyDataTemplate>
+                        <RowDecorators>
+                            <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.Detail.Id}" Events.Click="{command: null}" />
+                        </RowDecorators>
+                        <Columns>
+                            <dot:GridViewTextColumn AllowSorting HeaderText="Code" ValueBinding="{value: Code}" />
+                            <dot:GridViewTextColumn AllowSorting HeaderText="Equation" ValueBinding="{value: Equation}" />
+                            <dot:GridViewTextColumn AllowSorting HeaderText="Modifier" ValueBinding="{value: Modifier}" />
+                        </Columns>
+                    </dot:GridView>
+                </div>
+                <div class="col-md-12">
+                    <dot:DataPager DataSet="{value: DataSet}" class="pagination" />
                 </div>
             </div>
         </div>
@@ -81,8 +117,8 @@
                                           AddCommand="{command: Add()}"
                                           LinkEntity="{command: Link()}"
                                           NewEntityFormVisible="{value: NewRow != null}"
-                                          NewEntityDto="{value: NewRow}" 
-                                          LinkEntitySearchSelect="{value: EntitySearchSelect}"/>
+                                          NewEntityDto="{value: NewRow}"
+                                          LinkEntitySearchSelect="{value: EntitySearchSelect}" />
 
             <dde:EditableDynamicGridPanel HeadingText="Locations:"
                                           DataContext="{value: Locations}"
@@ -95,9 +131,9 @@
                                           CancelNew="{command: Cancel()}"
                                           AddCommand="{command: Add()}"
                                           NewEntityFormVisible="{value: NewRow != null}"
-                                          NewEntityDto="{value: NewRow}" 
+                                          NewEntityDto="{value: NewRow}"
                                           LinkEntitySearchSelect="{value: EntitySearchSelect}"
-                                          LinkEntity="{command: Link()}"/>
+                                          LinkEntity="{command: Link()}" />
 
             <dde:EditableDynamicGridPanel HeadingText="Organisms:"
                                           DataContext="{value: Organisms}"
@@ -110,9 +146,9 @@
                                           CancelNew="{command: Cancel()}"
                                           AddCommand="{command: Add()}"
                                           NewEntityFormVisible="{value: NewRow != null}"
-                                          NewEntityDto="{value: NewRow}" 
+                                          NewEntityDto="{value: NewRow}"
                                           LinkEntitySearchSelect="{value: EntitySearchSelect}"
-                                          LinkEntity="{command: Link()}"/>
+                                          LinkEntity="{command: Link()}" />
 
             <dde:EditableDynamicGridPanel HeadingText="Classifications:"
                                           DataContext="{value: Classifications}"
@@ -140,7 +176,7 @@
                                           CancelNew="{command: Cancel()}"
                                           AddCommand="{command: Add()}"
                                           NewEntityFormVisible="{value: NewRow != null}"
-                                          NewEntityDto="{value: NewRow}"/>          
+                                          NewEntityDto="{value: NewRow}" />
         </div>
     </div>
 </dot:Content>

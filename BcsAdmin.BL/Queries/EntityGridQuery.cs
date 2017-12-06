@@ -1,5 +1,4 @@
-﻿using Bcs.Admin.Web.ViewModels;
-using BcsAdmin.DAL.Models;
+﻿using BcsAdmin.DAL.Models;
 using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using System.Linq;
 using Riganti.Utils.Infrastructure.Core;
 using Microsoft.EntityFrameworkCore;
 using BcsAdmin.BL.Filters;
+using Bcs.Admin.BL.Dto;
 
 namespace BcsAdmin.BL.Queries
 {

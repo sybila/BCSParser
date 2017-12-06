@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Bcs.Admin.Web.ViewModels;
 using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Dto.Repositories;
 using BcsAdmin.BL.Facades;
@@ -25,6 +24,8 @@ namespace BcsAdmin.BL
     {
         public static void RegisterMapperBL(this IMapperConfigurationExpression cfg)
         {
+            cfg.CreateMap<EpReaction, ReactionRowDto>();
+
             cfg.CreateMap<EpClassification, ClassificationDto>();
             cfg.CreateMap<EpEntityNote, EntityNoteDto>();
             cfg.CreateMap<EpEntity, ComponentLinkDto>()

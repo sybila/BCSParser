@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
-namespace Bcs.Admin.Web.ViewModels
+namespace Bcs.Admin.BL.Dto
 {
     public class BiochemicalEntityRowDto : IEntity<int>
     {

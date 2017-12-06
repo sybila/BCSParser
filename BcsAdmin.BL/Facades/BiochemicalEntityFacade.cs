@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Bcs.Admin.Web.ViewModels;
 using BcsAdmin.BL.Dto;
 using BcsAdmin.DAL.Models;
 using DotVVM.Framework.Controls;
@@ -15,12 +14,13 @@ using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 using System.Linq.Expressions;
 using BcsAdmin.BL.Queries;
 using BcsAdmin.BL.Filters;
+using Bcs.Admin.BL.Dto;
 
 namespace BcsAdmin.BL.Facades
 {
-    public class DashboardFacade : FilteredCrudFacadeBase<EpEntity, int, BiochemicalEntityRowDto, BiochemicalEntityDetailDto, BiochemicalEntityFilter>
+    public class BiochemicalEntityFacade : FilteredCrudFacadeBase<EpEntity, int, BiochemicalEntityRowDto, BiochemicalEntityDetailDto, BiochemicalEntityFilter>, IListFacade<BiochemicalEntityRowDto, BiochemicalEntityFilter>
     {
-        public DashboardFacade(
+        public BiochemicalEntityFacade(
             IUnitOfWorkProvider unitOfWorkProvider,
             Func<IFilteredQuery<BiochemicalEntityRowDto, BiochemicalEntityFilter>> queryFactory,
             IRepository<EpEntity, int> repository,

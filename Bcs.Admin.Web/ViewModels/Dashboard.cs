@@ -10,28 +10,39 @@ namespace Bcs.Admin.Web.ViewModels
     public class Dashboard : Masterpage
     {
         private readonly BasicListFacade basicListFacade;
-        private readonly DashboardFacade dashboardFacade;
+        private readonly BiochemicalEntityFacade dashboardFacade;
         private readonly IMapper mapper;
 
+        public string ActiveTabName { get; set; }
         public EntitiesTab EntitiesTab { get; set; }
+        public ReactionsTab ReactionsTab { get; set; }
+
+        public bool EntitiesSelected => ActiveTabName == EntitiesTab.Name;
+        public bool ReactionsSelected => ActiveTabName == ReactionsTab.Name;
+
         public BiochemicalEntityDetail Detail { get; set; }
         public List<BiochemicalEntityTypeDto> HierarchyTypes { get; set; }
 
         public List<SuggestionDto> EntitySuggestions { get; set; }
 
+
+
         public Dashboard(
             BasicListFacade basicListFacade,
-            DashboardFacade dashboardFacade,
+            BiochemicalEntityFacade dashboardFacade,
             IMapper mapper, 
             EntitiesTab entitiesTab,
+            ReactionsTab rulesTab,
             BiochemicalEntityDetail detail)
         {
             this.basicListFacade = basicListFacade;
             this.dashboardFacade = dashboardFacade;
             this.mapper = mapper;
-            EntitiesTab = entitiesTab;
             Detail = detail;
             Title = "Dashboard";
+            EntitiesTab = entitiesTab;
+            ReactionsTab = rulesTab;
+            ActiveTabName = entitiesTab.Name;
         }
 
         public void EditEntity(int entityId)
@@ -44,8 +55,8 @@ namespace Bcs.Admin.Web.ViewModels
 
         public async Task Refresh()
         {
-            await EntitiesTab.EntityDataSet.RequestRefreshAsync();
-            await EntitiesTab.EntityDataSet.GoToFirstPageAsync();
+            await EntitiesTab.DataSet.RequestRefreshAsync();
+            await EntitiesTab.DataSet.GoToFirstPageAsync();
         }
 
         public override Task Init()

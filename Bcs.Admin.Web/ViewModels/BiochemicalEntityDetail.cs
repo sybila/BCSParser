@@ -12,12 +12,13 @@ using Bcs.Admin.Web.ViewModels.Grids;
 using BcsAdmin.BL.Facades;
 using AutoMapper;
 using BcsAdmin.BL.Queries;
+using Riganti.Utils.Infrastructure.Core;
 
 namespace Bcs.Admin.Web.ViewModels
 {
-    public class BiochemicalEntityDetail : DotvvmViewModelBase
+    public class BiochemicalEntityDetail : DotvvmViewModelBase, IEntity<int>
     {
-        private readonly DashboardFacade dashboardFacade;
+        private readonly BiochemicalEntityFacade dashboardFacade;
         private readonly IMapper mapper;
 
         [Protect(ProtectMode.SignData)]
@@ -66,7 +67,7 @@ namespace Bcs.Admin.Web.ViewModels
         public IEditableGrid<EntityNoteDto> Notes { get; set; }
 
         public BiochemicalEntityDetail(
-            DashboardFacade dashboardFacade,
+            BiochemicalEntityFacade dashboardFacade,
             IMapper mapper,
             IEditableLinkGrid<ComponentLinkDto, EntitySuggestionQuery> componentGrid,
             IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid,

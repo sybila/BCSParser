@@ -1,5 +1,4 @@
-﻿using Bcs.Admin.Web.ViewModels;
-using BcsAdmin.DAL.Models;
+﻿using BcsAdmin.DAL.Models;
 using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
