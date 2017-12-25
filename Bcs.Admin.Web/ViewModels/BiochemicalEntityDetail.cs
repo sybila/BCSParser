@@ -1,6 +1,5 @@
 ﻿using BcsAdmin.BL.Dto;
 using DotVVM.Framework.Hosting;
-using DotVVM.Framework.ViewModel;
 using Riganti.Utils.Infrastructure;
 using Riganti.Utils.Infrastructure.Services.Facades;
 using System;
@@ -12,59 +11,22 @@ using Bcs.Admin.Web.ViewModels.Grids;
 using BcsAdmin.BL.Facades;
 using AutoMapper;
 using BcsAdmin.BL.Queries;
-using Riganti.Utils.Infrastructure.Core;
 
 namespace Bcs.Admin.Web.ViewModels
 {
-    public class BiochemicalEntityDetail : DotvvmViewModelBase, IEntity<int>
+    public class BiochemicalEntityDetail : DetailBase
     {
-        private readonly BiochemicalEntityFacade dashboardFacade;
-        private readonly IMapper mapper;
-
-        [Protect(ProtectMode.SignData)]
-        [Display(AutoGenerateField = false)]
-        public int Id { get; set; }
-
-        //[Required]
-        [Display(Name = "Name")]
-        public string Name { get; set; }
-
-        //[Required]
-        [Display(Name = "Code")]
-        public string Code { get; set; }
-
-        [Display(Name = "Description")]
-        [DataType(DataType.MultilineText)]
-        public string Description { get; set; }
-
-        [Display(Name = "Xml for visualisation")]
-        [DataType(DataType.MultilineText)]
-        public string VisualisationXml { get; set; }
-
-        [Display(Name = "Active")]
-        public bool Active { get; set; }
-
+        private readonly BiochemicalEntityFacade entityFacade;
+       
         [Required]
-        [Display(Name = "Entity type")]
+        [Display(GroupName = "Fields", Name = "Entity type")]
         public int SelectedHierarchyType { get; set; }
 
         [Display(AutoGenerateField = false)]
         public BiochemicalEntityLinkDto Parent { get; set; }
 
-        [Display(AutoGenerateField = false)]
-        public IEditableLinkGrid<ComponentLinkDto, EntitySuggestionQuery> Components { get; set; }
-
-        [Display(AutoGenerateField = false)]
-        public IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> Locations { get; set; }
-
-        [Display(AutoGenerateField = false)]
-        public IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> Classifications { get; set; }
-
-        [Display(AutoGenerateField = false)]
-        public IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> Organisms { get; set; }
-
-        [Display(AutoGenerateField = false)]
-        public IEditableGrid<EntityNoteDto> Notes { get; set; }
+        [Display(GroupName = "Grids")]
+        public IEditableLinkGrid<ComponentLinkDto, EntitySuggestionQuery> Components { get; set; }     
 
         public BiochemicalEntityDetail(
             BiochemicalEntityFacade dashboardFacade,
@@ -74,45 +36,31 @@ namespace Bcs.Admin.Web.ViewModels
             IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid,
             IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> organisms,
             IEditableGrid<EntityNoteDto> noteGrid)
+            : base(mapper, locationGrid, classificationGrid, organisms, noteGrid)
         {
-            this.dashboardFacade = dashboardFacade;
-            this.mapper = mapper;
+            this.entityFacade = dashboardFacade;
             Components = componentGrid;
-            Locations = locationGrid;
-            Classifications = classificationGrid;
-            Notes = noteGrid;
-            Organisms = organisms;
         }
 
-        public void PoputateGrids()
+        public override void PoputateGrids()
         {
             Components.ParentEntityId = Id;
-            Classifications.ParentEntityId = Id;
-            Locations.ParentEntityId = Id;
-            Notes.ParentEntityId = Id;
-            Organisms.ParentEntityId = Id;
-
             Components.Init();
-            Classifications.Init();
-            Organisms.Init();
-            Locations.Init();
-            Notes.Init();
-            
+
+            base.PoputateGrids();
         }
 
-        public void CancelAllActions()
+        public override void CancelAllActions()
         {
             Components.Cancel();
-            Classifications.Cancel();
-            Locations.Cancel();
-            Organisms.Cancel();
-            Components.Cancel();
+
+            base.CancelAllActions();
         }
 
-        public void Save()
+        public override void Save()
         {
-            var dto = mapper.Map<BiochemicalEntityDetailDto>(this);
-            dashboardFacade.Save(dto);
+            var dto = Mapper.Map<BiochemicalEntityDetailDto>(this);
+            entityFacade.Save(dto);
         }
     }
 }

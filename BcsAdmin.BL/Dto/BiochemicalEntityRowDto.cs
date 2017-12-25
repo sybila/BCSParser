@@ -18,6 +18,8 @@ namespace Bcs.Admin.BL.Dto
 
         public string Type { get; set; }
 
+        public int? Active { get; set; }
+
         public string EntityTypeCss { get; set; }
 
         public List<string> Children { get; set; }

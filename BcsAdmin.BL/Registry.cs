@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 using System.Linq;
+using Bcs.Admin.BL.Dto;
 
 namespace BcsAdmin.BL
 {
@@ -25,6 +26,8 @@ namespace BcsAdmin.BL
         public static void RegisterMapperBL(this IMapperConfigurationExpression cfg)
         {
             cfg.CreateMap<EpReaction, ReactionRowDto>();
+            cfg.CreateMap<EpReaction, BiochemicalReactionDetailDto>();
+            cfg.CreateMap<BiochemicalReactionDetailDto, EpReaction> ();
 
             cfg.CreateMap<EpClassification, ClassificationDto>();
             cfg.CreateMap<EpEntityNote, EntityNoteDto>();

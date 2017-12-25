@@ -33,7 +33,7 @@
                             No results
                         </EmptyDataTemplate>
                         <RowDecorators>
-                            <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.Detail.Id}" Events.Click="{command: _root.EditEntity(_this.Id)}" />
+                            <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.EntityDetail.Id}" Events.Click="{command: _root.EditEntity(_this.Id)}" />
                         </RowDecorators>
                         <Columns>
                             <dot:GridViewTextColumn AllowSorting HeaderText="Code" ValueBinding="{value: Code}" />
@@ -80,7 +80,7 @@
                             No results
                         </EmptyDataTemplate>
                         <RowDecorators>
-                            <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.Detail.Id}" Events.Click="{command: null}" />
+                            <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.ReactionDetail.Id}" Events.Click="{command: _root.EditReaction(Id)}" />
                         </RowDecorators>
                         <Columns>
                             <dot:GridViewTextColumn AllowSorting HeaderText="Code" ValueBinding="{value: Code}" />
@@ -96,10 +96,10 @@
         </div>
     </div>
     <div class="col-lg-5 col-md-12">
-        <div class="col-md-12 sub-board" DataContext="{value: Detail}" Visible="{value: Id != 0}">
+        <div class="col-md-12 sub-board" DataContext="{value: EntityDetail}" Visible="{value: Id != 0}">
             <cc:PanelControl HeadingText="Detail">
                 <BodyTemplate>
-                    <dd:DynamicEntity Validator.InvalidCssClass="has-error" FormBuilderName="bootstrap" DataContext="{value: _this}" />
+                    <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="bootstrap" DataContext="{value: _this}" />
                 </BodyTemplate>
                 <FooterTemplate>
                     <dot:Button ButtonTagName="button" class="btn btn-primary" Click="{command: Save()}">
@@ -107,78 +107,20 @@
                     </dot:Button>
                 </FooterTemplate>
             </cc:PanelControl>
-            <dde:EditableDynamicGridPanel HeadingText="Components:"
-                                          DataContext="{value: Components}"
-                                          DataSourceBinding="{value: DataSet}"
-                                          EditCommand="{command: _parent.Edit(_this)}"
-                                          DeleteCommand="{command: _parent.Delete(_this)}"
-                                          CancelCommand="{command: _parent.Cancel()}"
-                                          SaveCommand="{command: _parent.SaveEdit(_this)}"
-                                          SaveNewCommand="{command: SaveNew()}"
-                                          CancelNew="{command: Cancel()}"
-                                          AddCommand="{command: Add()}"
-                                          LinkEntity="{command: Link()}"
-                                          NewEntityFormVisible="{value: NewRow != null}"
-                                          NewEntityDto="{value: NewRow}"
-                                          LinkEntitySearchSelect="{value: EntitySearchSelect}" />
-
-            <dde:EditableDynamicGridPanel HeadingText="Locations:"
-                                          DataContext="{value: Locations}"
-                                          DataSourceBinding="{value: DataSet}"
-                                          EditCommand="{command: _parent.Edit(_this)}"
-                                          DeleteCommand="{command: _parent.Delete(_this)}"
-                                          CancelCommand="{command: _parent.Cancel()}"
-                                          SaveCommand="{command: _parent.SaveEdit(_this)}"
-                                          SaveNewCommand="{command: SaveNew()}"
-                                          CancelNew="{command: Cancel()}"
-                                          AddCommand="{command: Add()}"
-                                          NewEntityFormVisible="{value: NewRow != null}"
-                                          NewEntityDto="{value: NewRow}"
-                                          LinkEntitySearchSelect="{value: EntitySearchSelect}"
-                                          LinkEntity="{command: Link()}" />
-
-            <dde:EditableDynamicGridPanel HeadingText="Organisms:"
-                                          DataContext="{value: Organisms}"
-                                          DataSourceBinding="{value: DataSet}"
-                                          EditCommand="{command: _parent.Edit(_this)}"
-                                          DeleteCommand="{command: _parent.Delete(_this)}"
-                                          CancelCommand="{command: _parent.Cancel()}"
-                                          SaveCommand="{command: _parent.SaveEdit(_this)}"
-                                          SaveNewCommand="{command: SaveNew()}"
-                                          CancelNew="{command: Cancel()}"
-                                          AddCommand="{command: Add()}"
-                                          NewEntityFormVisible="{value: NewRow != null}"
-                                          NewEntityDto="{value: NewRow}"
-                                          LinkEntitySearchSelect="{value: EntitySearchSelect}"
-                                          LinkEntity="{command: Link()}" />
-
-            <dde:EditableDynamicGridPanel HeadingText="Classifications:"
-                                          DataContext="{value: Classifications}"
-                                          DataSourceBinding="{value: DataSet}"
-                                          EditCommand="{command: _parent.Edit(_this)}"
-                                          DeleteCommand="{command: _parent.Delete(_this)}"
-                                          CancelCommand="{command: _parent.Cancel()}"
-                                          SaveCommand="{command: _parent.SaveEdit(_this)}"
-                                          SaveNewCommand="{command: SaveNew()}"
-                                          CancelNew="{command: Cancel()}"
-                                          AddCommand="{command: Add()}"
-                                          NewEntityFormVisible="{value: NewRow != null}"
-                                          NewEntityDto="{value: NewRow}"
-                                          LinkEntitySearchSelect="{value: EntitySearchSelect}"
-                                          LinkEntity="{command: Link()}" />
-
-            <dde:EditableDynamicGridPanel HeadingText="Notes:"
-                                          DataContext="{value: Notes}"
-                                          DataSourceBinding="{value: DataSet}"
-                                          EditCommand="{command: _parent.Edit(_this)}"
-                                          DeleteCommand="{command: _parent.Delete(_this)}"
-                                          CancelCommand="{command: _parent.Cancel()}"
-                                          SaveCommand="{command: _parent.SaveEdit(_this)}"
-                                          SaveNewCommand="{command: SaveNew()}"
-                                          CancelNew="{command: Cancel()}"
-                                          AddCommand="{command: Add()}"
-                                          NewEntityFormVisible="{value: NewRow != null}"
-                                          NewEntityDto="{value: NewRow}" />
+            <dd:DynamicEntity GroupName="Grids" FormBuilderName="bootstrap" DataContext="{value: _this}" />
+        </div>
+        <div class="col-md-12 sub-board" DataContext="{value: ReactionDetail}" Visible="{value: Id != 0}">
+            <cc:PanelControl HeadingText="Detail">
+                <BodyTemplate>
+                    <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="bootstrap" DataContext="{value: _this}" />
+                </BodyTemplate>
+                <FooterTemplate>
+                    <dot:Button ButtonTagName="button" class="btn btn-primary" Click="{command: Save()}">
+                        <i Class="glyphicon glyphicon-save"></i> Save detail
+                    </dot:Button>
+                </FooterTemplate>
+            </cc:PanelControl>
+            <dd:DynamicEntity GroupName="Grids" FormBuilderName="bootstrap" DataContext="{value: _this}" />
         </div>
     </div>
 </dot:Content>

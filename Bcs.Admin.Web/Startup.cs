@@ -31,6 +31,7 @@ using Bcs.Admin.Web.ViewModels.Grids;
 using Riganti.Utils.Infrastructure.Services.Facades;
 using BcsAdmin.BL.Mappers;
 using BcsAdmin.BL.Repositories;
+using Bcs.Admin.BL.Dto;
 
 namespace Bcs.Analyzer.DemoWeb
 {
@@ -94,7 +95,8 @@ namespace Bcs.Analyzer.DemoWeb
             return new MapperConfiguration(cfg =>
             {
                 cfg.RegisterMapperBL();
-                cfg.CreateMap<BiochemicalEntityDetailDto, BiochemicalEntityDetail>();           
+                cfg.CreateMap<BiochemicalEntityDetailDto, BiochemicalEntityDetail>();
+                cfg.CreateMap<BiochemicalReactionDetailDto, BiochemicalReactionDetail>();
             });
         }
 

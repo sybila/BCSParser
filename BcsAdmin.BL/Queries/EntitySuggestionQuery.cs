@@ -15,13 +15,14 @@ namespace BcsAdmin.BL.Queries
     {
         public SuggestionFilter Filter { get; set; }
 
-        public EntitySuggestionQuery(IUnitOfWorkProvider unitOfWorkProvider) 
+        public EntitySuggestionQuery(IUnitOfWorkProvider unitOfWorkProvider)
             : base(unitOfWorkProvider)
         {
         }
 
         protected override IQueryable<SuggestionDto> GetQueryable()
         {
+
             var context = Context.CastTo<AppDbContext>();
 
             var queriable =
@@ -29,22 +30,25 @@ namespace BcsAdmin.BL.Queries
                     .EpEntity
                     .AsQueryable();
 
-                if (!string.IsNullOrWhiteSpace(Filter.SearchText))
-                {
-                    queriable = queriable.Where(e
-                        => e.Code.IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1
-                        || e.Name.IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1);
-                }
+            if (!string.IsNullOrWhiteSpace(Filter?.SearchText))
+            {
+                queriable = queriable.Where(e
+                    => (e.Code?? "").IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1
+                    || (e.Name?? "").IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1);
+            }
 
             return queriable
-                .OrderBy(e=> e.Code)
+                .ToList()
+                .AsQueryable()
+                .OrderBy(e => e.Code)
                 .Take(10)
                 .Select(e => new SuggestionDto
-            {
-                Id = e.Id,
-                Description = e.Name,
-                Name = e.Code
-            });
+                {
+                    Id = e.Id,
+                    Description = e.Name,
+                    Name = e.Code
+                });
+
         }
     }
 
@@ -59,6 +63,7 @@ namespace BcsAdmin.BL.Queries
 
         protected override IQueryable<SuggestionDto> GetQueryable()
         {
+
             var context = Context.CastTo<AppDbContext>();
 
             var queriable =
@@ -69,7 +74,7 @@ namespace BcsAdmin.BL.Queries
             if (!string.IsNullOrWhiteSpace(Filter.SearchText))
             {
                 queriable = queriable
-                    .Where(e=> e.Name != null)
+                    .Where(e => e.Name != null)
                     .Where(e => e.Name.IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1);
             }
 

@@ -80,7 +80,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         {
             DataSet = new GridViewDataSet<TGridEntity>()
             {
-                PagingOptions = { PageSize = 10},
+                PagingOptions = new PagingOptions { PageSize = 100},
                 SortingOptions = new SortingOptions { },
                 RowEditOptions = new RowEditOptions
                 {

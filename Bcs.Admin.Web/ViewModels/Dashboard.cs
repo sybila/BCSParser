@@ -4,6 +4,7 @@ using AutoMapper;
 using BcsAdmin.BL.Dto;
 using System.Collections.Generic;
 using System;
+using Bcs.Admin.BL.Dto;
 
 namespace Bcs.Admin.Web.ViewModels
 {
@@ -11,16 +12,20 @@ namespace Bcs.Admin.Web.ViewModels
     {
         private readonly BasicListFacade basicListFacade;
         private readonly BiochemicalEntityFacade dashboardFacade;
+        private readonly ReactionFacade reactionFacade;
         private readonly IMapper mapper;
 
         public string ActiveTabName { get; set; }
         public EntitiesTab EntitiesTab { get; set; }
         public ReactionsTab ReactionsTab { get; set; }
 
+        public List<DetailBase> OpenDetails { get; set; }
+
         public bool EntitiesSelected => ActiveTabName == EntitiesTab.Name;
         public bool ReactionsSelected => ActiveTabName == ReactionsTab.Name;
 
-        public BiochemicalEntityDetail Detail { get; set; }
+        public BiochemicalEntityDetail EntityDetail { get; set; }
+        public BiochemicalReactionDetail ReactionDetail { get; set; }
         public List<BiochemicalEntityTypeDto> HierarchyTypes { get; set; }
 
         public List<SuggestionDto> EntitySuggestions { get; set; }
@@ -30,15 +35,19 @@ namespace Bcs.Admin.Web.ViewModels
         public Dashboard(
             BasicListFacade basicListFacade,
             BiochemicalEntityFacade dashboardFacade,
+            ReactionFacade reactionFacade, 
             IMapper mapper, 
             EntitiesTab entitiesTab,
             ReactionsTab rulesTab,
-            BiochemicalEntityDetail detail)
+            BiochemicalEntityDetail entityDetail,
+            BiochemicalReactionDetail reactionDetail)
         {
             this.basicListFacade = basicListFacade;
             this.dashboardFacade = dashboardFacade;
+            this.reactionFacade = reactionFacade;
             this.mapper = mapper;
-            Detail = detail;
+            EntityDetail = entityDetail;
+            ReactionDetail = reactionDetail;
             Title = "Dashboard";
             EntitiesTab = entitiesTab;
             ReactionsTab = rulesTab;
@@ -48,10 +57,23 @@ namespace Bcs.Admin.Web.ViewModels
         public void EditEntity(int entityId)
         {
             var dto = dashboardFacade.GetDetail(entityId);
-            mapper.Map(dto, Detail);
-            Detail.PoputateGrids();
-            Detail.CancelAllActions();
+            mapper.Map(dto, EntityDetail);
+            EntityDetail.PoputateGrids();
+            EntityDetail.CancelAllActions();
+
+            //OpenDetails.Add(EntityDetail);
         }
+
+        public void EditReaction(int reactionId)
+        {
+            var dto = reactionFacade.GetDetail(reactionId);
+            mapper.Map(dto, ReactionDetail);
+            ReactionDetail.PoputateGrids();
+            ReactionDetail.CancelAllActions();
+
+            //OpenDetails.Add(ReactionDetail);
+        }
+
 
         public async Task Refresh()
         {
@@ -63,11 +85,6 @@ namespace Bcs.Admin.Web.ViewModels
         {
             HierarchyTypes = basicListFacade.GetEntityTypes();
             return base.Init();
-        }
-
-        public override Task PreRender()
-        {
-            return base.PreRender();
         }
     }
 }
