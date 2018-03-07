@@ -39,6 +39,7 @@ namespace Bcs.Admin.Web
             var provider = new ComboBoxConventionFormEditorProvider(conventions);
             var columnProvider = new ConventionComboBoxGridColumnProvider(conventions);
             FormEditorProviders.Insert(0, provider);
+            FormEditorProviders.Insert(0, new CodeEditorProvider());
             FormEditorProviders.Add(new EditableDynamicGridEditorProvider());
             GridColumnProviders.Insert(0, columnProvider);
             FormBuilders.Add("horisontal", new HorisontalTableFormBuilder());

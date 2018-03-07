@@ -7,10 +7,14 @@
     <meta charset="utf-8" />
     <dot:RequiredResource Name="bootstrap"/>
     <dot:RequiredResource Name="site" />
+    <dot:RequiredResource Name="code-editor" />
     <title>{{value: Title}}</title>
 </head>
 <body class="main-board">
-
+    <dot:InlineScript Dependencies="knockout">
+        var editor = new CodeEditor();
+        editor.addKnockoutHandlers();
+    </dot:InlineScript>
     <div class="row">
         <div class="col-md-12">
             <h1>{{value: Title}}</h1>

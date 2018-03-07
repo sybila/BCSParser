@@ -7,17 +7,12 @@ using System.Text;
 using System.Web;
 using AngleSharp;
 using AngleSharp.Parser.Html;
+using BcsAdmin.BL.Dto;
 using BcsResolver.Extensions;
 using TextRange = BcsResolver.Syntax.Tokenizer.TextRange;
 
 namespace Bcs.Analyzer.DemoWeb.Utils
 {
-    public class StyleSpan
-    {
-        public TextRange Range { get; set; }
-        public string CssClass { get; set; }
-    }
-
     public class SpanPoint
     {
         public int Position { get; set; }
