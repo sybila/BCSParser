@@ -55,6 +55,7 @@ namespace BcsResolver.File
 
             Locations = allEntities
                 .SelectMany(ce => ce.Locations)
+                .OfType<BcsLocationSymbol>()
                 .Distinct()
                 .ToDictionary(k => k.Name);
 

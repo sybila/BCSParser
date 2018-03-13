@@ -15,7 +15,7 @@ namespace BcsAdmin.BL.Queries
     {
         public BiochemicalEntityFilter Filter { get; set; }
 
-        public EntityGridQuery(IUnitOfWorkProvider unitOfWorkProvider) 
+        public EntityGridQuery(IUnitOfWorkProvider unitOfWorkProvider)
             : base(unitOfWorkProvider)
         {
         }
@@ -44,16 +44,16 @@ namespace BcsAdmin.BL.Queries
                         EntityTypeCss = $"entity-{e.HierarchyType.ToString("F")}".ToLower()
                     });
 
-                if (!string.IsNullOrWhiteSpace(Filter.SearchText))
-                {
-                    queriable = queriable.Where(e
-                        => e.Code.IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1
-                        || e.Name.IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1);
-                }
-                if (Filter.EntityTypeFilter.Any())
-                {
-                    queriable = queriable.Where(e => Filter.EntityTypeFilter.Any(f => e.Type.Equals(f, StringComparison.OrdinalIgnoreCase)));
-                }
+            if (!string.IsNullOrWhiteSpace(Filter.SearchText))
+            {
+                queriable = queriable.Where(e
+                     => (e.Code != null ? e.Code : "").IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1
+                     || (e.Name != null ? e.Name : "").IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1);
+            }
+            if (Filter.EntityTypeFilter.Any())
+            {
+                queriable = queriable.Where(e => Filter.EntityTypeFilter.Any(f => (e.Type != null ? e.Type : "").Equals(f, StringComparison.OrdinalIgnoreCase)));
+            }
 
             return queriable;
         }

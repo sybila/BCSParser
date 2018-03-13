@@ -146,6 +146,7 @@ namespace BcsResolver.File
 
             var location = bcsEntity.Locations
                 .Select(BindLocation)
+                .OfType<BcsNamedSymbol>()
                 .ToList();
             return new BcsStructuralAgentSymbol
             {
@@ -165,6 +166,7 @@ namespace BcsResolver.File
 
             var location = bcsEntity.Locations
                 .Select(BindLocation)
+                .OfType<BcsNamedSymbol>()
                 .ToList();
 
             return new BcsComplexSymbol()
@@ -184,6 +186,7 @@ namespace BcsResolver.File
                 .ToList();
             var location = bcsEntity.Locations
                 .Select(BindLocation)
+                .OfType<BcsNamedSymbol>()
                 .ToList();
 
             return new BcsAtomicAgentSymbol

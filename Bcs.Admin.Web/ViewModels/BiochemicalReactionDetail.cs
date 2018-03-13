@@ -48,8 +48,6 @@ namespace Bcs.Admin.Web.ViewModels
         {
             var equationText = textPresenter.ToRawText(Equation);
 
-
-
             Equation = textPresenter.CreateRichText(equationText, reactionFacade.GetClassificationSpans(equationText));
         }
 

@@ -13,7 +13,7 @@ namespace BcsAdmin.BL.Services
 
         public override BcsNamedSymbol CreateSymbol(EpEntity entity)
         {
-            var name = entity.Name;
+            var name = entity.Code;
 
             if(!namedSymbols.ContainsKey(name))
             {

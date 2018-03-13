@@ -4,9 +4,20 @@ using BcsResolver.SemanticModel.Tree;
 using BcsAdmin.DAL.Models;
 using System.Linq;
 using BcsResolver.Extensions;
+using System.Collections.Concurrent;
 
 namespace BcsAdmin.BL.Services
 {
+    public class ReferenceSymbolFactory : SymbolFactory
+    {
+        private ConcurrentDictionary<string, BcsLocationSymbol> locationMap = new ConcurrentDictionary<string, BcsLocationSymbol>();
+
+        protected override BcsLocationSymbol CreateLocation(EpEntity entity)
+        {
+            return locationMap.GetOrAdd(entity.Code ?? "", name => base.CreateLocation(entity));
+        }
+    }
+
     public class SymbolFactory
     {
         public virtual BcsNamedSymbol CreateSymbol(EpEntity entity)
@@ -52,7 +63,7 @@ namespace BcsAdmin.BL.Services
             {
                 FullName = entity.Name,
                 Name = entity.Code,
-                Locations = entity.Locations.Select(el => CreateLocation(el.Location)).ToList(),
+                Locations = CreateEntityLocations(entity),
                 Parts = entity.Children.Select(s => CreateSymbol<BcsStateSymbol>(s).CastTo<BcsNamedSymbol>()).ToList(),
                 BcsSymbolType = BcsSymbolType.Agent
             };
@@ -82,16 +93,23 @@ namespace BcsAdmin.BL.Services
             };
         }
 
-        protected virtual List<BcsLocationSymbol> CreateEntityLocations(EpEntity entity)
+        protected virtual List<BcsNamedSymbol> CreateEntityLocations(EpEntity entity)
         {
             return entity.Locations.Select(el => CreateSymbol<BcsLocationSymbol>(el.Location)).ToList();
         }
 
-        protected virtual TExpectedSymbol CreateSymbol<TExpectedSymbol>(EpEntity entity)
+        protected virtual BcsNamedSymbol CreateSymbol<TExpectedSymbol>(EpEntity entity)
             where TExpectedSymbol : BcsNamedSymbol
         {
             var symbol = CreateSymbol(entity);
-            return EnsureType<TExpectedSymbol>(symbol).CastTo<TExpectedSymbol>();
+            try
+            {
+                return EnsureType<TExpectedSymbol>(symbol).CastTo<TExpectedSymbol>();
+            }
+            catch (Exception ex)
+            {
+                return CreateError(entity, ex);
+            }
         }
 
         private BcsNamedSymbol EnsureType<TSymbol>(BcsNamedSymbol namedSymbol)
@@ -102,6 +120,16 @@ namespace BcsAdmin.BL.Services
                 throw new InvalidOperationException($"{typeof(TSymbol).FullName} was expected.");
             }
             return namedSymbol;
+        }
+
+        protected BcsErrorSymbol CreateError(EpEntity entity, Exception ex)
+        {
+            return new BcsErrorSymbol
+            {
+                Error = ex.Message,
+                ExpectedType = BcsSymbolType.Location,
+                Name = entity.Code
+            };
         }
     }
 }
