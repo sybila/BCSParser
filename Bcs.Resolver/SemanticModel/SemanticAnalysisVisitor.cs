@@ -55,7 +55,7 @@ namespace BcsResolver.SemanticModel
 
             if (parameter == null)
             {
-                BcsLocationSymbol locationSymbol = Workspace.Locations.GetValueOrDefault(nameToBind);
+                BcsLocationSymbol locationSymbol = Workspace.Locations.ContainsKey(nameToBind) ? Workspace.Locations[nameToBind] : null;
 
                 if (locationSymbol == null)
                 {

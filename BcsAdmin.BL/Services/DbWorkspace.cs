@@ -12,6 +12,8 @@ namespace BcsAdmin.BL.Services
 {
     public class DbWorkspace : IBcsWorkspace
     {
+        private bool isInitialized;
+
         private readonly SemanticModelFactory semanticModelFactory;
 
         public IReadOnlyDictionary<string, BcsComplexSymbol> Complexes { get; private set; }
@@ -36,6 +38,11 @@ namespace BcsAdmin.BL.Services
 
         public void CreateSemanticModel()
         {
+            if(isInitialized)
+            {
+                return;
+            }
+
             using (var dbContext = new AppDbContext())
             {
                 dbContext.EpEntity.Load();
@@ -65,6 +72,8 @@ namespace BcsAdmin.BL.Services
                     .ToDictionary(k => k.Name);
 
                 LocationEntityMap = symbols.OfType<BcsComposedSymbol>().ToLocationSymbolMap();
+
+                isInitialized = true;
             }
         }
     }

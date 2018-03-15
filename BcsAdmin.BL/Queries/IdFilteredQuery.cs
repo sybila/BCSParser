@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BcsAdmin.BL.Queries
 {
-    public abstract class IdFilteredQuery<TEntityDto> : EntityFrameworkQuery<TEntityDto>, IFilteredQuery<TEntityDto, IdFilter>
+    public abstract class IdFilteredQuery<TEntityDto> : AppQuery<TEntityDto>, IFilteredQuery<TEntityDto, IdFilter>
     {
         public IdFilteredQuery(IUnitOfWorkProvider unitOfWorkProvider)
             : base(unitOfWorkProvider)

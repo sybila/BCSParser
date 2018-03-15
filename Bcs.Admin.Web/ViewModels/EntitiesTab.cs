@@ -43,12 +43,14 @@ namespace Bcs.Admin.Web.ViewModels
             return base.Init();
         }
 
+        public override Task Load()
+        {
+            DataSet.OnLoadingData = options => listFacade.GetData(options, Filter);
+            return base.Load();
+        }
+
         public override Task PreRender()
         {
-            if (!Context.IsPostBack || DataSet.IsRefreshRequired)
-            {
-                listFacade.FillDataSet(DataSet, Filter);
-            }
             return base.PreRender();
         }
     }

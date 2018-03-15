@@ -11,7 +11,7 @@ using Bcs.Admin.BL.Dto;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class EntityGridQuery : EntityFrameworkQuery<BiochemicalEntityRowDto>, IFilteredQuery<BiochemicalEntityRowDto, BiochemicalEntityFilter>
+    public class EntityGridQuery : AppQuery<BiochemicalEntityRowDto>, IFilteredQuery<BiochemicalEntityRowDto, BiochemicalEntityFilter>
     {
         public BiochemicalEntityFilter Filter { get; set; }
 

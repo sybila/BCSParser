@@ -12,7 +12,7 @@ using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class ReactionGridQuery : EntityFrameworkQuery<ReactionRowDto>, IFilteredQuery<ReactionRowDto, ReactionFilter>
+    public class ReactionGridQuery : AppQuery<ReactionRowDto>, IFilteredQuery<ReactionRowDto, ReactionFilter>
     {
         private readonly IMapper mapper;
 

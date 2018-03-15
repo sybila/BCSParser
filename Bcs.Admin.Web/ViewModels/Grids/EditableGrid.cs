@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BcsAdmin.BL;
 using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Facades;
 using BcsAdmin.BL.Filters;
@@ -80,9 +81,14 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             return base.Init();
         }
 
+        public override Task Load()
+        {
+            DataSet.OnLoadingData = options => facade.GetData(options, new IdFilter { Id = ParentEntityId });
+            return base.Load();
+        }
+
         public override Task PreRender()
         {
-            facade.FillDataSet(DataSet, new IdFilter { Id = ParentEntityId });
             return base.PreRender();
         }
     }

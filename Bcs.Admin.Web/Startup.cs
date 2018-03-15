@@ -32,6 +32,8 @@ using Riganti.Utils.Infrastructure.Services.Facades;
 using BcsAdmin.BL.Mappers;
 using BcsAdmin.BL.Repositories;
 using Bcs.Admin.BL.Dto;
+using BcsAdmin.BL.Services;
+using BcsResolver.File;
 
 namespace Bcs.Analyzer.DemoWeb
 {
@@ -83,6 +85,8 @@ namespace Bcs.Analyzer.DemoWeb
              .Where(t => t.Name.EndsWith("Mapper"))
              .AsImplementedInterfaces()
              .AsSelf();
+
+            builder.RegisterType<DbWorkspace>().As<IBcsWorkspace>().SingleInstance();
 
             builder.Populate(services);
 

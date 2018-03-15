@@ -5,6 +5,7 @@ using DotVVM.Framework.ViewModel;
 using Riganti.Utils.Infrastructure.Core;
 using System.Threading.Tasks;
 using BcsAdmin.BL.Dto;
+using BcsAdmin.BL;
 
 namespace Bcs.Admin.Web.ViewModels.Grids
 {
@@ -90,11 +91,10 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             return base.Init();
         }
 
-        public override Task PreRender()
+        public override Task Load()
         {
-
-            facade.FillDataSet(DataSet, new IdFilter { Id = ParentEntityId });
-            return base.PreRender();
+            DataSet.OnLoadingData = options => facade.GetData(options, new IdFilter { Id = ParentEntityId });
+            return base.Load();
         }
     }
 }

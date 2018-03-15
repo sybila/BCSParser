@@ -8,7 +8,7 @@ using Riganti.Utils.Infrastructure.Core;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class EntityTypeNamesQuery : EntityFrameworkQuery<string>
+    public class EntityTypeNamesQuery : AppQuery<string>
     {
         public EntityTypeNamesQuery(IUnitOfWorkProvider unitOfWorkProvider) 
             : base(unitOfWorkProvider)

@@ -11,7 +11,7 @@ using BcsAdmin.BL.Dto;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class EntitySuggestionQuery : EntityFrameworkQuery<SuggestionDto>, IFilteredQuery<SuggestionDto, SuggestionFilter>
+    public class EntitySuggestionQuery : AppQuery<SuggestionDto>, IFilteredQuery<SuggestionDto, SuggestionFilter>
     {
         public SuggestionFilter Filter { get; set; }
 

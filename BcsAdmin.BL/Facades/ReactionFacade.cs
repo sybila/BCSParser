@@ -24,12 +24,13 @@ namespace BcsAdmin.BL.Facades
             Func<IFilteredQuery<ReactionRowDto, ReactionFilter>> queryFactory,
             IRepository<EpReaction, int> repository,
             IEntityDTOMapper<EpReaction, BiochemicalReactionDetailDto> mapper,
-            IUnitOfWorkProvider unitOfWorkProvider)
+            IUnitOfWorkProvider unitOfWorkProvider,
+            IBcsWorkspace bcsWorkspace)
             : base(queryFactory, repository, mapper)
         {
             UnitOfWorkProvider = unitOfWorkProvider;
 
-            bcsWorkspace = new DbWorkspace();
+            this.bcsWorkspace = bcsWorkspace;
             bcsWorkspace.CreateSemanticModel();
         }
 
