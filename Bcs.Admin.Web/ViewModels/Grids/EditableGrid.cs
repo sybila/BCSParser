@@ -45,6 +45,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         public void Delete(TGridEntity entity)
         {
             facade.Delete(entity.Id);
+            DataSet.RequestRefresh(true);
         }
 
         public void Edit(TGridEntity entity)
@@ -58,6 +59,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         {
             facade.Save(NewRow);
             Cancel();
+            DataSet.RequestRefresh(true);
         }
 
         public void SaveEdit(TGridEntity entity)
@@ -65,6 +67,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             entity.IntermediateEntityId = ParentEntityId;
             facade.Save(entity);
             Cancel();
+            DataSet.RequestRefresh(true);
         }
 
         public override Task Init()
