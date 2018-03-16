@@ -44,34 +44,27 @@ namespace Bcs.Admin.Web.ViewModels
             this.dashboardFacade = dashboardFacade;
             this.reactionFacade = reactionFacade;
             this.mapper = mapper;
+
             EntityDetail = entityDetail;
             ReactionDetail = reactionDetail;
+
             Title = "Dashboard";
             EntitiesTab = entitiesTab;
             ReactionsTab = rulesTab;
             ActiveTabName = entitiesTab.Name;
+
+            EntityDetail.UpdateGrid = async () => await EntitiesTab.RefreshAsync();
+            ReactionDetail.UpdateGrid = async () => await ReactionsTab.RefreshAsync();
         }
 
-        public void EditEntity(int entityId)
+        public async Task EditEntityAsync(int entityId)
         {
-            var dto = dashboardFacade.GetDetail(entityId);
-            mapper.Map(dto, EntityDetail);
-            EntityDetail.PoputateGrids();
-            EntityDetail.CancelAllActions();
+            await EntityDetail.EditAsync(entityId);
         }
 
-        public void EditReaction(int reactionId)
+        public async Task EditReactionAsync(int reactionId)
         {
-            var dto = reactionFacade.GetDetail(reactionId);
-            mapper.Map(dto, ReactionDetail);
-            ReactionDetail.PoputateGrids();
-            ReactionDetail.CancelAllActions();
-        }
-
-        public async Task Refresh()
-        {
-            await EntitiesTab.DataSet.RequestRefreshAsync();
-            await EntitiesTab.DataSet.GoToFirstPageAsync();
+            await ReactionDetail.EditAsync(reactionId);
         }
 
         public override Task Init()

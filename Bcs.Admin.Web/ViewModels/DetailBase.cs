@@ -6,6 +6,8 @@ using AutoMapper;
 using BcsAdmin.BL.Queries;
 using Riganti.Utils.Infrastructure.Core;
 using Riganti.Utils.Infrastructure.Services.Facades;
+using System;
+using System.Threading.Tasks;
 
 namespace Bcs.Admin.Web.ViewModels
 {
@@ -17,6 +19,9 @@ namespace Bcs.Admin.Web.ViewModels
 
         [Bind(Direction.None)]
         protected ICrudDetailFacade<TDto, int> Facade { get; }
+
+        [Bind(Direction.None)]
+        public Func<Task> UpdateGrid { get; set; }
 
         [Protect(ProtectMode.SignData)]
         [Display(AutoGenerateField = false)]
@@ -70,23 +75,23 @@ namespace Bcs.Admin.Web.ViewModels
             Organisms = organisms;
         }
 
-        public virtual void PoputateGrids()
+        public virtual async Task PoputateGridsAsync()
         {
             Classifications.ParentEntityId = Id;
-            Classifications.Init();
-            Classifications.DataSet.RequestRefresh(true);
+            await Classifications.Init();
+            await Classifications.DataSet.RequestRefreshAsync(true);
 
             Organisms.ParentEntityId = Id;
-            Organisms.Init();
-            Organisms.DataSet.RequestRefresh(true);
+            await Organisms.Init();
+            await Organisms.DataSet.RequestRefreshAsync(true);
 
             Locations.ParentEntityId = Id;
-            Locations.Init();
-            Locations.DataSet.RequestRefresh(true);
+            await Locations.Init();
+            await Locations.DataSet.RequestRefreshAsync(true);
 
             Notes.ParentEntityId = Id;
-            Notes.Init();
-            Notes.DataSet.RequestRefresh(true);
+            await Notes.Init();
+            await Notes.DataSet.RequestRefreshAsync(true);
         }
 
         public virtual void CancelAllActions()
@@ -103,10 +108,11 @@ namespace Bcs.Admin.Web.ViewModels
             Facade.Save(dto);
         }
 
-        public void Delete()
+        public async Task DeleteAsync()
         {
             Facade.Delete(Id);
             Close();
+            await UpdateGrid?.Invoke();
         }
 
         public void Close()
@@ -114,6 +120,23 @@ namespace Bcs.Admin.Web.ViewModels
             var @new = Facade.InitializeNew();
             Mapper.Map(@new, this);
             Id = -1;
+            CancelAllActions();
+        }
+
+        public async Task NewAsync()
+        {
+            var @new = Facade.InitializeNew();
+            Mapper.Map(@new, this);
+            CancelAllActions();
+            await UpdateGrid?.Invoke();
+        }
+
+        public async Task EditAsync(int id)
+        {
+            var dto = Facade.GetDetail(id);
+            Mapper.Map(dto, this);
+            await PoputateGridsAsync();
+            CancelAllActions();
         }
     }
 }

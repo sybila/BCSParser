@@ -27,6 +27,15 @@ namespace Bcs.Admin.Web.ViewModels
             this.listFacade = listFacade;
         }
 
+        public async Task RefreshAsync(bool goTofirstPage = false)
+        {
+            await DataSet.RequestRefreshAsync(true);
+            if (goTofirstPage)
+            {
+                await DataSet.GoToFirstPageAsync();
+            }
+        }
+
         public override Task Init()
         {
             DataSet = new GridViewDataSet<TGridDto>()

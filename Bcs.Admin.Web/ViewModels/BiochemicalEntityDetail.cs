@@ -12,6 +12,7 @@ using BcsAdmin.BL.Facades;
 using AutoMapper;
 using BcsAdmin.BL.Queries;
 using DotVVM.Framework.ViewModel;
+using System.Threading.Tasks;
 
 namespace Bcs.Admin.Web.ViewModels
 {
@@ -44,13 +45,13 @@ namespace Bcs.Admin.Web.ViewModels
             Components = componentGrid;
         }
 
-        public override void PoputateGrids()
+        public override async Task PoputateGridsAsync()
         {
             Components.ParentEntityId = Id;
-            Components.Init();
-            Components.DataSet.RequestRefresh(true);
+            await Components.Init();
+            await Components.DataSet.RequestRefreshAsync(true);
 
-            base.PoputateGrids();
+            await base.PoputateGridsAsync();
         }
 
         public override void CancelAllActions()

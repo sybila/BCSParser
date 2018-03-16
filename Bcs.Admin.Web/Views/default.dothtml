@@ -14,9 +14,9 @@
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="input-group input-group-sm">
-                        <dot:TextBox Changed="{command: _parent.Refresh()}" class="form-control" Text="{value: Filter.SearchText}" />
+                        <dot:TextBox Changed="{command: RefreshAsync(true)}" class="form-control" Text="{value: Filter.SearchText}" />
                         <div class="input-group-btn">
-                            <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: _parent.Refresh()}">
+                            <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: RefreshAsync(true)}">
                                 <i class="glyphicon glyphicon-search"></i>
                             </dot:Button>
                         </div>
@@ -24,8 +24,13 @@
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <dot:Repeater class="row" DataSource="{value: EntityTypes}">
-                        <dot:CheckBox class="col-md-4" Text="{value: _this}" Changed="{command: _parent2.Refresh()}" CheckedItems="{value: _parent.Filter.EntityTypeFilter}" CheckedValue="{value: _this}" />
+                        <dot:CheckBox class="col-md-4" Text="{value: _this}" Changed="{command: _parent.RefreshAsync(true)}" CheckedItems="{value: _parent.Filter.EntityTypeFilter}" CheckedValue="{value: _this}" />
                     </dot:Repeater>
+                </div>
+                <div class="col-md-12">
+                    <dot:Button ButtonTagName="button" Click="{command: _root.EntityDetail.NewAsync()}" class="btn btn-success pull-right">
+                        <i class="glyphicon glyphicon glyphicon-plus"></i> New
+                    </dot:Button>
                 </div>
                 <div class="col-md-12">
                     <dot:GridView ShowHeaderWhenNoData class="col-md-12 table table-hover table-striped" DataSource="{value: DataSet}">
@@ -33,7 +38,7 @@
                             No results
                         </EmptyDataTemplate>
                         <RowDecorators>
-                            <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.EntityDetail.Id}" Events.Click="{command: _root.EditEntity(_this.Id)}" />
+                            <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.EntityDetail.Id}" Events.Click="{command: _root.EditEntityAsync(_this.Id)}" />
                         </RowDecorators>
                         <Columns>
                             <dot:GridViewTextColumn AllowSorting HeaderText="Code" ValueBinding="{value: Code}" />
@@ -64,9 +69,9 @@
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="input-group input-group-sm">
-                        <dot:TextBox Changed="{command: _parent.Refresh()}" class="form-control" Text="{value: Filter.SearchText}" />
+                        <dot:TextBox Changed="{command: RefreshAsync(true)}" class="form-control" Text="{value: Filter.SearchText}" />
                         <div class="input-group-btn">
-                            <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: _parent.Refresh()}">
+                            <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: RefreshAsync(true)}">
                                 <i class="glyphicon glyphicon-search"></i>
                             </dot:Button>
                         </div>
@@ -75,12 +80,17 @@
                 <div class="col-lg-6 col-md-12">
                 </div>
                 <div class="col-md-12">
+                    <dot:Button ButtonTagName="button" Click="{command: _root.ReactionDetail.NewAsync()}" class="btn btn-success pull-right">
+                        <i class="glyphicon glyphicon glyphicon-plus"></i> New
+                    </dot:Button>
+                </div>
+                <div class="col-md-12">
                     <dot:GridView ShowHeaderWhenNoData class="col-md-12 table table-hover table-striped" DataSource="{value: DataSet}">
                         <EmptyDataTemplate>
                             No results
                         </EmptyDataTemplate>
                         <RowDecorators>
-                            <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.ReactionDetail.Id}" Events.Click="{command: _root.EditReaction(Id)}" />
+                            <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.ReactionDetail.Id}" Events.Click="{command: _root.EditReactionAsync(Id)}" />
                         </RowDecorators>
                         <Columns>
                             <dot:GridViewTextColumn AllowSorting HeaderText="Code" ValueBinding="{value: Code}" />
@@ -97,7 +107,7 @@
     </div>
     <div class="col-lg-5 col-md-12">
         <div class="col-md-12 sub-board" DataContext="{value: EntityDetail}" Visible="{value: Id != -1}">
-            <cc:PanelControl HeadingText="Detail" CloseCommand="{command: Close()}">
+            <cc:PanelControl HeadingText="Entity detail" CloseCommand="{command: Close()}">
                 <BodyTemplate>
                     <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="bootstrap" DataContext="{value: _this}" />
                 </BodyTemplate>
@@ -105,7 +115,7 @@
                     <dot:Button ButtonTagName="button" class="btn btn-success" Click="{command: Save()}">
                         <i Class="glyphicon glyphicon-save"></i> Save detail
                     </dot:Button>
-                    <dot:Button ButtonTagName="button" class="btn btn-danger pull-right" Click="{command: Delete()}">
+                    <dot:Button ButtonTagName="button" class="btn btn-danger pull-right" Click="{command: DeleteAsync()}">
                         <i Class="glyphicon glyphicon-trash"></i> Delete entity
                     </dot:Button>
                 </FooterTemplate>
@@ -113,7 +123,7 @@
             <dd:DynamicEntity GroupName="Grids" FormBuilderName="bootstrap" DataContext="{value: _this}" />
         </div>
         <div class="col-md-12 sub-board" DataContext="{value: ReactionDetail}" Visible="{value: Id != -1}">
-            <cc:PanelControl HeadingText="Detail" CloseCommand="{command: Close()}">
+            <cc:PanelControl HeadingText="Reaction detail" CloseCommand="{command: Close()}">
                 <BodyTemplate>
                     <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="bootstrap" DataContext="{value: _this}" />
                 </BodyTemplate>
@@ -121,7 +131,7 @@
                     <dot:Button ButtonTagName="button" class="btn btn-success" Click="{command: Save()}">
                         <i Class="glyphicon glyphicon-save"></i> Save detail
                     </dot:Button>
-                    <dot:Button ButtonTagName="button" class="btn btn-danger pull-right" Click="{command: Delete()}">
+                    <dot:Button ButtonTagName="button" class="btn btn-danger pull-right" Click="{command: DeleteAsync()}">
                         <i Class="glyphicon glyphicon-trash"></i> Delete reaction
                     </dot:Button>
                 </FooterTemplate>
