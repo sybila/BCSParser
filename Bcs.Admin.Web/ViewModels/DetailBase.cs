@@ -65,15 +65,19 @@ namespace Bcs.Admin.Web.ViewModels
         {
             Classifications.ParentEntityId = Id;
             Classifications.Init();
+            Classifications.DataSet.RequestRefresh(true);
 
             Organisms.ParentEntityId = Id;
             Organisms.Init();
+            Organisms.DataSet.RequestRefresh(true);
 
             Locations.ParentEntityId = Id;
             Locations.Init();
+            Locations.DataSet.RequestRefresh(true);
 
             Notes.ParentEntityId = Id;
             Notes.Init();
+            Notes.DataSet.RequestRefresh(true);
         }
 
         public virtual void CancelAllActions()

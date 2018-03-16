@@ -15,6 +15,7 @@ namespace Bcs.Analyzer.DemoWeb.Utils
 {
     public class SpanPoint
     {
+        public int Id { get; set; }
         public int Position { get; set; }
 
         public bool IsStart { get; set; }
@@ -35,6 +36,7 @@ namespace Bcs.Analyzer.DemoWeb.Utils
             var spanPoints = new List<SpanPoint>();
             var textRange = new TextRange(0, rawText.Length);
 
+            int spanId = 0;
             foreach (var span in styleSpans)
             {
                 if (!textRange.ContainsRange(span.Range))
@@ -42,8 +44,9 @@ namespace Bcs.Analyzer.DemoWeb.Utils
                     continue;
                 }
 
-                spanPoints.Add(new SpanPoint {Position =  span.Range.Start, CssClass = span.CssClass, IsStart = true});
-                spanPoints.Add(new SpanPoint { Position = span.Range.End, CssClass = span.CssClass, IsStart = false });
+                spanPoints.Add(new SpanPoint { Position = span.Range.Start, CssClass = span.CssClass, IsStart = true, Id = spanId });
+                spanPoints.Add(new SpanPoint { Position = span.Range.End, CssClass = span.CssClass, IsStart = false, Id = spanId });
+                spanId++;
             }
 
             spanPoints.Sort(SpanPointComparison);
@@ -99,7 +102,19 @@ namespace Bcs.Analyzer.DemoWeb.Utils
 
         private int SpanPointComparison(SpanPoint left, SpanPoint right)
         {
-            return left.Position.CompareTo(right.Position);
+            var position = left.Position.CompareTo(right.Position);
+
+            var tagorder = left.IsStart
+                    ? right.Id.CompareTo(left.Id)
+                    : left.Id.CompareTo(right.Id);
+
+            var startOrder = right.IsStart.CompareTo(left.IsStart);
+
+            return
+                position != 0 ? position :
+                tagorder != 0 ? tagorder :
+                startOrder != 0 ? startOrder : 0;
+
         }
     }
 }

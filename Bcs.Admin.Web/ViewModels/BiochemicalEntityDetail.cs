@@ -46,6 +46,7 @@ namespace Bcs.Admin.Web.ViewModels
         {
             Components.ParentEntityId = Id;
             Components.Init();
+            Components.DataSet.RequestRefresh(true);
 
             base.PoputateGrids();
         }

@@ -69,15 +69,18 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public override Task Init()
         {
-            DataSet = new GridViewDataSet<TGridEntity>()
+            if (!Context.IsPostBack)
             {
-                PagingOptions = { PageSize = 10 },
-                SortingOptions = new SortingOptions { },
-                RowEditOptions = new RowEditOptions
+                DataSet = new GridViewDataSet<TGridEntity>()
                 {
-                    PrimaryKeyPropertyName = "Id"
-                }
-            };
+                    PagingOptions = { PageSize = 10 },
+                    SortingOptions = new SortingOptions { },
+                    RowEditOptions = new RowEditOptions
+                    {
+                        PrimaryKeyPropertyName = "Id"
+                    }
+                };
+            }
             return base.Init();
         }
 
