@@ -95,7 +95,7 @@ namespace BcsAdmin.BL.Services
 
         protected virtual List<BcsNamedSymbol> CreateEntityLocations(EpEntity entity)
         {
-            return entity.Locations.Select(el => CreateSymbol<BcsLocationSymbol>(el.Location)).ToList();
+            return entity.Locations.Where(el=> el.Location != null).Select(el => CreateSymbol<BcsLocationSymbol>(el.Location)).ToList();
         }
 
         protected virtual BcsNamedSymbol CreateSymbol<TExpectedSymbol>(EpEntity entity)

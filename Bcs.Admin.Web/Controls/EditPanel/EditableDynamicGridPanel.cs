@@ -208,17 +208,7 @@ namespace Bcs.Admin.Web.Controls.EditPanel
 
         protected virtual Button CreateIconButton(string iconName, string buttonText, ICommandBinding command)
         {
-            var editIcon = new HtmlGenericControl("i");
-            editIcon.Attributes["class"] = $"glyphicon glyphicon-{iconName}";
-
-            var iconButton = new Button();
-            iconButton.ButtonTagName = ButtonTagName.button;
-            iconButton.Attributes["class"] = "btn btn-sm btn-info";
-            iconButton.SetBinding(ButtonBase.ClickProperty, command);
-            iconButton.Children.Add(editIcon);
-            iconButton.Children.Add(new Literal(buttonText));
-
-            return iconButton;
+            return ControlCreationHelper.IconButton(iconName, buttonText, command);
         }
     }
 }

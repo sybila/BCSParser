@@ -96,27 +96,33 @@
         </div>
     </div>
     <div class="col-lg-5 col-md-12">
-        <div class="col-md-12 sub-board" DataContext="{value: EntityDetail}" Visible="{value: Id != 0}">
-            <cc:PanelControl HeadingText="Detail">
+        <div class="col-md-12 sub-board" DataContext="{value: EntityDetail}" Visible="{value: Id != -1}">
+            <cc:PanelControl HeadingText="Detail" CloseCommand="{command: Close()}">
                 <BodyTemplate>
                     <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="bootstrap" DataContext="{value: _this}" />
                 </BodyTemplate>
                 <FooterTemplate>
-                    <dot:Button ButtonTagName="button" class="btn btn-primary" Click="{command: Save()}">
+                    <dot:Button ButtonTagName="button" class="btn btn-success" Click="{command: Save()}">
                         <i Class="glyphicon glyphicon-save"></i> Save detail
+                    </dot:Button>
+                    <dot:Button ButtonTagName="button" class="btn btn-danger pull-right" Click="{command: Delete()}">
+                        <i Class="glyphicon glyphicon-trash"></i> Delete entity
                     </dot:Button>
                 </FooterTemplate>
             </cc:PanelControl>
             <dd:DynamicEntity GroupName="Grids" FormBuilderName="bootstrap" DataContext="{value: _this}" />
         </div>
-        <div class="col-md-12 sub-board" DataContext="{value: ReactionDetail}" Visible="{value: Id != 0}">
-            <cc:PanelControl HeadingText="Detail">
+        <div class="col-md-12 sub-board" DataContext="{value: ReactionDetail}" Visible="{value: Id != -1}">
+            <cc:PanelControl HeadingText="Detail" CloseCommand="{command: Close()}">
                 <BodyTemplate>
                     <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="bootstrap" DataContext="{value: _this}" />
                 </BodyTemplate>
                 <FooterTemplate>
-                    <dot:Button ButtonTagName="button" class="btn btn-primary" Click="{command: Save()}">
+                    <dot:Button ButtonTagName="button" class="btn btn-success" Click="{command: Save()}">
                         <i Class="glyphicon glyphicon-save"></i> Save detail
+                    </dot:Button>
+                    <dot:Button ButtonTagName="button" class="btn btn-danger pull-right" Click="{command: Delete()}">
+                        <i Class="glyphicon glyphicon-trash"></i> Delete reaction
                     </dot:Button>
                 </FooterTemplate>
             </cc:PanelControl>

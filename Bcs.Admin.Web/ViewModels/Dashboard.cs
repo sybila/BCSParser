@@ -19,8 +19,6 @@ namespace Bcs.Admin.Web.ViewModels
         public EntitiesTab EntitiesTab { get; set; }
         public ReactionsTab ReactionsTab { get; set; }
 
-        public List<DetailBase> OpenDetails { get; set; }
-
         public bool EntitiesSelected => ActiveTabName == EntitiesTab.Name;
         public bool ReactionsSelected => ActiveTabName == ReactionsTab.Name;
 
@@ -60,8 +58,6 @@ namespace Bcs.Admin.Web.ViewModels
             mapper.Map(dto, EntityDetail);
             EntityDetail.PoputateGrids();
             EntityDetail.CancelAllActions();
-
-            //OpenDetails.Add(EntityDetail);
         }
 
         public void EditReaction(int reactionId)
@@ -70,10 +66,7 @@ namespace Bcs.Admin.Web.ViewModels
             mapper.Map(dto, ReactionDetail);
             ReactionDetail.PoputateGrids();
             ReactionDetail.CancelAllActions();
-
-            //OpenDetails.Add(ReactionDetail);
         }
-
 
         public async Task Refresh()
         {

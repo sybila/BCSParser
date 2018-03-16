@@ -5,17 +5,22 @@ using Bcs.Admin.Web.ViewModels.Grids;
 using AutoMapper;
 using BcsAdmin.BL.Queries;
 using Riganti.Utils.Infrastructure.Core;
+using Riganti.Utils.Infrastructure.Services.Facades;
 
 namespace Bcs.Admin.Web.ViewModels
 {
-    public abstract class DetailBase : DotvvmViewModelBase, IEntity<int>
+    public abstract class DetailBase<TDto> : DotvvmViewModelBase, IEntity<int>
+        where TDto : IEntity<int>
     {
         [Bind(Direction.None)]
         protected IMapper Mapper { get; }
 
+        [Bind(Direction.None)]
+        protected ICrudDetailFacade<TDto, int> Facade { get; }
+
         [Protect(ProtectMode.SignData)]
         [Display(AutoGenerateField = false)]
-        public int Id { get; set; }
+        public int Id { get; set; } = -1;
 
         //[Required]
         [Display(GroupName = "Fields", Name = "Name")]
@@ -48,13 +53,17 @@ namespace Bcs.Admin.Web.ViewModels
         [Display(GroupName = "Grids")]
         public IEditableGrid<EntityNoteDto> Notes { get; set; }
 
-        public DetailBase(IMapper mapper,
+        public DetailBase(
+            ICrudDetailFacade<TDto, int> facade,
+            IMapper mapper,
             IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid,
             IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid,
             IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> organisms,
             IEditableGrid<EntityNoteDto> noteGrid)
         {
             Mapper = mapper;
+            Facade = facade;
+
             Locations = locationGrid;
             Classifications = classificationGrid;
             Notes = noteGrid;
@@ -88,6 +97,23 @@ namespace Bcs.Admin.Web.ViewModels
             Notes.Cancel();
         }
 
-        public abstract void Save();
+        public void Save()
+        {
+            var dto = Mapper.Map<TDto>(this);
+            Facade.Save(dto);
+        }
+
+        public void Delete()
+        {
+            Facade.Delete(Id);
+            Close();
+        }
+
+        public void Close()
+        {
+            var @new = Facade.InitializeNew();
+            Mapper.Map(@new, this);
+            Id = -1;
+        }
     }
 }

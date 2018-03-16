@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using DotVVM.Framework.Controls;
 using DotVVM.Framework.Binding;
 using DotVVM.Framework.Hosting;
+using DotVVM.Framework.Binding.Expressions;
+using Bcs.Admin.Web.Controls.EditPanel;
 
 namespace Bcs.Admin.Web.Controls
 {
@@ -36,6 +38,15 @@ namespace Bcs.Admin.Web.Controls
         public static readonly DotvvmProperty FooterTemplateProperty =
             DotvvmProperty.Register<ITemplate, PanelControl>(t => t.FooterTemplate, null);
 
+        [MarkupOptions(MappingMode = MappingMode.Attribute)]
+        public ICommandBinding CloseCommand
+        {
+            get { return GetValue<ICommandBinding>(CloseCommandProperty); }
+            set { SetValue(CloseCommandProperty, value); }
+        }
+        public static readonly DotvvmProperty CloseCommandProperty =
+            DotvvmProperty.Register<ICommandBinding, PanelControl>(t => t.CloseCommand, null);
+
         public PanelControl()
             :base("div")
         {
@@ -49,6 +60,12 @@ namespace Bcs.Admin.Web.Controls
             var headingDiv = new HtmlGenericControl("div");
             headingDiv.Attributes["class"] = "panel-heading";
             headingDiv.Children.Add(new Literal(HeadingText));
+
+            if(CloseCommand != null)
+            {
+                var closeButton = ControlCreationHelper.IconLinkButton("remove", " Close", CloseCommand, "pull-right");
+                headingDiv.Children.Add(closeButton);
+            }
 
             var bodyDiv = new HtmlGenericControl("div");
             bodyDiv.Attributes["class"] = "panel-body";

@@ -11,13 +11,16 @@ using Bcs.Admin.Web.ViewModels.Grids;
 using BcsAdmin.BL.Facades;
 using AutoMapper;
 using BcsAdmin.BL.Queries;
+using DotVVM.Framework.ViewModel;
 
 namespace Bcs.Admin.Web.ViewModels
 {
-    public class BiochemicalEntityDetail : DetailBase
+    public class BiochemicalEntityDetail : DetailBase<BiochemicalEntityDetailDto>
     {
-        private readonly BiochemicalEntityFacade entityFacade;
-       
+        [Bind(Direction.None)]
+        protected BiochemicalEntityFacade EntityFacade => (BiochemicalEntityFacade) Facade;
+        
+
         [Required]
         [Display(GroupName = "Fields", Name = "Entity type")]
         public int SelectedHierarchyType { get; set; }
@@ -36,9 +39,8 @@ namespace Bcs.Admin.Web.ViewModels
             IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid,
             IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> organisms,
             IEditableGrid<EntityNoteDto> noteGrid)
-            : base(mapper, locationGrid, classificationGrid, organisms, noteGrid)
+            : base(dashboardFacade, mapper, locationGrid, classificationGrid, organisms, noteGrid)
         {
-            this.entityFacade = dashboardFacade;
             Components = componentGrid;
         }
 
@@ -56,12 +58,6 @@ namespace Bcs.Admin.Web.ViewModels
             Components.Cancel();
 
             base.CancelAllActions();
-        }
-
-        public override void Save()
-        {
-            var dto = Mapper.Map<BiochemicalEntityDetailDto>(this);
-            entityFacade.Save(dto);
         }
     }
 }
