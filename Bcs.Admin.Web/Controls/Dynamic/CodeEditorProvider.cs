@@ -33,16 +33,15 @@ namespace Bcs.Admin.Web.Controls.Dynamic
             container.Children.Add(codeControl);
 
             var cssClass = ControlHelpers.ConcatCssClasses(ControlCssClass, property.Styles?.FormControlCssClass);
-            if (!string.IsNullOrEmpty(cssClass))
-            {
-                codeControl.Attributes["class"] = cssClass;
-            }
+
+            codeControl.Attributes["class"] = "form-control";
 
             var attribute = GetCodeEditorAttribute(property.PropertyInfo);
 
             codeControl.SetBinding(CodeEditor.HtmlProperty, context.CreateValueBinding(property.PropertyInfo.Name));
 
-            if (attribute.KeyUpMethodName != null) {
+            if (attribute.KeyUpMethodName != null)
+            {
                 codeControl.SetBinding(CodeEditor.KeyUpProperty, context.CreateCommandBinding($"{attribute.KeyUpMethodName}()"));
             }
         }

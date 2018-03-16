@@ -9,6 +9,7 @@ using Bcs.Admin.Web.Controls.Dynamic;
 using System.Collections.Generic;
 using BcsResolver.Syntax.Tokenizer;
 using Bcs.Analyzer.DemoWeb.Utils;
+using System.Threading.Tasks;
 
 namespace Bcs.Admin.Web.ViewModels
 {
@@ -17,11 +18,11 @@ namespace Bcs.Admin.Web.ViewModels
         private readonly ReactionFacade reactionFacade;
         private readonly TextPresenter textPresenter;
 
-        [CodeEditor(nameof(WriteEquation))]
+        [CodeEditor(nameof(UpdateEquation))]
         [Display(GroupName = "Fields")]
         public string Equation { get; set; }
 
-        [CodeEditor]
+        [CodeEditor(nameof(UpdateModifier))]
         [Display(GroupName = "Fields")]
         public string Modifier { get; set; }
 
@@ -44,16 +45,25 @@ namespace Bcs.Admin.Web.ViewModels
             reactionFacade.Save(dto);
         }
 
-        public void WriteEquation()
+        public void UpdateEquation()
         {
             var equationText = textPresenter.ToRawText(Equation);
 
             Equation = textPresenter.CreateRichText(equationText, reactionFacade.GetClassificationSpans(equationText));
         }
 
-        public void WriteModifier()
+        public void UpdateModifier()
         {
+            var equationText = textPresenter.ToRawText(Modifier);
 
+            Modifier = textPresenter.CreateRichText(equationText, reactionFacade.GetClassificationSpans(equationText));
+        }
+
+        public override Task PreRender()
+        {
+            UpdateEquation();
+            UpdateModifier();
+            return base.PreRender();
         }
     }
 }
