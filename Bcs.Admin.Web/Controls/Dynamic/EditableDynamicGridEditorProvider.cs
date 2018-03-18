@@ -17,6 +17,8 @@ namespace Bcs.Admin.Web.Controls.Dynamic
 {
     public class EditableDynamicGridEditorProvider : FormEditorProviderBase
     {
+        public override bool RenderDefaultLabel => false;
+
         public override bool CanHandleProperty(PropertyInfo propertyInfo, DynamicDataContext context)
         {
             return propertyInfo.PropertyType.IsAssignableToGenericType(typeof(IEditableGrid<>));
@@ -37,6 +39,7 @@ namespace Bcs.Admin.Web.Controls.Dynamic
             }
 
             grid.SetBinding(DotvvmBindableObject.DataContextProperty, context.CreateValueBinding(property.PropertyInfo.Name));
+            grid.SetBinding(HtmlGenericControl.VisibleProperty, context.CreateValueBinding($"ParentEntityId > 0", gridDataContext));
 
             grid.HeadingText = property.DisplayName;
             grid.DataSourceBinding = context.CreateValueBinding("DataSet", gridDataContext);

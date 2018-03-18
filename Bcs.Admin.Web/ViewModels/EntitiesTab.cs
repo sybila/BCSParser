@@ -29,7 +29,7 @@ namespace Bcs.Admin.Web.ViewModels
 
         public async Task RefreshAsync(bool goTofirstPage = false)
         {
-            await DataSet.RequestRefreshAsync(true);
+            await DataSet.RequestRefreshAsync(!goTofirstPage);
             if (goTofirstPage)
             {
                 await DataSet.GoToFirstPageAsync();

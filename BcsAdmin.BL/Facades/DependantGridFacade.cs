@@ -4,7 +4,6 @@ using System.Text;
 using Riganti.Utils.Infrastructure.Core;
 using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 using Riganti.Utils.Infrastructure.Services.Facades;
-using BcsAdmin.DAL.Models;
 using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Filters;
 using BcsAdmin.BL.Queries;
@@ -119,63 +118,6 @@ namespace BcsAdmin.BL.Facades
         public IList<TEntityDto> GetEmtitySuggestions(string search)
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public class LocationGridFacade : DependantLinkGridFacade<EpEntityLocation, EpEntity, LocationLinkDto>
-    {
-        public LocationGridFacade(IRepository<EpEntityLocation, int> intermediateRepository, IRepository<EpEntity, int> associatedEntityRepository, Func<IdFilteredQuery<LocationLinkDto>> queryFactory, IUnitOfWorkProvider unitOfWorkProvider, IMapper mapper) : base(intermediateRepository, associatedEntityRepository, queryFactory, unitOfWorkProvider, mapper)
-        {
-        }
-    }
-
-    public class ComponentsGridFacade : DependantLinkGridFacade<EpEntityComposition, EpEntity, ComponentLinkDto>
-    {
-        public ComponentsGridFacade(IRepository<EpEntityComposition, int> intermediateRepository, IRepository<EpEntity, int> associatedEntityRepository, Func<IdFilteredQuery<ComponentLinkDto>> queryFactory, IUnitOfWorkProvider unitOfWorkProvider, IMapper mapper)
-            : base(intermediateRepository, associatedEntityRepository, queryFactory, unitOfWorkProvider, mapper)
-        {
-        }
-    }
-
-    public class ClassificationGridFacade : DependantLinkGridFacade<EpEntityClassification, EpClassification, ClassificationDto>
-    {
-        public ClassificationGridFacade(
-            IRepository<EpEntityClassification, int> intermediateRepository,
-            IRepository<EpClassification, int> associatedEntityRepository,
-            Func<IdFilteredQuery<ClassificationDto>> queryFactory,
-            IUnitOfWorkProvider unitOfWorkProvider, IMapper mapper)
-            : base(intermediateRepository, associatedEntityRepository, queryFactory, unitOfWorkProvider, mapper)
-        {
-        }
-    }
-
-    public class OrganismFacade : DependantLinkGridFacade<EpEntityOrganism, EpOrganism, EntityOrganismDto>
-    {
-        public OrganismFacade(IRepository<EpEntityOrganism, int> intermediateRepository,
-            IRepository<EpOrganism, int> associatedEntityRepository,
-            Func<IdFilteredQuery<EntityOrganismDto>> queryFactory,
-            IUnitOfWorkProvider unitOfWorkProvider, IMapper mapper)
-            : base(intermediateRepository, associatedEntityRepository, queryFactory, unitOfWorkProvider, mapper)
-        {
-        }
-    }
-
-    public interface IGridFacade<TEntityDto> : ICrudFilteredFacade<TEntityDto, TEntityDto, IdFilter, int>
-          where TEntityDto : IEntity<int>
-    {
-
-    }
-
-    public class NoteGridFacade : FilteredCrudFacadeBase<EpEntityNote, int, EntityNoteDto, EntityNoteDto, IdFilter>, IGridFacade<EntityNoteDto>
-    {
-        public NoteGridFacade(
-            IUnitOfWorkProvider unitOfWorkProvider,
-            Func<IFilteredQuery<EntityNoteDto, IdFilter>> queryFactory,
-            IRepository<EpEntityNote, int> repository,
-            IEntityDTOMapper<EpEntityNote, EntityNoteDto> mapper)
-            : base(queryFactory, repository, mapper)
-        {
-            UnitOfWorkProvider = unitOfWorkProvider;
         }
     }
 }

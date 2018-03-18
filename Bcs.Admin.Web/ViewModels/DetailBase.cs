@@ -102,10 +102,14 @@ namespace Bcs.Admin.Web.ViewModels
             Notes.Cancel();
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
             var dto = Mapper.Map<TDto>(this);
             Facade.Save(dto);
+            Mapper.Map(dto, this);
+
+            await PoputateGridsAsync();
+            CancelAllActions();
         }
 
         public async Task DeleteAsync()
@@ -128,7 +132,7 @@ namespace Bcs.Admin.Web.ViewModels
             var @new = Facade.InitializeNew();
             Mapper.Map(@new, this);
             CancelAllActions();
-            await UpdateGrid?.Invoke();
+            await PoputateGridsAsync();
         }
 
         public async Task EditAsync(int id)

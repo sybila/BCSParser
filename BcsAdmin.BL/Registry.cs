@@ -51,9 +51,12 @@ namespace BcsAdmin.BL
                 .ForMember(t => t.HierarchyType, m => m.MapFrom(s => s.HierarchyType))
                 .ForMember(t => t.Id, m => m.MapFrom(s => s.Id))
                 .ForAllOtherMembers(a => a.Ignore());
+            cfg.CreateMap<EpEntity, StateEntityDto>()
+                .ForMember(t => t.HierarchyType, a => a.Ignore())
+                .ForMember(m => m.IntermediateEntityId, a => a.Ignore());
+            cfg.CreateMap<StateEntityDto, EpEntity>()
+                .ForMember(m => m.ParentId, a => a.MapFrom(s=> s.IntermediateEntityId));
 
-            cfg.CreateMap<EpEntity, LocationLinkDto>()
-               .ForMember(t => t.HierarchyType, a => a.MapFrom(s => s.HierarchyType));
             cfg.CreateMap<EntityLinkDto, EpEntityClassification>()
                 .ForMember(s => s.ClassificationId, a => a.MapFrom(s => s.AssociatedId))
                 .ForMember(s => s.EntityId, a => a.MapFrom(s => s.DetailId));

@@ -17,4 +17,16 @@ namespace BcsAdmin.BL.Dto
 
     public class LocationLinkDto : BiochemicalEntityLinkDto { }
     public class ComponentLinkDto : BiochemicalEntityLinkDto { }
+
+    public class StateEntityDto : IAssociatedEntity
+    {
+        [Display(AutoGenerateField = false)]
+        public int Id { get; set; }
+        [Display(AutoGenerateField = false)]
+        public int? IntermediateEntityId { get; set; } = null;
+        [Display(Name = "Hierarchy type")]
+        public int HierarchyType { get; } = 0; //satate
+        public string Code { get; set; }
+        public string Name { get; set; }
+    }
 }

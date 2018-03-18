@@ -112,7 +112,7 @@
                     <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="bootstrap" DataContext="{value: _this}" />
                 </BodyTemplate>
                 <FooterTemplate>
-                    <dot:Button ButtonTagName="button" class="btn btn-success" Click="{command: Save()}">
+                    <dot:Button ButtonTagName="button" class="btn btn-success" Click="{command: SaveAsync()}">
                         <i Class="glyphicon glyphicon-save"></i> Save detail
                     </dot:Button>
                     <dot:Button ButtonTagName="button" class="btn btn-danger pull-right" Click="{command: DeleteAsync()}">
@@ -128,7 +128,7 @@
                     <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="bootstrap" DataContext="{value: _this}" />
                 </BodyTemplate>
                 <FooterTemplate>
-                    <dot:Button ButtonTagName="button" class="btn btn-success" Click="{command: Save()}">
+                    <dot:Button ButtonTagName="button" class="btn btn-success" Click="{command: SaveAsync()}">
                         <i Class="glyphicon glyphicon-save"></i> Save detail
                     </dot:Button>
                     <dot:Button ButtonTagName="button" class="btn btn-danger pull-right" Click="{command: DeleteAsync()}">

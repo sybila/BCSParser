@@ -19,8 +19,8 @@ namespace Bcs.Admin.Web.ViewModels
     public class BiochemicalEntityDetail : DetailBase<BiochemicalEntityDetailDto>
     {
         [Bind(Direction.None)]
-        protected BiochemicalEntityFacade EntityFacade => (BiochemicalEntityFacade) Facade;
-        
+        protected BiochemicalEntityFacade EntityFacade => (BiochemicalEntityFacade)Facade;
+
 
         [Required]
         [Display(GroupName = "Fields", Name = "Entity type")]
@@ -30,7 +30,10 @@ namespace Bcs.Admin.Web.ViewModels
         public BiochemicalEntityLinkDto Parent { get; set; }
 
         [Display(GroupName = "Grids")]
-        public IEditableLinkGrid<ComponentLinkDto, EntitySuggestionQuery> Components { get; set; }     
+        public IEditableLinkGrid<ComponentLinkDto, EntitySuggestionQuery> Components { get; set; }
+
+        [Display(GroupName = "Grids")]
+        public IEditableGrid<StateEntityDto> States { get; set; }
 
         public BiochemicalEntityDetail(
             BiochemicalEntityFacade dashboardFacade,
@@ -39,17 +42,29 @@ namespace Bcs.Admin.Web.ViewModels
             IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid,
             IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid,
             IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> organisms,
+            IEditableGrid<StateEntityDto> stateGrid,
             IEditableGrid<EntityNoteDto> noteGrid)
             : base(dashboardFacade, mapper, locationGrid, classificationGrid, organisms, noteGrid)
         {
             Components = componentGrid;
+            States = stateGrid;
         }
 
         public override async Task PoputateGridsAsync()
         {
-            Components.ParentEntityId = Id;
+            Components.ParentEntityId =
+                SelectedHierarchyType > 1 && SelectedHierarchyType != 4
+                ? Id
+                : 0;
             await Components.Init();
             await Components.DataSet.RequestRefreshAsync(true);
+
+            States.ParentEntityId =
+              SelectedHierarchyType == 4
+              ? Id
+              : 0;
+            await States.Init();
+            await States.DataSet.RequestRefreshAsync(true);
 
             await base.PoputateGridsAsync();
         }
