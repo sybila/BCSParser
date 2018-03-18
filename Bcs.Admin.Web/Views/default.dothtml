@@ -22,7 +22,7 @@
                         </div>
                     </div>
                     <div class="col-md-12 row gap">
-                        There are <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span> results. Showing <dot:TextBox class="form-control input-sm inline-control" Changed="{command: RefreshAsync(true)}" Type="Number" Text="{value: DataSet.PagingOptions.PageSize}" /> items per page.
+                        There are <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span> results. Showing <dot:TextBox class="form-control input-sm inline-control" Changed="{command: RefreshAsync(true)}" Text="{value: DataSet.PagingOptions.PageSize}" /> items per page.
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12">
@@ -80,7 +80,7 @@
                         </div>
                     </div>
                     <div class="col-md-12 row gap">
-                        There are <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span> results. Showing <dot:TextBox class="form-control input-sm inline-control" Changed="{command: RefreshAsync(true)}" Type="Number" Text="{value: DataSet.PagingOptions.PageSize}" /> items per page.
+                        There are <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span> results. Showing <dot:TextBox class="form-control input-sm inline-control" Changed="{command: RefreshAsync(true)}" Text="{value: DataSet.PagingOptions.PageSize}" /> items per page.
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12">
