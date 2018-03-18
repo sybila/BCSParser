@@ -13,13 +13,16 @@
                     <h3>{{value: Name}}</h3>
                 </div>
                 <div class="col-lg-6 col-md-12">
-                    <div class="input-group input-group-sm">
+                    <div class="input-group input-group-sm col-md-12">
                         <dot:TextBox Changed="{command: RefreshAsync(true)}" class="form-control" Text="{value: Filter.SearchText}" />
                         <div class="input-group-btn">
                             <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: RefreshAsync(true)}">
                                 <i class="glyphicon glyphicon-search"></i>
                             </dot:Button>
                         </div>
+                    </div>
+                    <div class="col-md-12 row gap">
+                        There are <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span> results. Showing <dot:TextBox class="form-control input-sm inline-control" Changed="{command: RefreshAsync(true)}" Type="Number" Text="{value: DataSet.PagingOptions.PageSize}" /> items per page.
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12">
@@ -28,7 +31,7 @@
                     </dot:Repeater>
                 </div>
                 <div class="col-md-12">
-                    <dot:Button ButtonTagName="button" Click="{command: _root.EntityDetail.NewAsync()}" class="btn btn-success pull-right">
+                    <dot:Button ButtonTagName="button" Click="{command: _root.EntityDetail.NewAsync()}" class="btn btn-success btn-sm pull-right">
                         <i class="glyphicon glyphicon glyphicon-plus"></i> New
                     </dot:Button>
                 </div>
@@ -68,13 +71,16 @@
                     <h3>{{value: Name}}</h3>
                 </div>
                 <div class="col-lg-6 col-md-12">
-                    <div class="input-group input-group-sm">
+                    <div class="input-group input-group-sm col-md-12">
                         <dot:TextBox Changed="{command: RefreshAsync(true)}" class="form-control" Text="{value: Filter.SearchText}" />
                         <div class="input-group-btn">
                             <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: RefreshAsync(true)}">
                                 <i class="glyphicon glyphicon-search"></i>
                             </dot:Button>
                         </div>
+                    </div>
+                    <div class="col-md-12 row gap">
+                        There are <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span> results. Showing <dot:TextBox class="form-control input-sm inline-control" Changed="{command: RefreshAsync(true)}" Type="Number" Text="{value: DataSet.PagingOptions.PageSize}" /> items per page.
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12">
