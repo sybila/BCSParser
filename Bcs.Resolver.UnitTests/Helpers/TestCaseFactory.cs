@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using BcsResolver.File;
 using BcsResolver.SemanticModel.Tree;
 using BcsResolver.Syntax.Parser;
@@ -114,6 +115,8 @@ namespace BcsResolver.Tests.Helpers
 
         public static BcsComplexSymbol CreateThreePartComplex(List<BcsLocationSymbol> withLocations = null)
         {
+            var namedLocationSymbols = withLocations.OfType<BcsNamedSymbol>().ToList();
+
             return new BcsComplexSymbol
             {
                 Parts = new List<BcsNamedSymbol>()
@@ -121,7 +124,7 @@ namespace BcsResolver.Tests.Helpers
                     new BcsStructuralAgentSymbol
                     {
                         Name = "A",
-                        Locations = withLocations,
+                        Locations = namedLocationSymbols,
                         Parts = new List<BcsNamedSymbol>
                         {
                             new BcsAtomicAgentSymbol
@@ -148,7 +151,7 @@ namespace BcsResolver.Tests.Helpers
                     new BcsStructuralAgentSymbol
                     {
                         Name = "C",
-                        Locations = withLocations,
+                        Locations = namedLocationSymbols,
                         Parts = new List<BcsNamedSymbol>
                         {
                             new BcsAtomicAgentSymbol
@@ -165,7 +168,7 @@ namespace BcsResolver.Tests.Helpers
                     new BcsStructuralAgentSymbol
                     {
                         Name = "E",
-                        Locations = withLocations,
+                        Locations =namedLocationSymbols,
                         Parts = new List<BcsNamedSymbol>
                         {
                             new BcsAtomicAgentSymbol
@@ -180,7 +183,7 @@ namespace BcsResolver.Tests.Helpers
                         }
                     }
                 },
-                Locations = withLocations
+                Locations = namedLocationSymbols
             };
         }
 
@@ -190,7 +193,7 @@ namespace BcsResolver.Tests.Helpers
             return new BcsComplexSymbol
             {
                 Name = "mixed",
-                Locations = new List<BcsLocationSymbol> { cyt },
+                Locations = new List<BcsNamedSymbol> { cyt },
                 Parts = new List<BcsNamedSymbol>
                 {
                     new BcsAtomicAgentSymbol
@@ -201,12 +204,12 @@ namespace BcsResolver.Tests.Helpers
                                     new BcsStateSymbol {Name = "u"},
                                     new BcsStateSymbol {Name = "v"}
                                 },
-                        Locations = new List<BcsLocationSymbol> {cyt}
+                        Locations = new List<BcsNamedSymbol> {cyt}
                     },
                     new BcsStructuralAgentSymbol
                     {
                         Name = "FRS",
-                        Locations = new List<BcsLocationSymbol> {cyt},
+                        Locations = new List<BcsNamedSymbol> {cyt},
                         Parts = new List<BcsNamedSymbol>
                         {
                             new BcsAtomicAgentSymbol
@@ -217,7 +220,7 @@ namespace BcsResolver.Tests.Helpers
                                     new BcsStateSymbol {Name = "p"},
                                     new BcsStateSymbol {Name = "r"}
                                 },
-                                Locations = new List<BcsLocationSymbol> {cyt}
+                                Locations = new List<BcsNamedSymbol> {cyt}
                             }
                         }
 

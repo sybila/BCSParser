@@ -30,7 +30,7 @@ namespace BcsResolver.Tests
                     new BcsStructuralAgentSymbol
                     {
                         Name = "A",
-                        Locations = new List<BcsLocationSymbol> {new BcsLocationSymbol {Name = "cyt"}},
+                        Locations = new List<BcsNamedSymbol> {new BcsLocationSymbol {Name = "cyt"}},
                         Parts = new List<BcsNamedSymbol>
                         {
                             new BcsAtomicAgentSymbol
@@ -244,7 +244,7 @@ namespace BcsResolver.Tests
             mock.SetupGet(p => p.Complexes).Returns(new Dictionary<string, BcsComplexSymbol> { { "mixed", complexTree } });
             mock.SetupGet(p => p.StructuralAgents).Returns(complexTree.Parts.OfType<BcsStructuralAgentSymbol>().ToDictionary(sa => sa.Name));
             mock.SetupGet(p => p.AtomicAgents).Returns(complexTree.Parts.OfType<BcsAtomicAgentSymbol>().Concat(complexTree.Parts.OfType<BcsStructuralAgentSymbol>().SelectMany(sa => sa.AtomicAgents)).ToDictionary(aa => aa.Name));
-            mock.SetupGet(p => p.Locations).Returns(new[] { complexTree.Locations[0] }.ToDictionary(k => k.Name));
+            mock.SetupGet(p => p.Locations).Returns(new [] { (BcsLocationSymbol)complexTree.Locations[0] }.ToDictionary(k => k.Name));
 
             var binder = new SemanticAnalisisVisitor(mock.Object, new BcsBoundSymbolFactory());
 
@@ -287,7 +287,7 @@ namespace BcsResolver.Tests
             mock.SetupGet(p => p.LocationEntityMap)
                 .Returns(new Dictionary<string, IReadOnlyList<BcsComposedSymbol>>());
 
-            mock.SetupGet(p => p.Locations).Returns(new[] { complexTree.Locations[0] }.ToDictionary(k => k.Name));
+            mock.SetupGet(p => p.Locations).Returns(new[] { (BcsLocationSymbol)complexTree.Locations[0] }.ToDictionary(k => k.Name));
 
             var binder = new SemanticAnalisisVisitor(mock.Object, new BcsBoundSymbolFactory());
 
