@@ -7,6 +7,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
     public interface IEditableGrid<TGridEntity>: IDotvvmViewModel
         where TGridEntity : class, IEntity<int>
     {
+        int ItemsCount { get; }
         int ParentEntityId { get; set; }
 
         GridViewDataSet<TGridEntity> DataSet { get; }

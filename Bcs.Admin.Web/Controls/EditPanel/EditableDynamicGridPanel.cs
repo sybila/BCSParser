@@ -132,7 +132,7 @@ namespace Bcs.Admin.Web.Controls.EditPanel
 
         protected override void SetUpToolColumn(GridViewTemplateColumn toolColumn)
         {
-            toolColumn.ContentTemplate = new DelegateTemplate((cbf, sp,  c) => 
+            toolColumn.ContentTemplate = new DelegateTemplate((cbf, sp, c) =>
             {
                 var editButton = CreateIconButton("edit", "", EditCommand);
                 var removeButton = CreateIconButton("trash", "", DeleteCommand);
@@ -142,7 +142,7 @@ namespace Bcs.Admin.Web.Controls.EditPanel
                 c.Children.Add(removeButton);
             });
 
-            toolColumn.EditTemplate = new DelegateTemplate((cbf, sp, c) => 
+            toolColumn.EditTemplate = new DelegateTemplate((cbf, sp, c) =>
             {
                 var cancelButton = CreateIconButton("remove", "", CancelCommand);
                 var saveButton = CreateIconButton("save", "", SaveCommand);
@@ -171,34 +171,41 @@ namespace Bcs.Admin.Web.Controls.EditPanel
                 leftDiv.Children.Add(inputGroup);
             }
 
-          
+
             var rightDiv = CreateDivWithClass("col-md-3", CreateIconButton("plus", "Add new", AddCommand));
             var row = CreateDivWithClass("row", leftDiv, rightDiv);
 
             row.SetBinding(VisibleProperty, NewEntityFormVisible.GetProperty<NegatedBindingExpression>().Binding);
 
+            var newEntityDtoStack = this.CreateChildStack(NewEntityDto.ResultType);
+
             var dynamicEntity = new DynamicEntity();
-            dynamicEntity.FormBuilderName = "bootstrap";
-            dynamicEntity.SetDataContextType(this.CreateChildStack(NewEntityDto.ResultType));
+            dynamicEntity.FormBuilderName = "v-bootstrap";
+            dynamicEntity.SetDataContextType(newEntityDtoStack);
             dynamicEntity.SetBinding(DataContextProperty, NewEntityDto);
+
+            var saveButton = CreateIconButton("save", "Save", SaveNewCommand);
+            //saveButton.SetValue(Validation.EnabledProperty, true);
+            //saveButton.SetBinding(Validation.TargetProperty, ControlCreationHelper.CreateValueBinding(context, this.GetDataContextType(), "_this.NewRow"));
 
             var newForm = new HtmlGenericControl("div");
             newForm.SetBinding(VisibleProperty, NewEntityFormVisible);
             newForm.Children.Add(dynamicEntity);
             newForm.Children.Add(CreateIconButton("remove", "Cancel", CancelNew));
             newForm.Children.Add(new Literal(" "));
-            newForm.Children.Add(CreateIconButton("save", "Save", SaveNewCommand));
+            newForm.Children.Add(saveButton);
+
 
             footerDiv.Children.Add(row);
             footerDiv.Children.Add(newForm);
         }
 
-        private static HtmlGenericControl CreateDivWithClass(string classValue, params DotvvmControl [] children)
+        private static HtmlGenericControl CreateDivWithClass(string classValue, params DotvvmControl[] children)
         {
             var div = new HtmlGenericControl("div");
             div.Attributes["class"] = classValue;
-            
-            foreach(var c in children)
+
+            foreach (var c in children)
             {
                 div.Children.Add(c);
             }

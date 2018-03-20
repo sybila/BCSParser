@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Bcs.Admin.Web.ViewModels
 {
-    public class BiochemicalEntityDetail : DetailBase<BiochemicalEntityDetailDto>
+    public class BiochemicalEntityDetail : DetailBase<BiochemicalEntityDetailDto>, IValidatableObject
     {
         [Bind(Direction.None)]
         protected BiochemicalEntityFacade EntityFacade => (BiochemicalEntityFacade)Facade;
@@ -74,6 +74,34 @@ namespace Bcs.Admin.Web.ViewModels
             Components.Cancel();
 
             base.CancelAllActions();
+        }
+
+        public IEnumerable<ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
+        {
+            bool isPrimitive = 
+                SelectedHierarchyType == (int)HierarchyType.State 
+                || SelectedHierarchyType == (int)HierarchyType.Compartment;
+
+            bool hasComponents = Components.ItemsCount != 0;
+            bool hasStates = States.ItemsCount != 0;
+
+            if (isPrimitive && (hasComponents || hasStates))
+            {
+                return new[] { new ValidationResult($"This entity cannot be of type {(HierarchyType)SelectedHierarchyType} while it has still components or states attached.", new[] { nameof(SelectedHierarchyType)}) };
+            }
+
+            if (SelectedHierarchyType != (int)HierarchyType.Atomic && hasStates)
+            {
+                return new[] { new ValidationResult($"This entity cannot be of type {(HierarchyType)SelectedHierarchyType} while it still has states attached.", new[] { nameof(SelectedHierarchyType) }) };
+            }
+
+            if (SelectedHierarchyType == (int)HierarchyType.Atomic && hasComponents)
+            {
+                return new[] { new ValidationResult("This entity cannot be of type Atomic while it still has components attached.", new[] { nameof(SelectedHierarchyType) }) };
+            }
+
+
+            return new ValidationResult[] { };
         }
     }
 }

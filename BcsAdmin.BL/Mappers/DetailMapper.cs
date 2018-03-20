@@ -46,7 +46,7 @@ namespace BcsAdmin.BL.Mappers
             target.Code = source.Code;
             target.Name = source.Name;
             target.Description = source.Description;
-            target.HierarchyType = (HierarchyType)source.SelectedHierarchyType;
+            target.HierarchyType = (DAL.Models.HierarchyType)source.SelectedHierarchyType;
             target.VisualisationXml = source.VisualisationXml;
             target.Type = 
                 source.SelectedHierarchyType == 0

@@ -26,6 +26,9 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public EntitySearchSelect EntitySearchSelect { get; set; }
 
+        [Bind(Direction.ServerToClient)]
+        public int ItemsCount => DataSet.PagingOptions.TotalItemsCount;
+
         public EditableLinkGrid(ILinkGridFacade<TGridEntity> facade, EntitySearchSelect entitySearchSelect, SuggestionsFacade<TSuggestionQuery> suggestionsFacade)
         {
             this.facade = facade;

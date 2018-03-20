@@ -32,8 +32,8 @@ namespace BcsAdmin.BL.Facades
         public List<BiochemicalEntityTypeDto> GetEntityTypes()
         {
             return
-                Enum.GetValues(typeof(HierarchyType))
-                .Cast<HierarchyType>()
+                Enum.GetValues(typeof(Dto.HierarchyType))
+                .Cast<Dto.HierarchyType>()
                 .Select(v => new BiochemicalEntityTypeDto
                 {
                     Id = (int)v,

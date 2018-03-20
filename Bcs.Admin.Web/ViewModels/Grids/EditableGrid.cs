@@ -25,6 +25,9 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public TGridEntity NewRow { get; set; }
 
+        [Bind(Direction.ServerToClient)]
+        public int ItemsCount => DataSet.PagingOptions.TotalItemsCount;
+
         public EditableGrid(IGridFacade<TGridEntity> facade)
         {
             this.facade = facade;

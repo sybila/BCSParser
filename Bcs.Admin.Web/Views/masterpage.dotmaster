@@ -10,7 +10,7 @@
     <dot:RequiredResource Name="code-editor" />
     <title>{{value: Title}}</title>
 </head>
-<body class="main-board">
+<body class="main-board" Validation.Enabled="false">
     <dot:InlineScript Dependencies="knockout">
         var editor = new CodeEditor();
         editor.addKnockoutHandlers();

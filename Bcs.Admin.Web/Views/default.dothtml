@@ -115,24 +115,24 @@
         <div class="col-md-12 sub-board" DataContext="{value: EntityDetail}" Visible="{value: Id != -1}">
             <cc:PanelControl HeadingText="Entity detail" CloseCommand="{command: Close()}">
                 <BodyTemplate>
-                    <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="bootstrap" DataContext="{value: _this}" />
+                    <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="v-bootstrap" DataContext="{value: _this}" />
                 </BodyTemplate>
                 <FooterTemplate>
 
                     <dot:Button ButtonTagName="button" class="btn btn-danger" Click="{command: DeleteAsync()}">
                         <i Class="glyphicon glyphicon-trash"></i> Delete entity
                     </dot:Button>
-                    <dot:Button ButtonTagName="button" class="btn btn-success pull-right" Click="{command: SaveAsync()}">
+                    <dot:Button Validation.Enabled="true" Validation.Target="{value: _this}" ButtonTagName="button" class="btn btn-success pull-right" Click="{command: SaveAsync()}">
                         <i Class="glyphicon glyphicon-save"></i> Save detail
                     </dot:Button>
                 </FooterTemplate>
             </cc:PanelControl>
-            <dd:DynamicEntity GroupName="Grids" FormBuilderName="bootstrap" DataContext="{value: _this}" />
+            <dd:DynamicEntity GroupName="Grids" FormBuilderName="v-bootstrap" DataContext="{value: _this}" />
         </div>
         <div class="col-md-12 sub-board" DataContext="{value: ReactionDetail}" Visible="{value: Id != -1}">
             <cc:PanelControl HeadingText="Reaction detail" CloseCommand="{command: Close()}">
                 <BodyTemplate>
-                    <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="bootstrap" DataContext="{value: _this}" />
+                    <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="v-bootstrap" DataContext="{value: _this}" />
                 </BodyTemplate>
                 <FooterTemplate>
                     <dot:Button ButtonTagName="button" class="btn btn-danger" Click="{command: DeleteAsync()}">
@@ -143,7 +143,7 @@
                     </dot:Button>
                 </FooterTemplate>
             </cc:PanelControl>
-            <dd:DynamicEntity GroupName="Grids" FormBuilderName="bootstrap" DataContext="{value: _this}" />
+            <dd:DynamicEntity GroupName="Grids" FormBuilderName="v-bootstrap" DataContext="{value: _this}" />
         </div>
     </div>
 </dot:Content>

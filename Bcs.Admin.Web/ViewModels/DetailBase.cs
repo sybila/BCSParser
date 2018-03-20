@@ -27,11 +27,10 @@ namespace Bcs.Admin.Web.ViewModels
         [Display(AutoGenerateField = false)]
         public int Id { get; set; } = -1;
 
-        //[Required]
         [Display(GroupName = "Fields", Name = "Name")]
         public string Name { get; set; }
 
-        //[Required]
+        [Required]
         [Display(GroupName = "Fields", Name = "Code")]
         public string Code { get; set; }
 

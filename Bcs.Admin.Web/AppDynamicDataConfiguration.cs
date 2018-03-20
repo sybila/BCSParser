@@ -36,12 +36,14 @@ namespace Bcs.Admin.Web
                 EmptyItemText = "(select entity type)"
             });
 
-            var provider = new ComboBoxConventionFormEditorProvider(conventions);
+            var provider = new ValidatedComboBoxProvider(conventions);
             var columnProvider = new ConventionComboBoxGridColumnProvider(conventions);
             FormEditorProviders.Insert(0, provider);
             FormEditorProviders.Insert(0, new CodeEditorProvider());
             FormEditorProviders.Add(new EditableDynamicGridEditorProvider());
             GridColumnProviders.Insert(0, columnProvider);
+
+            FormBuilders.Add("v-bootstrap", new ValidatedBootstrapBuilder());
             FormBuilders.Add("horisontal", new HorisontalTableFormBuilder());
         }
     }

@@ -89,8 +89,8 @@ namespace Bcs.Admin.Web.Controls.EditPanel
 
                     c.SetDataContextType(dcts);
 
-                    var selectBinding = CreateCommandBinding(context, dcts, "_parent.Select(_this)");
-                    var nameBinding = CreateValueBinding(context, dcts, $"{nameof(SuggestionDto.Name)}+\"(\"+{nameof(SuggestionDto.Description)}+\")\"");
+                    var selectBinding = ControlCreationHelper.CreateCommandBinding(context, dcts, "_parent.Select(_this)");
+                    var nameBinding = ControlCreationHelper.CreateValueBinding(context, dcts, $"{nameof(SuggestionDto.Name)}+\"(\"+{nameof(SuggestionDto.Description)}+\")\"");
 
                     var linkButton = new LinkButton();
                     linkButton.SetBinding(ButtonBase.ClickProperty, selectBinding);
@@ -117,37 +117,11 @@ namespace Bcs.Admin.Web.Controls.EditPanel
 
         private IValueBinding CreateValueBinding(IDotvvmRequestContext context, string bindingText)
         {
-            return CreateValueBinding(context, this.GetDataContextType(), bindingText);
+            return ControlCreationHelper.CreateValueBinding(context, this.GetDataContextType(), bindingText);
         }
         private ICommandBinding CreateCommandBinding(IDotvvmRequestContext context, string bindingText)
         {
-            return CreateCommandBinding(context, this.GetDataContextType(), bindingText);
-        }
-
-
-        private static IValueBinding CreateValueBinding(IDotvvmRequestContext context, DataContextStack contextTypeStack, string bindingText)
-        {
-            var bindingService = (BindingCompilationService)context.Services.GetService(typeof(BindingCompilationService));
-            return new ValueBindingExpression(
-                bindingService,
-                new object[] {
-                    new BindingParserOptions(typeof(ValueBindingExpression)),
-                    new OriginalStringBindingProperty(bindingText),
-                    contextTypeStack
-                });
-        }
-
-        private static ICommandBinding CreateCommandBinding(IDotvvmRequestContext context, DataContextStack contextTypeStack, string bindingText)
-        {
-            var bindingService = (BindingCompilationService)context.Services.GetService(typeof(BindingCompilationService));
-            var bindingId = Convert.ToBase64String(Encoding.ASCII.GetBytes(contextTypeStack.DataContextType.Name + "." + bindingText));
-            var properties = new object[]{
-                contextTypeStack,
-                new OriginalStringBindingProperty(bindingText),
-                new IdBindingProperty(bindingId)
-            };
-
-            return new CommandBindingExpression(bindingService, properties);
+            return ControlCreationHelper.CreateCommandBinding(context, this.GetDataContextType(), bindingText);
         }
 
         private string GetSizeClass()

@@ -11,6 +11,7 @@ namespace BcsAdmin.BL.Dto
         public int? IntermediateEntityId { get; set; }
         [Display(Name="Hierarchy type")]
         public int HierarchyType { get; set; }
+        [Required]
         public string Code { get; set; }
         public string Name { get; set; }
     }
@@ -26,6 +27,7 @@ namespace BcsAdmin.BL.Dto
         public int? IntermediateEntityId { get; set; } = null;
         [Display(Name = "Hierarchy type")]
         public int HierarchyType { get; } = 0; //satate
+        [Required]
         public string Code { get; set; }
         public string Name { get; set; }
     }
