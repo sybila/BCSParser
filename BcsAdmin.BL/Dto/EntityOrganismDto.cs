@@ -12,6 +12,8 @@ namespace BcsAdmin.BL.Dto
         public int Id { get; set; }
         [Display(AutoGenerateField = false)]
         public int? IntermediateEntityId { get; set; }
+
+        [Required]
         public string Code { get; set; }
         public string Name { get; set; }
         public string GeneGroup { get; set; }

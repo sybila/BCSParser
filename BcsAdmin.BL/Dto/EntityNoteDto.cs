@@ -14,6 +14,7 @@ namespace BcsAdmin.BL.Dto
         [Editable(false)]
         public string UserName { get; set; }
 
+        [Required]
         public string Text { get; set; }
 
         [Editable(false)]

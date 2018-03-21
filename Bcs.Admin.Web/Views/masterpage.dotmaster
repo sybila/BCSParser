@@ -11,6 +11,10 @@
     <title>{{value: Title}}</title>
 </head>
 <body class="main-board" Validation.Enabled="false">
+    <dot:InlineScript>
+        //this is to clear validation errors and not to prevent them from postback before even valudating the stuff (that may be valid)
+        dotvvm.events.postbackHandlersStarted.subscribe(function () { dotvvm.validation.errors([]); });
+    </dot:InlineScript>
     <dot:InlineScript Dependencies="knockout">
         var editor = new CodeEditor();
         editor.addKnockoutHandlers();
