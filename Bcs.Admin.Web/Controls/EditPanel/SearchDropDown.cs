@@ -64,7 +64,7 @@ namespace Bcs.Admin.Web.Controls.EditPanel
             var selectedLinkNotNull = CreateValueBinding(context, "SelectedLink != null");
             var suggestionsBinding = CreateValueBinding(context, "Suggestions");
 
-            var textBinding = CreateValueBinding(context, "Text");
+            var textBinding = CreateValueBinding(context, "Filter.SearchText");
             var keyUpBinding = CreateCommandBinding(context, "RefreshSuggestions()");
 
             var textbox = new TextBoxEx();

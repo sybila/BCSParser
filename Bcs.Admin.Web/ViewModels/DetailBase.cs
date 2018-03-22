@@ -87,6 +87,7 @@ namespace Bcs.Admin.Web.ViewModels
             Locations.ParentEntityId = Id;
             await Locations.Init();
             await Locations.DataSet.RequestRefreshAsync(true);
+            Locations.EntitySearchSelect.Filter.AllowedEntityTypes = new[] { HierarchyType.Compartment };
 
             Notes.ParentEntityId = Id;
             await Notes.Init();

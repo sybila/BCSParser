@@ -28,7 +28,7 @@
                 <div class="col-lg-6 col-md-12">
                     <dot:Repeater class="row" DataSource="{value: EntityTypes}">
                         <dot:CheckBox class="col-md-4" Text="{value: _this}" Changed="{command: _parent.RefreshAsync(true)}" CheckedItems="{value: _parent.Filter.EntityTypeFilter}" CheckedValue="{value: _this}" />
-                    </dot:Repeater>
+                    </dot:Repeater> 
                 </div>
                 <div class="col-md-12">
                     <dot:Button ButtonTagName="button" Click="{command: _root.EntityDetail.NewAsync()}" class="btn btn-success btn-sm pull-right">

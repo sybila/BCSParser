@@ -58,12 +58,18 @@ namespace Bcs.Admin.Web.ViewModels
 
         public override async Task PoputateGridsAsync()
         {
+            AllowedChildHierarchyTypes = basicListFacade.GetEntityTypesForParentType(SelectedHierarchyType);
+
             Components.ParentEntityId =
                 SelectedHierarchyType > 1 && SelectedHierarchyType != 4
                 ? Id
                 : 0;
             await Components.Init();
             await Components.DataSet.RequestRefreshAsync(true);
+            Components.EntitySearchSelect.Filter.AllowedEntityTypes = 
+                AllowedChildHierarchyTypes
+                .Select(t=> (HierarchyType)t.Id)
+                .ToArray();
 
             States.ParentEntityId =
               SelectedHierarchyType == 4
@@ -72,7 +78,7 @@ namespace Bcs.Admin.Web.ViewModels
             await States.Init();
             await States.DataSet.RequestRefreshAsync(true);
 
-            AllowedChildHierarchyTypes = basicListFacade.GetEntityTypesForParentType(SelectedHierarchyType);
+           
 
             await base.PoputateGridsAsync();
         }

@@ -21,6 +21,7 @@ namespace BcsAdmin.BL.Queries
 
         protected override IQueryable<SuggestionDto> GetQueryable()
         {
+            var alloedTypes = Filter?.AllowedEntityTypes ?? new Dto.HierarchyType[] { };
 
             var context = Context.CastTo<AppDbContext>();
 
@@ -31,7 +32,9 @@ namespace BcsAdmin.BL.Queries
 
             if (!string.IsNullOrWhiteSpace(Filter?.SearchText))
             {
-                queriable = queriable.Where(e
+                queriable = queriable
+                    .Where(e=> alloedTypes.Contains((Dto.HierarchyType)e.HierarchyType))
+                    .Where(e
                     => (e.Code?? "").IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1
                     || (e.Name?? "").IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1);
             }
@@ -40,7 +43,7 @@ namespace BcsAdmin.BL.Queries
                 .ToList()
                 .AsQueryable()
                 .OrderBy(e => e.Code)
-                .Take(10)
+                .Take(20)
                 .Select(e => new SuggestionDto
                 {
                     Id = e.Id,

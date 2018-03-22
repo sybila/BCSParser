@@ -20,12 +20,12 @@ namespace BcsAdmin.BL.Facades
 
         public Func<TQuery> EntitySuggestionQuery { get; }
 
-        public IList<SuggestionDto> GetSuggestions(string searchText)
+        public IList<SuggestionDto> GetSuggestions(SuggestionFilter filter)
         {
             using (var uow = UnitOfWorkProvider.Create())
             {
                 var q = EntitySuggestionQuery();
-                q.Filter = new Filters.SuggestionFilter { SearchText = searchText };
+                q.Filter = filter;
                 return q.Execute();
             }
         }
