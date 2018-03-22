@@ -28,13 +28,14 @@ namespace Bcs.Admin.Web
                 ValueMember = nameof(BiochemicalEntityTypeDto.Id),
                 EmptyItemText = "(select entity type)"
             });
-            conventions.Register(p => p.Name.Equals(nameof(BiochemicalEntityLinkDto.HierarchyType)), new ComboBoxSettingsAttribute()
+            conventions.Register(p => p.Name.Equals(nameof(ComponentLinkDto.HierarchyType)), new ComboBoxSettingsAttribute()
             {
-                DataSourceBinding = $"_root.{nameof(Dashboard.HierarchyTypes)}",
+                DataSourceBinding = $"_parent2.{nameof(BiochemicalEntityDetail.AllowedChildHierarchyTypes)}",
                 DisplayMember = nameof(BiochemicalEntityTypeDto.Name),
                 ValueMember = nameof(BiochemicalEntityTypeDto.Id),
-                EmptyItemText = "(select entity type)"
+                EmptyItemText = "(select entity type)",
             });
+
 
             var provider = new ValidatedComboBoxProvider(conventions);
             var columnProvider = new ConventionComboBoxGridColumnProvider(conventions);

@@ -17,7 +17,7 @@ namespace BcsAdmin.BL.Facades
     public class DependantLinkGridFacade<TIntermediateEntity, TEntity, TEntityDto> : FacadeBase, ILinkGridFacade<TEntityDto>
         where TIntermediateEntity : IEntity<int>
         where TEntity : IEntity<int>
-        where TEntityDto : IEntity<int>
+        where TEntityDto : IEntity<int>, new()
     {
         public Func<IFilteredQuery<TEntityDto, IdFilter>> QueryFactory { get; set; }
 
@@ -62,11 +62,7 @@ namespace BcsAdmin.BL.Facades
 
         public TEntityDto CreateAssociated()
         {
-            using (var uow = UnitOfWorkProvider.Create())
-            {
-                var init = associatedEntityRepository.InitializeNew();
-                return mapper.Map<TEntityDto>(init);
-            }
+            return new TEntityDto();
         }
 
         public void Link(EntityLinkDto link)

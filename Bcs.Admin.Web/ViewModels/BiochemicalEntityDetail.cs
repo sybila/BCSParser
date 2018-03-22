@@ -18,6 +18,8 @@ namespace Bcs.Admin.Web.ViewModels
 {
     public class BiochemicalEntityDetail : DetailBase<BiochemicalEntityDetailDto>, IValidatableObject
     {
+        private readonly BasicListFacade basicListFacade;
+
         [Bind(Direction.None)]
         protected BiochemicalEntityFacade EntityFacade => (BiochemicalEntityFacade)Facade;
 
@@ -35,8 +37,11 @@ namespace Bcs.Admin.Web.ViewModels
         [Display(GroupName = "Grids")]
         public IEditableGrid<StateEntityDto> States { get; set; }
 
+        public List<BiochemicalEntityTypeDto> AllowedChildHierarchyTypes { get; set; }
+
         public BiochemicalEntityDetail(
             BiochemicalEntityFacade dashboardFacade,
+            BasicListFacade basicListFacade,
             IMapper mapper,
             IEditableLinkGrid<ComponentLinkDto, EntitySuggestionQuery> componentGrid,
             IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid,
@@ -46,6 +51,7 @@ namespace Bcs.Admin.Web.ViewModels
             IEditableGrid<EntityNoteDto> noteGrid)
             : base(dashboardFacade, mapper, locationGrid, classificationGrid, organisms, noteGrid)
         {
+            this.basicListFacade = basicListFacade;
             Components = componentGrid;
             States = stateGrid;
         }
@@ -66,6 +72,8 @@ namespace Bcs.Admin.Web.ViewModels
             await States.Init();
             await States.DataSet.RequestRefreshAsync(true);
 
+            AllowedChildHierarchyTypes = basicListFacade.GetEntityTypesForParentType(SelectedHierarchyType);
+
             await base.PoputateGridsAsync();
         }
 
@@ -78,8 +86,8 @@ namespace Bcs.Admin.Web.ViewModels
 
         public IEnumerable<ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
         {
-            bool isPrimitive = 
-                SelectedHierarchyType == (int)HierarchyType.State 
+            bool isPrimitive =
+                SelectedHierarchyType == (int)HierarchyType.State
                 || SelectedHierarchyType == (int)HierarchyType.Compartment;
 
             bool hasComponents = Components.ItemsCount != 0;
@@ -87,7 +95,7 @@ namespace Bcs.Admin.Web.ViewModels
 
             if (isPrimitive && (hasComponents || hasStates))
             {
-                return new[] { new ValidationResult($"This entity cannot be of type {(HierarchyType)SelectedHierarchyType} while it has still components or states attached.", new[] { nameof(SelectedHierarchyType)}) };
+                return new[] { new ValidationResult($"This entity cannot be of type {(HierarchyType)SelectedHierarchyType} while it has still components or states attached.", new[] { nameof(SelectedHierarchyType) }) };
             }
 
             if (SelectedHierarchyType != (int)HierarchyType.Atomic && hasStates)

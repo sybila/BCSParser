@@ -28,8 +28,6 @@ namespace Bcs.Admin.Web.ViewModels
 
         public List<SuggestionDto> EntitySuggestions { get; set; }
 
-
-
         public Dashboard(
             BasicListFacade basicListFacade,
             BiochemicalEntityFacade dashboardFacade,
@@ -69,8 +67,16 @@ namespace Bcs.Admin.Web.ViewModels
 
         public override Task Init()
         {
-            HierarchyTypes = basicListFacade.GetEntityTypes();
             return base.Init();
+        }
+
+        public override Task Load()
+        {
+            if((HierarchyTypes?.Count ?? 0) == 0)
+            {
+                HierarchyTypes = basicListFacade.GetEntityTypes();
+            }
+            return base.Load();
         }
     }
 }

@@ -21,7 +21,6 @@ namespace BcsAdmin.BL.Queries
             {
                 Id = e.Location.Id,
                 Code = e.Location.Code,
-                HierarchyType = (int)e.Location.HierarchyType,
                 Name = e.Location.Name
             });
         }

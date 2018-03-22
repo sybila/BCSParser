@@ -31,6 +31,8 @@ namespace BcsAdmin.BL
 
             cfg.CreateMap<EpClassification, ClassificationDto>();
             cfg.CreateMap<EpEntityNote, EntityNoteDto>();
+
+            //Entity mapped grid entities
             cfg.CreateMap<EpEntity, ComponentLinkDto>()
                 .ForMember(t => t.HierarchyType, a => a.MapFrom(s => s.HierarchyType));
             cfg.CreateMap<ComponentLinkDto, EpEntity>()
@@ -39,24 +41,28 @@ namespace BcsAdmin.BL
                 .ForMember(t => t.HierarchyType, m => m.MapFrom(s => s.HierarchyType))
                 .ForMember(t => t.Id, m => m.MapFrom(s => s.Id))
                 .ForAllOtherMembers(a => a.Ignore());
-            cfg.CreateMap<EpOrganism, EntityOrganismDto>()
-                .ForMember(m => m.GeneGroup, a => a.Ignore())
-                .ForMember(m=> m.IntermediateEntityId, a=> a.Ignore());
-
             cfg.CreateMap<EpEntity, LocationLinkDto>()
-                .ForMember(t => t.HierarchyType, a => a.MapFrom(s => s.HierarchyType));
+                .ForMember(m => m.IntermediateEntityId, a => a.Ignore());
             cfg.CreateMap<LocationLinkDto, EpEntity>()
                 .ForMember(t => t.Code, m => m.MapFrom(s => s.Code))
                 .ForMember(t => t.Name, m => m.MapFrom(s => s.Name))
-                .ForMember(t => t.HierarchyType, m => m.MapFrom(s => s.HierarchyType))
+                .ForMember(t => t.HierarchyType, m => m.MapFrom(s => (int)Dto.HierarchyType.Compartment))
                 .ForMember(t => t.Id, m => m.MapFrom(s => s.Id))
                 .ForAllOtherMembers(a => a.Ignore());
             cfg.CreateMap<EpEntity, StateEntityDto>()
-                .ForMember(t => t.HierarchyType, a => a.Ignore())
                 .ForMember(m => m.IntermediateEntityId, a => a.Ignore());
             cfg.CreateMap<StateEntityDto, EpEntity>()
-                .ForMember(m => m.ParentId, a => a.MapFrom(s=> s.IntermediateEntityId));
+               .ForMember(t => t.Code, m => m.MapFrom(s => s.Code))
+                .ForMember(t => t.Name, m => m.MapFrom(s => s.Name))
+                .ForMember(t => t.HierarchyType, m => m.MapFrom(s => (int)Dto.HierarchyType.State))
+                .ForMember(t => t.Id, m => m.MapFrom(s => s.Id))
+                .ForMember(t => t.ParentId, m => m.MapFrom(s => s.IntermediateEntityId))
+                .ForAllOtherMembers(a => a.Ignore());
 
+            //other grid entities
+            cfg.CreateMap<EpOrganism, EntityOrganismDto>()
+                .ForMember(m => m.GeneGroup, a => a.Ignore())
+                .ForMember(m => m.IntermediateEntityId, a => a.Ignore());
             cfg.CreateMap<EntityLinkDto, EpEntityClassification>()
                 .ForMember(s => s.ClassificationId, a => a.MapFrom(s => s.AssociatedId))
                 .ForMember(s => s.EntityId, a => a.MapFrom(s => s.DetailId));
@@ -70,6 +76,7 @@ namespace BcsAdmin.BL
                 .ForMember(s=> s.EntityId, a=> a.MapFrom(s=> s.DetailId))
                 .ForMember(s => s.OrganismId, a => a.MapFrom(s => s.AssociatedId));
 
+            //Entity notes
             cfg.CreateMap<EpEntityNote, EntityNoteDto>()
                 .ForMember(m => m.IntermediateEntityId, a => a.MapFrom(s => s.EntityId));
             cfg.CreateMap<EntityNoteDto, EpEntityNote>()
