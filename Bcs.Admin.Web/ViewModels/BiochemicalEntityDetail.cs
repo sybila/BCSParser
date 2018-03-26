@@ -19,6 +19,7 @@ namespace Bcs.Admin.Web.ViewModels
     public class BiochemicalEntityDetail : DetailBase<BiochemicalEntityDetailDto>, IValidatableObject
     {
         private readonly BasicListFacade basicListFacade;
+        private readonly UsageFacade usageFacade;
 
         [Bind(Direction.None)]
         protected BiochemicalEntityFacade EntityFacade => (BiochemicalEntityFacade)Facade;
@@ -42,6 +43,7 @@ namespace Bcs.Admin.Web.ViewModels
         public BiochemicalEntityDetail(
             BiochemicalEntityFacade dashboardFacade,
             BasicListFacade basicListFacade,
+            UsageFacade usageFacade,
             IMapper mapper,
             IEditableLinkGrid<ComponentLinkDto, EntitySuggestionQuery> componentGrid,
             IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid,
@@ -52,6 +54,7 @@ namespace Bcs.Admin.Web.ViewModels
             : base(dashboardFacade, mapper, locationGrid, classificationGrid, organisms, noteGrid)
         {
             this.basicListFacade = basicListFacade;
+            this.usageFacade = usageFacade;
             Components = componentGrid;
             States = stateGrid;
         }
@@ -90,6 +93,25 @@ namespace Bcs.Admin.Web.ViewModels
             base.CancelAllActions();
         }
 
+        public async Task AskDelete()
+        {
+            var usages = usageFacade.GetEntityUsageList(Id);
+
+            if (usages.Count > 0)
+            {
+                Alert = new AlertViewModel
+                {
+                    AlertHeading = "Delete entity",
+                    AlertText = "This entity is used by other entities are you sure you want to delete it?",
+                    AlertItems = usages
+                };
+            }
+            else
+            {
+                await DeleteAsync();
+            }
+        }
+
         public IEnumerable<ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
         {
             bool isPrimitive =
@@ -116,6 +138,12 @@ namespace Bcs.Admin.Web.ViewModels
 
 
             return new ValidationResult[] { };
+        }
+
+        public override async Task Load()
+        {
+            Alert = null;
+            await base.Load();
         }
     }
 }

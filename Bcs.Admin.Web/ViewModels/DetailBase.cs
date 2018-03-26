@@ -8,6 +8,7 @@ using Riganti.Utils.Infrastructure.Core;
 using Riganti.Utils.Infrastructure.Services.Facades;
 using System;
 using System.Threading.Tasks;
+using BcsAdmin.BL.Facades;
 
 namespace Bcs.Admin.Web.ViewModels
 {
@@ -57,6 +58,8 @@ namespace Bcs.Admin.Web.ViewModels
         [Display(GroupName = "Grids")]
         public IEditableGrid<EntityNoteDto> Notes { get; set; }
 
+        public AlertViewModel Alert { get; set; }
+
         public DetailBase(
             ICrudDetailFacade<TDto, int> facade,
             IMapper mapper,
@@ -71,6 +74,7 @@ namespace Bcs.Admin.Web.ViewModels
             Locations = locationGrid;
             Classifications = classificationGrid;
             Notes = noteGrid;
+
             Organisms = organisms;
         }
 
@@ -112,7 +116,7 @@ namespace Bcs.Admin.Web.ViewModels
             CancelAllActions();
         }
 
-        public async Task DeleteAsync()
+        public virtual async Task DeleteAsync()
         {
             Facade.Delete(Id);
             Close();

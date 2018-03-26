@@ -1,4 +1,8 @@
-﻿.form-control.is-invalid {
+﻿div.margin-top{
+    margin-top: 10px;
+}
+
+.form-control.is-invalid {
     border-color: #dc3545;
 }
 

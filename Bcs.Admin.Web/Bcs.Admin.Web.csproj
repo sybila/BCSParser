@@ -21,6 +21,7 @@
       <Content Remove="wwwroot\CodeEditor.ts" />
     </ItemGroup>
     <ItemGroup>
+        <None Remove="Controls\ModalAlert.dotcontrol" />
         <None Remove="dotvvm_serialized_config.json.tmp" />
     </ItemGroup>
     <ItemGroup>

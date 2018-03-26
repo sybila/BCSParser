@@ -1,5 +1,6 @@
 ﻿@viewModel Bcs.Admin.Web.ViewModels.Dashboard, Bcs.Admin.Web
 @masterPage Views/masterpage.dotmaster
+@service ListFacade =BcsAdmin.BL.Facades.BasicListFacade
 
 <dot:Content ContentPlaceHolderID="MainContent">
     <div class="col-lg-6 col-md-12">
@@ -28,7 +29,7 @@
                 <div class="col-lg-6 col-md-12">
                     <dot:Repeater class="row" DataSource="{value: EntityTypes}">
                         <dot:CheckBox class="col-md-4" Text="{value: _this}" Changed="{command: _parent.RefreshAsync(true)}" CheckedItems="{value: _parent.Filter.EntityTypeFilter}" CheckedValue="{value: _this}" />
-                    </dot:Repeater> 
+                    </dot:Repeater>
                 </div>
                 <div class="col-md-12">
                     <dot:Button ButtonTagName="button" Click="{command: _root.EntityDetail.NewAsync()}" class="btn btn-success btn-sm pull-right">
@@ -116,10 +117,11 @@
             <cc:PanelControl HeadingText="Entity detail" CloseCommand="{command: Close()}">
                 <BodyTemplate>
                     <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="v-bootstrap" DataContext="{value: _this}" />
+                    <cc:ModalAlert DataContext="{value: Alert}" Title="Delete entity" ConfirmText="Delete" ConfirmCommand="{command: _root.EntityDetail.DeleteAsync()}" />
                 </BodyTemplate>
                 <FooterTemplate>
 
-                    <dot:Button ButtonTagName="button" class="btn btn-danger" Click="{command: DeleteAsync()}">
+                    <dot:Button ButtonTagName="button" class="btn btn-danger" Click="{command: AskDelete()}">
                         <i Class="glyphicon glyphicon-trash"></i> Delete entity
                     </dot:Button>
                     <dot:Button Validation.Enabled="true" Validation.Target="{value: _this}" ButtonTagName="button" class="btn btn-success pull-right" Click="{command: SaveAsync()}">
@@ -135,12 +137,14 @@
                     <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="v-bootstrap" DataContext="{value: _this}" />
                 </BodyTemplate>
                 <FooterTemplate>
-                    <dot:Button ButtonTagName="button" class="btn btn-danger" Click="{command: DeleteAsync()}">
-                        <i Class="glyphicon glyphicon-trash"></i> Delete reaction
-                    </dot:Button>
-                    <dot:Button ButtonTagName="button" class="btn btn-success pull-right" Click="{command: SaveAsync()}">
-                        <i Class="glyphicon glyphicon-save"></i> Save detail
-                    </dot:Button>
+                    <div>
+                        <dot:Button ButtonTagName="button" class="btn btn-danger" Click="{command: DeleteAsync()}">
+                            <i Class="glyphicon glyphicon-trash"></i> Delete reaction
+                        </dot:Button>
+                        <dot:Button ButtonTagName="button" class="btn btn-success pull-right" Click="{command: SaveAsync()}">
+                            <i Class="glyphicon glyphicon-save"></i> Save detail
+                        </dot:Button>
+                    </div>
                 </FooterTemplate>
             </cc:PanelControl>
             <dd:DynamicEntity GroupName="Grids" FormBuilderName="v-bootstrap" DataContext="{value: _this}" />

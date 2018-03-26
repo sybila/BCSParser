@@ -1,0 +1,39 @@
+@viewModel Bcs.Admin.Web.ViewModels.AlertViewModel, Bcs.Admin.Web
+@baseType  Bcs.Admin.Web.Controls.ModalAlert, Bcs.Admin.Web
+
+<dot:InlineScript>
+    dotvvm.events.afterPostback.subscribe(function () {
+        var showModal = dotvvm.viewModels.root.viewModel.EntityDetail().Alert() !== null;
+        if (showModal) {
+            $('#alertModal').modal('show');
+        } else {
+            $('#alertModal').modal('hide');
+        }
+    });
+</dot:InlineScript>
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{value: AlertHeading}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    {{value: AlertText}}
+                </p>
+                <dot:Repeater WrapperTagName="ul" DataSource="{value: AlertItems}">
+                   <li> {{value: _this}}</li>
+                </dot:Repeater>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Close</button>
+                <dot:Button ButtonTagName="button" class="btn btn-danger pull-right" Click="{command: _control.ConfirmCommand()}">
+                    <i Class="glyphicon glyphicon-trash"></i> {{value: _control.ConfirmText}}
+                </dot:Button>
+            </div>
+        </div>
+    </div>
+</div>
