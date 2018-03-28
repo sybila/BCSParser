@@ -44,6 +44,24 @@ namespace Bcs.Admin.Web.Controls.EditPanel
             return iconButton;
         }
 
+        public static HtmlGenericControl IconToggleLink(string iconName, string buttonText, string targetId, string toggleClass, string additionalCss = null)
+        {
+            var editIcon = new HtmlGenericControl("i");
+            editIcon.Attributes["class"] = $"glyphicon glyphicon-{iconName}";
+
+            var toggleButton = new HtmlGenericControl("a");
+            toggleButton.Attributes["data-toggle"] = toggleClass;
+            toggleButton.Attributes["data-target"] = $"#{targetId}";
+            toggleButton.Attributes["role"] = "button";
+            toggleButton.Attributes["class"] = (additionalCss ?? "");
+            toggleButton.Children.Add(editIcon);
+            toggleButton.Children.Add(new Literal(buttonText));
+
+            return toggleButton;
+        }
+
+
+
         public static IValueBinding CreateValueBinding(IDotvvmRequestContext context, DataContextStack contextTypeStack, string bindingText)
         {
             var bindingService = (BindingCompilationService)context.Services.GetService(typeof(BindingCompilationService));
@@ -67,6 +85,33 @@ namespace Bcs.Admin.Web.Controls.EditPanel
             };
 
             return new CommandBindingExpression(bindingService, properties);
+        }
+
+        public static ICommandBinding CreateStaticCommandBinding(IDotvvmRequestContext context, DataContextStack contextTypeStack, string bindingText)
+        {
+            var bindingService = (BindingCompilationService)context.Services.GetService(typeof(BindingCompilationService));
+            var bindingId = Convert.ToBase64String(Encoding.ASCII.GetBytes(contextTypeStack.DataContextType.Name + "." + bindingText));
+            var properties = new object[]{
+                contextTypeStack,
+                new OriginalStringBindingProperty(bindingText),
+                new IdBindingProperty(bindingId)
+            };
+
+            return new StaticCommandBindingExpression(bindingService, properties);
+        }
+
+
+        public static HtmlGenericControl CreateDivWithClass(string classValue, params DotvvmControl[] children)
+        {
+            var div = new HtmlGenericControl("div");
+            div.Attributes["class"] = classValue;
+
+            foreach (var c in children)
+            {
+                div.Children.Add(c);
+            }
+
+            return div;
         }
     }
 }

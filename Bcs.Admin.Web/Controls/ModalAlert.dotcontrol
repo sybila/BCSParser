@@ -9,6 +9,13 @@
         } else {
             $('#alertModal').modal('hide');
         }
+
+        dotvvm.events.postbackHandlersStarted.subscribe(function (data) {
+            var elemId = data.sender.id;
+            if (elemId === "alert-confirm") {
+                $('#alertModal').modal('hide');
+            }
+        });
     });
 </dot:InlineScript>
 <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -30,7 +37,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Close</button>
-                <dot:Button ButtonTagName="button" class="btn btn-danger pull-right" Click="{command: _control.ConfirmCommand()}">
+                <dot:Button html:id="alert-confirm" ButtonTagName="button" class="btn btn-danger pull-right" Click="{command: _control.ConfirmCommand()}">
                     <i Class="glyphicon glyphicon-trash"></i> {{value: _control.ConfirmText}}
                 </dot:Button>
             </div>

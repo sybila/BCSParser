@@ -4,7 +4,7 @@ using Riganti.Utils.Infrastructure.Core;
 
 namespace Bcs.Admin.Web.ViewModels.Grids
 {
-    public interface IEditableGrid<TGridEntity>: IDotvvmViewModel
+    public interface IEditableGrid<TGridEntity>: IDotvvmViewModel, ICollapsible
         where TGridEntity : class, IEntity<int>
     {
         int ItemsCount { get; }

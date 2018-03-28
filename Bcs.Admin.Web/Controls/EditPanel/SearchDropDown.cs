@@ -103,7 +103,7 @@ namespace Bcs.Admin.Web.Controls.EditPanel
 
             var classOpenBinding = CreateValueBinding(context, "Suggestions.Count != 0 && SelectedLink == null");
 
-            var buttonGroup = ControlHelper.CreateDivWithClass("has-feedback");
+            var buttonGroup = ControlCreationHelper.CreateDivWithClass("has-feedback");
             buttonGroup.SetBinding(CssClassesGroupDescriptor.GetDotvvmProperty("open"), classOpenBinding);
             buttonGroup.SetBinding(CssClassesGroupDescriptor.GetDotvvmProperty("has-success"), selectedLinkNotNull);
             buttonGroup.Children.Add(textbox);

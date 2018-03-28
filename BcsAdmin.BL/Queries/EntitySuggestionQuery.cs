@@ -25,31 +25,36 @@ namespace BcsAdmin.BL.Queries
 
             var context = Context.CastTo<AppDbContext>();
 
-            var queriable =
-                    context
-                    .EpEntity
-                    .AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(Filter?.SearchText))
+            if (string.IsNullOrWhiteSpace(Filter?.SearchText))
             {
-                queriable = queriable
-                    .Where(e=> alloedTypes.Contains((Dto.HierarchyType)e.HierarchyType))
-                    .Where(e
-                    => (e.Code?? "").IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1
-                    || (e.Name?? "").IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1);
+                return Enumerable.Empty<SuggestionDto>().AsQueryable();
             }
 
-            return queriable
-                .ToList()
-                .AsQueryable()
-                .OrderBy(e => e.Code)
+            var entities = context.EpEntity.Where(e => alloedTypes.Contains((Dto.HierarchyType)e.HierarchyType));
+
+
+            var codeStartsWith = entities
+                .Where(e => (e.Code ?? "").StartsWith(Filter.SearchText, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(e => e.Code);
+
+            var nameStartsWith = entities
+               .Where(e => (e.Name ?? "").StartsWith(Filter.SearchText, StringComparison.OrdinalIgnoreCase))
+               .OrderBy(e => e.Name);
+
+
+            var a = codeStartsWith
+                .Concat(nameStartsWith)
+                .Distinct()
                 .Take(20)
-                .Select(e => new SuggestionDto
+                .ToList();
+
+            return
+                a.Select(e => new SuggestionDto
                 {
                     Id = e.Id,
                     Description = e.Name,
                     Name = e.Code
-                });
+                }).AsQueryable();
 
         }
     }

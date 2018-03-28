@@ -15,6 +15,8 @@ namespace Bcs.Admin.Web.ViewModels.Grids
     {
         private readonly ILinkGridFacade<TGridEntity> facade;
 
+        public bool IsCollapsed { get; set; }
+
         [Bind(Direction.None)]
         public SuggestionsFacade<TSuggestionQuery> SuggestionsFacade { get; }
 
