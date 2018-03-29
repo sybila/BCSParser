@@ -13,13 +13,14 @@ using AutoMapper;
 using BcsAdmin.BL.Queries;
 using DotVVM.Framework.ViewModel;
 using System.Threading.Tasks;
+using DotVVM.Framework.Controls;
 
 namespace Bcs.Admin.Web.ViewModels
 {
     public class BiochemicalEntityDetail : DetailBase<BiochemicalEntityDetailDto>, IValidatableObject
     {
         private readonly BasicListFacade basicListFacade;
-        private readonly UsageFacade usageFacade;
+        private readonly AdvancedEntitySearchFacade usageFacade;
 
         [Bind(Direction.None)]
         protected BiochemicalEntityFacade EntityFacade => (BiochemicalEntityFacade)Facade;
@@ -43,7 +44,7 @@ namespace Bcs.Admin.Web.ViewModels
         public BiochemicalEntityDetail(
             BiochemicalEntityFacade dashboardFacade,
             BasicListFacade basicListFacade,
-            UsageFacade usageFacade,
+            AdvancedEntitySearchFacade usageFacade,
             IMapper mapper,
             IEditableLinkGrid<ComponentLinkDto, EntitySuggestionQuery> componentGrid,
             IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid,
@@ -69,9 +70,9 @@ namespace Bcs.Admin.Web.ViewModels
                 : 0;
             await Components.Init();
             await Components.DataSet.RequestRefreshAsync(true);
-            Components.EntitySearchSelect.Filter.AllowedEntityTypes = 
+            Components.EntitySearchSelect.Filter.AllowedEntityTypes =
                 AllowedChildHierarchyTypes
-                .Select(t=> (HierarchyType)t.Id)
+                .Select(t => (HierarchyType)t.Id)
                 .ToArray();
 
             States.ParentEntityId =
@@ -81,7 +82,7 @@ namespace Bcs.Admin.Web.ViewModels
             await States.Init();
             await States.DataSet.RequestRefreshAsync(true);
 
-           
+
 
             await base.PoputateGridsAsync();
         }

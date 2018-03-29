@@ -20,6 +20,5 @@ namespace BcsAdmin.BL.Facades
         void Link(EntityLinkDto link);
         void Unlink(int intermediateId);
         TEntityDto CreateAssociated();
-        IList<TEntityDto> GetEmtitySuggestions(string search);
     }
 }

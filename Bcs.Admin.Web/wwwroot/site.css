@@ -1,4 +1,9 @@
-﻿div.margin-top{
+﻿div.section {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+div.margin-top{
     margin-top: 10px;
 }
 

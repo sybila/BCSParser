@@ -15,7 +15,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
     {
         SuggestionsFacade<TSuggestionQuery> SuggestionsFacade { get; }
 
-        EntitySearchSelect EntitySearchSelect { get; set; }
+        SearchSelect EntitySearchSelect { get; set; }
         
         void Link();
     }

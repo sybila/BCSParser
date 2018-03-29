@@ -56,6 +56,14 @@ namespace Bcs.Admin.Web.Controls
         public static readonly DotvvmProperty CollapsedBindingProperty
             = DotvvmProperty.Register<IValueBinding, PanelControl>(c => c.CollapsedBinding, null);
 
+        public PanelStyle ColorStyle
+        {
+            get { return (PanelStyle)GetValue(ColorStyleProperty); }
+            set { SetValue(ColorStyleProperty, value); }
+        }
+        public static readonly DotvvmProperty ColorStyleProperty
+            = DotvvmProperty.Register<PanelStyle, PanelControl>(c => c.ColorStyle, PanelStyle.Default);
+
 
         public PanelControl()
             :base("div")
@@ -65,7 +73,7 @@ namespace Bcs.Admin.Web.Controls
 
         protected override void OnInit(IDotvvmRequestContext context)
         {
-            Attributes["class"] = " panel panel-info";
+            Attributes["class"] = $"panel {GetCssClass(ColorStyle)}";
 
             var headingDiv = new HtmlGenericControl("div");
             headingDiv.Attributes["class"] = "panel-heading";
@@ -116,6 +124,36 @@ namespace Bcs.Admin.Web.Controls
         {
             BodyTemplate?.BuildContent(context, bodyDiv);
             FooterTemplate?.BuildContent(context, footerDiv);
+        }
+
+        protected virtual string GetCssClass(PanelStyle panelStyle)
+        {
+            switch (panelStyle)
+            {
+                case PanelStyle.Info:
+                    return "panel-info";
+                case PanelStyle.Danger:
+                    return "panel-danger";
+                case PanelStyle.Primary:
+                    return "panel-primary";
+                case PanelStyle.Warning:
+                    return "panel-warning";
+                case PanelStyle.Success:
+                    return "panel-success";
+                case PanelStyle.Default:
+                default:
+                    return "panel-default";
+            }
+        }
+
+        public enum PanelStyle
+        {
+            Default,
+            Info,
+            Danger, 
+            Primary,
+            Warning,
+            Success
         }
     }
 }

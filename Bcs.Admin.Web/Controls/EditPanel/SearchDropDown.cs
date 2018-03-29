@@ -56,13 +56,13 @@ namespace Bcs.Admin.Web.Controls.EditPanel
 
 
 
-            if (!(DataContext is EntitySearchSelect))
+            if (!(DataContext is SearchSelect))
             {
-                throw new InvalidOperationException($"DataContext mustbe of type {nameof(EntitySearchSelect)}");
+                throw new InvalidOperationException($"DataContext mustbe of type {nameof(SearchSelect)}");
             }
 
-            var selectedLinkNotNull = CreateValueBinding(context, "SelectedLink != null");
-            var suggestionsBinding = CreateValueBinding(context, "Suggestions");
+            var selectedLinkNotNull = CreateValueBinding(context, $"{nameof(SearchSelect.SelectedSuggestion)} != null");
+            var suggestionsBinding = CreateValueBinding(context, nameof(SearchSelect.Suggestions));
 
             var textBinding = CreateValueBinding(context, "Filter.SearchText");
             var keyUpBinding = CreateCommandBinding(context, "RefreshSuggestions()");
@@ -101,7 +101,7 @@ namespace Bcs.Admin.Web.Controls.EditPanel
                     c.Children.Add(li);
                 });
 
-            var classOpenBinding = CreateValueBinding(context, "Suggestions.Count != 0 && SelectedLink == null");
+            var classOpenBinding = CreateValueBinding(context, $"{nameof(SearchSelect.Suggestions)}.Count != 0 && {nameof(SearchSelect.SelectedSuggestion)} == null");
 
             var buttonGroup = ControlCreationHelper.CreateDivWithClass("has-feedback");
             buttonGroup.SetBinding(CssClassesGroupDescriptor.GetDotvvmProperty("open"), classOpenBinding);
