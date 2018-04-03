@@ -3,6 +3,13 @@
     margin-bottom: 10px;
 }
 
+
+div.col-panel {
+    display: inline-flex;
+    margin: 10px;
+    max-width: 800px;
+}
+
 div.margin-top{
     margin-top: 10px;
 }
