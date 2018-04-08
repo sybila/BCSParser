@@ -24,6 +24,7 @@ namespace Bcs.Admin.Web.ViewModels
 
         public BiochemicalEntityDetail EntityDetail { get; set; }
         public BiochemicalReactionDetail ReactionDetail { get; set; }
+        public SimilarEntitySearchPanel EntitySearchPanel { get; set; }
         public List<BiochemicalEntityTypeDto> HierarchyTypes { get; set; }
 
         public List<SuggestionDto> EntitySuggestions { get; set; }
@@ -36,7 +37,8 @@ namespace Bcs.Admin.Web.ViewModels
             EntitiesTab entitiesTab,
             ReactionsTab rulesTab,
             BiochemicalEntityDetail entityDetail,
-            BiochemicalReactionDetail reactionDetail)
+            BiochemicalReactionDetail reactionDetail,
+            SimilarEntitySearchPanel entitySearchPanel)
         {
             this.basicListFacade = basicListFacade;
             this.dashboardFacade = dashboardFacade;
@@ -45,7 +47,7 @@ namespace Bcs.Admin.Web.ViewModels
 
             EntityDetail = entityDetail;
             ReactionDetail = reactionDetail;
-
+            EntitySearchPanel = entitySearchPanel;
             Title = "Dashboard";
             EntitiesTab = entitiesTab;
             ReactionsTab = rulesTab;

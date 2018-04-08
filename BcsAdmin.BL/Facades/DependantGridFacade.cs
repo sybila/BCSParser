@@ -110,10 +110,5 @@ namespace BcsAdmin.BL.Facades
                 uow.Commit();
             }
         }
-
-        public IList<TEntityDto> GetEmtitySuggestions(string search)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

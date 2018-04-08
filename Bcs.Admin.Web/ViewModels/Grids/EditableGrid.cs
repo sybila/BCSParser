@@ -28,6 +28,8 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         [Bind(Direction.ServerToClient)]
         public int ItemsCount => DataSet.PagingOptions.TotalItemsCount;
 
+        public bool IsCollapsed { get; set; }
+
         public EditableGrid(IGridFacade<TGridEntity> facade)
         {
             this.facade = facade;

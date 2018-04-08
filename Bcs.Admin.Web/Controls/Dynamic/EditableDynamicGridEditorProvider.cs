@@ -59,6 +59,10 @@ namespace Bcs.Admin.Web.Controls.Dynamic
                 grid.LinkEntity = context.CreateCommandBinding("Link()", gridDataContext);
                 grid.LinkEntitySearchSelect = context.CreateValueBinding("EntitySearchSelect", gridDataContext);
             }
+            if (property.PropertyInfo.PropertyType.IsAssignableTo(typeof(ICollapsible)))
+            {
+                grid.CollapsedBinding = ControlCreationHelper.CreateValueBinding(context.RequestContext, DataContextStack.Create(gridDataContext, container.GetDataContextType()), $"{nameof(ICollapsible.IsCollapsed)}");
+            }
         }
 
         //TODO: Merge when integrated with dynamic data

@@ -15,6 +15,8 @@ namespace Bcs.Admin.Web.ViewModels.Grids
     {
         private readonly ILinkGridFacade<TGridEntity> facade;
 
+        public bool IsCollapsed { get; set; }
+
         [Bind(Direction.None)]
         public SuggestionsFacade<TSuggestionQuery> SuggestionsFacade { get; }
 
@@ -24,12 +26,12 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         public GridViewDataSet<TGridEntity> DataSet { get; set; }
         public TGridEntity NewRow { get; set; }
 
-        public EntitySearchSelect EntitySearchSelect { get; set; }
+        public SearchSelect EntitySearchSelect { get; set; }
 
         [Bind(Direction.ServerToClient)]
         public int ItemsCount => DataSet.PagingOptions.TotalItemsCount;
 
-        public EditableLinkGrid(ILinkGridFacade<TGridEntity> facade, EntitySearchSelect entitySearchSelect, SuggestionsFacade<TSuggestionQuery> suggestionsFacade)
+        public EditableLinkGrid(ILinkGridFacade<TGridEntity> facade, SearchSelect entitySearchSelect, SuggestionsFacade<TSuggestionQuery> suggestionsFacade)
         {
             this.facade = facade;
             this.EntitySearchSelect =  entitySearchSelect;
@@ -76,7 +78,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public void Link()
         {
-            var associateId = EntitySearchSelect?.SelectedLink?.Id;
+            var associateId = EntitySearchSelect?.SelectedSuggestion?.Id;
 
             if (associateId == null) return;
 

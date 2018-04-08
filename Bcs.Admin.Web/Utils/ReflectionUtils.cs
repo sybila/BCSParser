@@ -7,6 +7,11 @@ namespace Bcs.Admin.Web.Utils
 {
     public static class ReflectionUtils
     {
+        public static bool IsAssignableTo(this Type givenType, Type expectedType)
+        {
+            return expectedType.IsAssignableFrom(givenType);
+        }
+
         public static bool IsAssignableToGenericType(this Type givenType, Type genericType)
         {
             var interfaceTypes = givenType.GetInterfaces();
