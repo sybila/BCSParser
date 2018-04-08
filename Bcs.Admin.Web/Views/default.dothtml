@@ -112,7 +112,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-5 col-md-12">
+    <div class="col-lg-6 col-md-12">
         <div class="col-md-12 sub-board" DataContext="{value: EntityDetail}" Visible="{value: Id != -1}">
             <cc:PanelControl HeadingText="Entity detail" CloseCommand="{command: Close()}">
                 <BodyTemplate>

@@ -134,12 +134,17 @@ namespace BcsResolver.Syntax.Parser
                 {
                     reaction.LeftSideReactants.Add(ReadReactant());
 
-                    if (IsPeekType(BcsExpresionTokenType.Interaction))
+                    if (IsPeekPlusToken())
                     {
                         reaction.InteractionSeparatorRanges.Add(Peek().ToTextRange());
                         Read();
                     }
                 });
+        }
+
+        private bool IsPeekPlusToken()
+        {
+            return IsPeekType(BcsExpresionTokenType.Identifier) && Peek().Text == "+";
         }
 
         private void ReadReactionRightSide(BcsReactionNode reaction)
@@ -152,7 +157,7 @@ namespace BcsResolver.Syntax.Parser
                 {
                     reaction.RightSideReactants.Add(ReadReactant());
 
-                    if (IsPeekType(BcsExpresionTokenType.Interaction))
+                    if (IsPeekPlusToken())
                     {
                         reaction.InteractionSeparatorRanges.Add(Peek().ToTextRange());
                         Read();
@@ -291,8 +296,9 @@ namespace BcsResolver.Syntax.Parser
         {
             if (IsPeekType(BcsExpresionTokenType.ReactionCoeficient))
             {
+                var numberStyle = NumberStyles.AllowDecimalPoint;
                 double coeficient = 0;
-                if (double.TryParse(Peek().Text, out coeficient))
+                if (double.TryParse(Peek().Text, numberStyle, CultureInfo.InvariantCulture, out coeficient))
                 {
                     reactant.Coeficient = coeficient;
                 }

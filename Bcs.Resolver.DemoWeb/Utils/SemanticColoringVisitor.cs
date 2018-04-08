@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using BcsAdmin.BL.Dto;
 using BcsResolver.Extensions;
 using BcsResolver.SemanticModel.BoundTree;
 using BcsResolver.Syntax.Parser;

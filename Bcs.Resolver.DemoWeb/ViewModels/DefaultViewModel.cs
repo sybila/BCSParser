@@ -19,6 +19,7 @@ using MyTreeNode = Bcs.Analyzer.DemoWeb.ViewModels.TreeNode<string>;
 using Bcs.Analyzer.DemoWeb.Utils;
 using Bcs.Analyzer.DemoWeb.ViewModels;
 using BcsAdmin.BL.Services;
+using BcsAdmin.BL.Dto;
 
 namespace BcsAnalysisWeb.ViewModels
 {

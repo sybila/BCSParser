@@ -88,13 +88,15 @@ namespace BcsResolver.Tests
         [TestMethod]
         public void Tokenizer_ReactionBothSides_Valid()
         {
-            var tokens = CreateTokens("FRS::cyt+R::cyt<=>FRSR::cyt");
+            var tokens = CreateTokens("FRS::cyt + R::cyt<=>FRSR::cyt");
             new[]
             {
                 BcsExpresionTokenType.Identifier,
                 BcsExpresionTokenType.FourDot,
                 BcsExpresionTokenType.Identifier,
-                BcsExpresionTokenType.Interaction,
+                BcsExpresionTokenType.Whitespace,
+                BcsExpresionTokenType.Identifier,
+                BcsExpresionTokenType.Whitespace,
                 BcsExpresionTokenType.Identifier,
                 BcsExpresionTokenType.FourDot,
                 BcsExpresionTokenType.Identifier,
@@ -109,7 +111,7 @@ namespace BcsResolver.Tests
         [TestMethod]
         public void Tokenizer_ReactionWithCoeficients_Valid()
         {
-            var tokens = CreateTokens("2.0 FRS::cyt+4R::cyt<=>1.55FRSR::cyt");
+            var tokens = CreateTokens("2.0 FRS::cyt + 4R::cyt<=>1.55FRSR::cyt");
             new[]
             {
                 BcsExpresionTokenType.ReactionCoeficient, 
@@ -117,7 +119,9 @@ namespace BcsResolver.Tests
                 BcsExpresionTokenType.Identifier,
                 BcsExpresionTokenType.FourDot,
                 BcsExpresionTokenType.Identifier,
-                BcsExpresionTokenType.Interaction,
+                BcsExpresionTokenType.Whitespace,
+                BcsExpresionTokenType.Identifier,
+                BcsExpresionTokenType.Whitespace,
                 BcsExpresionTokenType.ReactionCoeficient,
                 BcsExpresionTokenType.Identifier,
                 BcsExpresionTokenType.FourDot,
@@ -134,7 +138,7 @@ namespace BcsResolver.Tests
         [TestMethod]
         public void Tokenizer_ReactionWithCoeficientsAndComplexes_Valid()
         {
-            var tokens = CreateTokens("2.0 FRS.GC::cyt+4R.HJ::cyt<=>1.55FRSR.M::cyt");
+            var tokens = CreateTokens("2.0 FRS.GC::cyt + 4R.HJ::cyt<=>1.55FRSR.M::cyt");
             new[]
             {
                 BcsExpresionTokenType.ReactionCoeficient,
@@ -144,7 +148,9 @@ namespace BcsResolver.Tests
                 BcsExpresionTokenType.Identifier, 
                 BcsExpresionTokenType.FourDot,
                 BcsExpresionTokenType.Identifier,
-                BcsExpresionTokenType.Interaction,
+                BcsExpresionTokenType.Whitespace,
+                BcsExpresionTokenType.Identifier,
+                BcsExpresionTokenType.Whitespace,
                 BcsExpresionTokenType.ReactionCoeficient,
                 BcsExpresionTokenType.Identifier,
                 BcsExpresionTokenType.Dot, 
@@ -179,11 +185,41 @@ namespace BcsResolver.Tests
         public void Tokenizer_ReactionRight_Valid()
         {
             var tokens = CreateTokens("FRS=>FRSR");
+
             new[]
             {
                 BcsExpresionTokenType.Identifier,
                 BcsExpresionTokenType.ReactionDirectionRight,
                 BcsExpresionTokenType.Identifier
+            }
+            .AssertSequenceEquals(tokens.Select(t => t.Type));
+        }
+
+        [TestMethod]
+        public void Tokenizer_PlusAsIdentifier_Valid()
+        {
+            var tokens = CreateTokens("FRS+ + H{ + }=>FHRS+ + H{+}");
+            new[]
+            {
+                BcsExpresionTokenType.Identifier,
+                BcsExpresionTokenType.Whitespace,
+                BcsExpresionTokenType.Identifier,
+                BcsExpresionTokenType.Whitespace,
+                BcsExpresionTokenType.Identifier,
+                BcsExpresionTokenType.SetBegin,
+                BcsExpresionTokenType.Whitespace,
+                BcsExpresionTokenType.Identifier,
+                BcsExpresionTokenType.Whitespace,
+                BcsExpresionTokenType.SetEnd,
+                BcsExpresionTokenType.ReactionDirectionRight,
+                BcsExpresionTokenType.Identifier,
+                BcsExpresionTokenType.Whitespace,
+                BcsExpresionTokenType.Identifier,
+                BcsExpresionTokenType.Whitespace,
+                BcsExpresionTokenType.Identifier,
+                BcsExpresionTokenType.SetBegin,
+                BcsExpresionTokenType.Identifier,
+                BcsExpresionTokenType.SetEnd,
             }
             .AssertSequenceEquals(tokens.Select(t => t.Type));
         }
