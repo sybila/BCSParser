@@ -107,7 +107,7 @@ namespace Bcs.Analyzer.DemoWeb.Utils
         {
             var tooltip = string.IsNullOrWhiteSpace(point.TooltipText)
                 ? ""
-                : $"data-toggle=\"tooltip\" title=\"{point.TooltipText}!\"";
+                : $"data-toggle=\"tooltip\" title=\"{point.TooltipText}\"";
             return $"<span {tooltip} class=\"{point.CssClass}\">";
         }
 
