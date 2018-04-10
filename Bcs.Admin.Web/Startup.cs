@@ -34,6 +34,7 @@ using BcsAdmin.BL.Repositories;
 using Bcs.Admin.BL.Dto;
 using BcsAdmin.BL.Services;
 using BcsResolver.File;
+using BcsResolver.SemanticModel;
 
 namespace Bcs.Analyzer.DemoWeb
 {

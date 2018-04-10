@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BcsResolver.SemanticModel.Tree;
 
-namespace BcsResolver.File
+namespace BcsResolver.SemanticModel
 {
     public interface IBcsWorkspace
     {

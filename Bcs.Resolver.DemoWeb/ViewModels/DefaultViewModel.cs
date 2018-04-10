@@ -89,7 +89,7 @@ namespace BcsAnalysisWeb.ViewModels
             var reaction = reactions[id];
             ClearTrees();
 
-            var semanticAnalyzer = new SemanticAnalisisVisitor(workspace, new BcsBoundSymbolFactory());
+            var semanticAnalyzer = new SemanticAnalysisVisitor(workspace, new BcsBoundSymbolFactory());
             var semanticTree = semanticAnalyzer.Visit(reaction);
 
             DrawSemanticTree(semanticTree, semanticAnalyzer.Errors);
@@ -119,7 +119,7 @@ namespace BcsAnalysisWeb.ViewModels
 
         public void DrawLive()
         {
-            var semanticAnalyzer = new SemanticAnalisisVisitor(workspace, new BcsBoundSymbolFactory());
+            var semanticAnalyzer = new SemanticAnalysisVisitor(workspace, new BcsBoundSymbolFactory());
             var semanticColorVisitor = new SemanticColoringVisitor();
 
             var rawText = TextPresenter.ToRawText(TextEdit);

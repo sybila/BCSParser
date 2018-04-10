@@ -77,8 +77,8 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public override Task Init()
         {
-            if (!Context.IsPostBack)
-            {
+            //if (!Context.IsPostBack)
+            //{
                 DataSet = new GridViewDataSet<TGridEntity>()
                 {
                     PagingOptions = { PageSize = 10 },
@@ -88,7 +88,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
                         PrimaryKeyPropertyName = "Id"
                     }
                 };
-            }
+            //}
             return base.Init();
         }
 

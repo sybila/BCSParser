@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Threading;
 using BcsResolver.Extensions;
-using BcsResolver.File;
 using BcsResolver.SemanticModel.BoundTree;
 using BcsResolver.SemanticModel.SymbolTree;
 using BcsResolver.SemanticModel.Tree;
@@ -16,7 +15,7 @@ using BcsResolver.Syntax.Visitors;
 namespace BcsResolver.SemanticModel
 {
 
-    public class SemanticAnalisisVisitor : BcsExpressionBuilderVisitor<IBcsBoundSymbol, IBcsBoundSymbol>
+    public class SemanticAnalysisVisitor : BcsExpressionBuilderVisitor<IBcsBoundSymbol, IBcsBoundSymbol>
     {
         public BcsBoundSymbolFactory BoundSymbolFactory { get; }
         public IBcsWorkspace Workspace { get; }
@@ -26,7 +25,7 @@ namespace BcsResolver.SemanticModel
 
         public BcsVariableSymbol DefinedVariable { get; private set; }
 
-        public SemanticAnalisisVisitor(IBcsWorkspace workspace, BcsBoundSymbolFactory boundSymbolFactory)
+        public SemanticAnalysisVisitor(IBcsWorkspace workspace, BcsBoundSymbolFactory boundSymbolFactory)
         {
             Workspace = workspace;
             BoundSymbolFactory = boundSymbolFactory;
