@@ -34,32 +34,34 @@ namespace BcsAdmin.BL.Facades
             bcsWorkspace.CreateSemanticModel();
         }
 
-        public List<StyleSpan> GetClassificationSpans(string sourceText)
+        public List<StyleSpan> GetClassificationSpans(ReactionModel reactionModel)
         {
-            var semanticAnalyzer = new SemanticAnalisisVisitor(bcsWorkspace, new BcsBoundSymbolFactory());
+            if(reactionModel == null) { return new List<StyleSpan>(); } 
+
             var semanticColorVisitor = new SemanticColoringVisitor();
 
-            var tree = BcsSyntaxFactory.ParseReaction(sourceText);
-            if (tree == null) { return new List<StyleSpan> { }; }
-
-            var semanticTree = semanticAnalyzer.Visit(tree);
-            if (semanticTree == null) { return new List<StyleSpan> { }; }
-
-            semanticColorVisitor.Visit(semanticTree);
-
+            semanticColorVisitor.Visit(reactionModel.SemanticTree);
             var spans = semanticColorVisitor.SemanticStyleSpans;
 
-            foreach (var error in semanticAnalyzer.Errors)
+            foreach (var error in reactionModel.Errors)
             {
                 var errorTag = new StyleSpan
                 {
-                    Range = error.Key.ExpressioRange,
-                    CssClass = "error-tag"
+                    Range = error.TextRange,
+                    CssClass = "error-tag",
+                    TooltipText = error.Message
                 };
 
                 spans.Add(errorTag);
             }
             return spans;
+        }
+
+        public ReactionModel GetReactionModel(string sourceText)
+        {
+            var provider = new WorkspaceModelProvider(bcsWorkspace);
+            var reactionModel = provider.CreateReactionModel(sourceText);
+            return reactionModel;
         }
     }
 }

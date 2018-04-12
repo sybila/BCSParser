@@ -69,7 +69,7 @@ namespace Bcs.Admin.Web.ViewModels
                 ? Id
                 : 0;
             await Components.Init();
-            await Components.DataSet.RequestRefreshAsync(true);
+            Components.ReloadData();
             Components.EntitySearchSelect.Filter.AllowedEntityTypes =
                 AllowedChildHierarchyTypes
                 .Select(t => (HierarchyType)t.Id)
@@ -80,9 +80,7 @@ namespace Bcs.Admin.Web.ViewModels
               ? Id
               : 0;
             await States.Init();
-            await States.DataSet.RequestRefreshAsync(true);
-
-
+            States.ReloadData();
 
             await base.PoputateGridsAsync();
         }

@@ -27,13 +27,18 @@ namespace Bcs.Admin.Web.ViewModels
             this.listFacade = listFacade;
         }
 
-        public async Task RefreshAsync(bool goTofirstPage = false)
+        public void Refresh(bool goTofirstPage = false)
         {
-            await DataSet.RequestRefreshAsync(!goTofirstPage);
             if (goTofirstPage)
             {
-                await DataSet.GoToFirstPageAsync();
+                DataSet.GoToFirstPage();
             }
+            ReloadData();
+        }
+
+        private void ReloadData()
+        {
+            listFacade.FillDataSet(DataSet, Filter);
         }
 
         public override Task Init()
@@ -54,13 +59,11 @@ namespace Bcs.Admin.Web.ViewModels
 
         public override Task Load()
         {
-            DataSet.OnLoadingData = options => listFacade.GetData(options, Filter);
+            if (!Context.IsPostBack)
+            {
+                ReloadData();
+            }
             return base.Load();
-        }
-
-        public override Task PreRender()
-        {
-            return base.PreRender();
         }
     }
 

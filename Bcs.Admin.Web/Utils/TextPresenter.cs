@@ -20,6 +20,8 @@ namespace Bcs.Analyzer.DemoWeb.Utils
 
         public bool IsStart { get; set; }
         public string CssClass { get; set; }
+
+        public string TooltipText { get; set; }
     }
 
     public class TextPresenter
@@ -44,8 +46,8 @@ namespace Bcs.Analyzer.DemoWeb.Utils
                     continue;
                 }
 
-                spanPoints.Add(new SpanPoint { Position = span.Range.Start, CssClass = span.CssClass, IsStart = true, Id = spanId });
-                spanPoints.Add(new SpanPoint { Position = span.Range.End, CssClass = span.CssClass, IsStart = false, Id = spanId });
+                spanPoints.Add(new SpanPoint { Position = span.Range.Start, CssClass = span.CssClass, IsStart = true, Id = spanId, TooltipText = span.TooltipText });
+                spanPoints.Add(new SpanPoint { Position = span.Range.End, CssClass = span.CssClass, IsStart = false, Id = spanId, TooltipText = span.TooltipText });
                 spanId++;
             }
 
@@ -65,7 +67,8 @@ namespace Bcs.Analyzer.DemoWeb.Utils
                 if (point.IsStart)
                 {
                     openSpans.Push(point.CssClass);
-                    richTextBuilder.Append($"<span class=\"{point.CssClass}\">");
+
+                    richTextBuilder.Append(CreateHtmlStartTag(point));
                 }
                 else
                 {
@@ -86,7 +89,7 @@ namespace Bcs.Analyzer.DemoWeb.Utils
                         richTextBuilder.Append("</span>");
                         while (closedSpans.Count > 0)
                         {
-                            richTextBuilder.Append($"<span class=\"{closedSpans.Peek()}\">");
+                            richTextBuilder.Append(CreateHtmlStartTag(point));
                             openSpans.Push(closedSpans.Pop());
                         }
                     }
@@ -98,6 +101,14 @@ namespace Bcs.Analyzer.DemoWeb.Utils
             richTextBuilder.Append(lastChunk);
 
             return richTextBuilder.ToString();
+        }
+
+        private static string CreateHtmlStartTag(SpanPoint point)
+        {
+            var tooltip = string.IsNullOrWhiteSpace(point.TooltipText)
+                ? ""
+                : $"data-toggle=\"tooltip\" title=\"{point.TooltipText}\"";
+            return $"<span {tooltip} class=\"{point.CssClass}\">";
         }
 
         private int SpanPointComparison(SpanPoint left, SpanPoint right)

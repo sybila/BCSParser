@@ -76,7 +76,7 @@ namespace BcsAdmin.BL.Services
                 FullName = entity.Name,
                 Name = entity.Code,
                 Locations = CreateEntityLocations(entity),
-                Parts = entity.Components.Select(s => CreateSymbol<BcsAtomicAgentSymbol>(s.Component).CastTo<BcsNamedSymbol>()).ToList(),
+                Parts = entity.Components.Where(s=> s.Component != null).Select(s => CreateSymbol<BcsAtomicAgentSymbol>(s.Component).CastTo<BcsNamedSymbol>()).ToList(),
                 BcsSymbolType = BcsSymbolType.StructuralAgent
             };
         }

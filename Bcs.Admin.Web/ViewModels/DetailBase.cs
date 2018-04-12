@@ -22,7 +22,7 @@ namespace Bcs.Admin.Web.ViewModels
         protected ICrudDetailFacade<TDto, int> Facade { get; }
 
         [Bind(Direction.None)]
-        public Func<Task> UpdateGrid { get; set; }
+        public Action UpdateGrid { get; set; }
 
         [Protect(ProtectMode.SignData)]
         [Display(AutoGenerateField = false)]
@@ -82,20 +82,20 @@ namespace Bcs.Admin.Web.ViewModels
         {
             Classifications.ParentEntityId = Id;
             await Classifications.Init();
-            await Classifications.DataSet.RequestRefreshAsync(true);
+            Classifications.ReloadData();
 
             Organisms.ParentEntityId = Id;
             await Organisms.Init();
-            await Organisms.DataSet.RequestRefreshAsync(true);
+            Organisms.ReloadData();
 
             Locations.ParentEntityId = Id;
             await Locations.Init();
-            await Locations.DataSet.RequestRefreshAsync(true);
+             Locations.ReloadData();
             Locations.EntitySearchSelect.Filter.AllowedEntityTypes = new[] { HierarchyType.Compartment };
 
             Notes.ParentEntityId = Id;
             await Notes.Init();
-            await Notes.DataSet.RequestRefreshAsync(true);
+            Notes.ReloadData();
         }
 
         public virtual void CancelAllActions()
@@ -120,7 +120,7 @@ namespace Bcs.Admin.Web.ViewModels
         {
             Facade.Delete(Id);
             Close();
-            await UpdateGrid?.Invoke();
+            UpdateGrid?.Invoke();
         }
 
         public void Close()

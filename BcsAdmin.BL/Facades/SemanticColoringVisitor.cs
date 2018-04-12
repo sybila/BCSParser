@@ -53,7 +53,8 @@ namespace BcsAdmin.BL.Facades
                 SemanticStyleSpans.Add(new StyleSpan
                 {
                     Range = namedNode.Identifier.NameRange,
-                    CssClass = cssClass
+                    CssClass = cssClass,
+                    TooltipText = boundSymbol.Symbol.ToDisplayString()
                 });
             }
         }

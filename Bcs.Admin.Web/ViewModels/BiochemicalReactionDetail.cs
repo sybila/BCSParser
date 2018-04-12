@@ -11,6 +11,7 @@ using BcsResolver.Syntax.Tokenizer;
 using Bcs.Analyzer.DemoWeb.Utils;
 using System.Threading.Tasks;
 using DotVVM.Framework.ViewModel;
+using System.Linq;
 
 namespace Bcs.Admin.Web.ViewModels
 {
@@ -29,6 +30,8 @@ namespace Bcs.Admin.Web.ViewModels
         [Display(GroupName = "Fields")]
         public string Modifier { get; set; }
 
+        public IList<string> EquationErrors { get; set; }
+
         public BiochemicalReactionDetail(
             ReactionFacade reactionFacade,
             IMapper mapper,
@@ -44,15 +47,20 @@ namespace Bcs.Admin.Web.ViewModels
         public void UpdateEquation()
         {
             var equationText = textPresenter.ToRawText(Equation);
+            var model = ReactionFacade.GetReactionModel(equationText);
+            var spans = ReactionFacade.GetClassificationSpans(model);
 
-            Equation = textPresenter.CreateRichText(equationText, ReactionFacade.GetClassificationSpans(equationText));
+            Equation = textPresenter.CreateRichText(equationText, spans);
+            EquationErrors = model?.Errors.Select(e => e.Message).ToList() ?? new List<string>();
         }
 
         public void UpdateModifier()
         {
             var equationText = textPresenter.ToRawText(Modifier);
 
-            Modifier = textPresenter.CreateRichText(equationText, ReactionFacade.GetClassificationSpans(equationText));
+            var model =ReactionFacade.GetReactionModel(equationText);
+
+            Modifier = textPresenter.CreateRichText(equationText, ReactionFacade.GetClassificationSpans(model));
         }
 
         public override Task PreRender()

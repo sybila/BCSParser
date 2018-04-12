@@ -34,7 +34,7 @@ namespace Bcs.Admin.Web.Controls.Dynamic
 
             var cssClass = ControlHelpers.ConcatCssClasses(ControlCssClass, property.Styles?.FormControlCssClass);
 
-            codeControl.Attributes["class"] = "form-control";
+            codeControl.Attributes["class"] = "form-control code-editor";
 
             var attribute = GetCodeEditorAttribute(property.PropertyInfo);
 
