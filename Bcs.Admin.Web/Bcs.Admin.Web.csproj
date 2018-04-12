@@ -19,6 +19,8 @@
     </ItemGroup>
     <ItemGroup>
       <Content Remove="wwwroot\CodeEditor.ts" />
+      <Content Remove="wwwroot\lib\jquery\jquery.d.ts" />
+      <Content Remove="wwwroot\lib\knockout\knockout.d.ts" />
     </ItemGroup>
     <ItemGroup>
         <None Remove="Controls\ModalAlert.dotcontrol" />
