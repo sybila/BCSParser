@@ -34,6 +34,7 @@ using BcsAdmin.BL.Repositories;
 using Bcs.Admin.BL.Dto;
 using BcsAdmin.BL.Services;
 using BcsResolver.File;
+using BcsAdmin.BL.Repositories.Api.BcsAdmin.BL.Repositories;
 
 namespace Bcs.Analyzer.DemoWeb
 {
@@ -74,7 +75,7 @@ namespace Bcs.Analyzer.DemoWeb
             builder.RegisterGeneric(typeof(EditableGrid<>)).As(typeof(IEditableGrid<>));
             builder.RegisterGeneric(typeof(SuggestionsFacade<>)).As(typeof(SuggestionsFacade<>));
             builder.RegisterGeneric(typeof(AutoDtoMapper<,>)).As(typeof(IEntityDTOMapper<,>));
-            builder.RegisterGeneric(typeof(AppGenericRepository<>)).As(typeof(IRepository<,>));
+            builder.RegisterGeneric(typeof(ApiGenericRepository<>)).As(typeof(IRepository<,>));
 
             builder.RegisterAllByNamespace(typeof(Startup).Assembly, "Bcs.Admin.Web.ViewModels");
             builder.RegisterAllBySuffix(typeof(Registry).Assembly, "Query");
