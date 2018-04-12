@@ -57,13 +57,19 @@ namespace BcsAnalysisWeb.ViewModels
 
         public DefaultViewModel()
         {
-            EntityDataSet = GridViewDataSet.Create(GetEntities, 10);
+            EntityDataSet = new GridViewDataSet<EntityViewModel>()
+            {
+                PagingOptions = new PagingOptions()
+                {
+                    PageSize = 10
+                }
+            };
             Title = "Hello from BCS!";
         }
 
-        private static GridViewDataSetLoadedData<EntityViewModel> GetEntities(IGridViewDataSetLoadOptions gridViewDataSetLoadOptions)
+        private void ReloadData()
         {
-            return workspace
+            var queriable = workspace
                 .GetAllEntities()
                 .Select(e => new EntityViewModel
                 {
@@ -71,12 +77,18 @@ namespace BcsAnalysisWeb.ViewModels
                     Type = e.Type.GetDescription(),
                     Children = e.Parts.Select(p => $"[{p.Type.GetDescription()}: {p.Name}]").ToList()
                 })
-                .AsQueryable()
-                .GetDataFromQueryable(gridViewDataSetLoadOptions);
+                .AsQueryable();
+
+            EntityDataSet.LoadFromQueryable(queriable);
         }
 
         public override Task Init()
         {
+            if(!Context.IsPostBack)
+            {
+                ReloadData();
+            }
+
             if (document != null)
             {
                 Reactions = reactions.Select(r => new ReactionViewModel { Id = r.Key, Display = r.Value.ToDisplayString() }).ToList();

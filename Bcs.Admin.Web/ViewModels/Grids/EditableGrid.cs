@@ -50,7 +50,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         public void Delete(TGridEntity entity)
         {
             facade.Delete(entity.Id);
-            DataSet.RequestRefresh(true);
+            ReloadData();
         }
 
         public void Edit(TGridEntity entity)
@@ -64,7 +64,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         {
             facade.Save(NewRow);
             Cancel();
-            DataSet.RequestRefresh(true);
+            ReloadData();
         }
 
         public void SaveEdit(TGridEntity entity)
@@ -72,13 +72,13 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             entity.IntermediateEntityId = ParentEntityId;
             facade.Save(entity);
             Cancel();
-            DataSet.RequestRefresh(true);
+            ReloadData();
         }
 
         public override Task Init()
         {
-            //if (!Context.IsPostBack)
-            //{
+            if (!Context.IsPostBack)
+            {
                 DataSet = new GridViewDataSet<TGridEntity>()
                 {
                     PagingOptions = { PageSize = 10 },
@@ -88,19 +88,23 @@ namespace Bcs.Admin.Web.ViewModels.Grids
                         PrimaryKeyPropertyName = "Id"
                     }
                 };
-            //}
+            }
             return base.Init();
         }
 
         public override Task Load()
         {
-            DataSet.OnLoadingData = options => facade.GetData(options, new IdFilter { Id = ParentEntityId });
             return base.Load();
         }
 
         public override Task PreRender()
         {
             return base.PreRender();
+        }
+
+        public void ReloadData()
+        {
+            facade.FillDataSet(DataSet, new IdFilter { Id = ParentEntityId });
         }
     }
 }

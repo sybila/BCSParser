@@ -26,6 +26,7 @@ namespace BcsAdmin.BL.Queries
                     .EpOrganism
                     .AsQueryable();
 
+            //FIXME null resistant
             if (!string.IsNullOrWhiteSpace(Filter.SearchText))
             {
                 queriable = queriable.Where(e

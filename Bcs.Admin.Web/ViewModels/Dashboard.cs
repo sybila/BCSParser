@@ -53,8 +53,8 @@ namespace Bcs.Admin.Web.ViewModels
             ReactionsTab = rulesTab;
             ActiveTabName = entitiesTab.Name;
 
-            EntityDetail.UpdateGrid = async () => await EntitiesTab.RefreshAsync();
-            ReactionDetail.UpdateGrid = async () => await ReactionsTab.RefreshAsync();
+            EntityDetail.UpdateGrid = () => EntitiesTab.Refresh();
+            ReactionDetail.UpdateGrid = () => ReactionsTab.Refresh();
         }
 
         public async Task EditEntityAsync(int entityId)

@@ -17,7 +17,6 @@ using DotVVM.Framework.Controls.DynamicData;
 using DotVVM.Framework.Controls.DynamicData.Configuration;
 using DotVVM.Framework.Controls.DynamicData.Builders;
 using Bcs.Admin.Web;
-using System.Composition.Hosting;
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -48,12 +47,10 @@ namespace Bcs.Analyzer.DemoWeb
             //services.AddDataProtection();
             //services.AddAuthorization();
             services.AddWebEncoders();
-            services.AddDotVVM(options =>
-            {
-                var dynamicDataConfig = new AppDynamicDataConfiguration();
-                options.AddDynamicData(dynamicDataConfig);
-                options.AddDefaultTempStorages("Temp");
-            });
+            services.AddDotVVM();
+
+            var dynamicDataConfig = new AppDynamicDataConfiguration();
+            services.AddDynamicData(dynamicDataConfig);
 
             services.AddSingleton(ConfigureMapper().CreateMapper());
 

@@ -14,20 +14,29 @@
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="input-group input-group-sm col-md-12">
-                        <dot:TextBox Changed="{command: RefreshAsync(true)}" class="form-control" Text="{value: Filter.SearchText}" />
+                        <dot:TextBox Changed="{command: Refresh(true)}" class="form-control" Text="{value: Filter.SearchText}" />
                         <div class="input-group-btn">
-                            <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: RefreshAsync(true)}">
+                            <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: Refresh(true)}">
                                 <i class="glyphicon glyphicon-search"></i>
                             </dot:Button>
                         </div>
                     </div>
                     <div class="col-md-12 row gap">
-                        There are <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span> results. Showing <dot:TextBox class="form-control input-sm inline-control" Changed="{command: RefreshAsync(true)}" Text="{value: DataSet.PagingOptions.PageSize}" /> items per page.
+                        There are 
+                        <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span> 
+                        results. Showing 
+                        <dot:TextBox class="form-control input-sm inline-control" Changed="{command: Refresh(true)}" Text="{value: DataSet.PagingOptions.PageSize}" /> 
+                        items per page.
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <dot:Repeater class="row" DataSource="{value: EntityTypes}">
-                        <dot:CheckBox style="min-width:150px;" class="col-md-4" Text="{value: _this}" Changed="{command: _parent.RefreshAsync(true)}" CheckedItems="{value: _parent.Filter.EntityTypeFilter}" CheckedValue="{value: _this}" />
+                        <dot:CheckBox 
+                                      style="min-width:150px;" 
+                                      class="col-md-4" Text="{value: _this}" 
+                                      Changed="{command: _parent.Refresh(true)}" 
+                                      CheckedItems="{value: _parent.Filter.EntityTypeFilter}" 
+                                      CheckedValue="{value: _this}" />
                     </dot:Repeater>
                 </div>
                 <div class="col-md-12">
@@ -72,15 +81,15 @@
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="input-group input-group-sm col-md-12">
-                        <dot:TextBox Changed="{command: RefreshAsync(true)}" class="form-control" Text="{value: Filter.SearchText}" />
+                        <dot:TextBox Changed="{command: Refresh(true)}" class="form-control" Text="{value: Filter.SearchText}" />
                         <div class="input-group-btn">
-                            <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: RefreshAsync(true)}">
+                            <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: Refresh(true)}">
                                 <i class="glyphicon glyphicon-search"></i>
                             </dot:Button>
                         </div>
                     </div>
                     <div class="col-md-12 row gap">
-                        There are <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span> results. Showing <dot:TextBox class="form-control input-sm inline-control" Changed="{command: RefreshAsync(true)}" Text="{value: DataSet.PagingOptions.PageSize}" /> items per page.
+                        There are <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span> results. Showing <dot:TextBox class="form-control input-sm inline-control" Changed="{command: Refresh(true)}" Text="{value: DataSet.PagingOptions.PageSize}" /> items per page.
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12">
