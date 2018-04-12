@@ -76,11 +76,6 @@ namespace BcsResolver.Syntax.Tokenizer
                         Read();
                         CreateToken(BcsExpresionTokenType.SetEnd);
                         break;
-                    case '+':
-                        FinishIncompleteIdentifier();
-                        Read();
-                        EnsureUnsupportedOperator(BcsExpresionTokenType.Interaction);
-                        break;
                     case ';':
                         FinishIncompleteIdentifier();
                         Read();
@@ -145,13 +140,14 @@ namespace BcsResolver.Syntax.Tokenizer
                         }
                         break;
                     default:
+                        //We also read + sign + is normal identifier like any other
                         if (char.IsWhiteSpace(ch))
                         {
                             // white space
                             FinishIncompleteIdentifier();
                             SkipWhitespace();
                         }
-                        else if (char.IsLetter(ch) && IsCurrentTokenNumeric(canContainDot: true))
+                        else if ((char.IsLetter(ch) || ch=='+') && IsCurrentTokenNumeric(canContainDot: true))
                         {
                             //finish number
                             FinishIncompleteIdentifier();
@@ -172,7 +168,7 @@ namespace BcsResolver.Syntax.Tokenizer
 
         private void FinishIncompleteIdentifier()
         {
-            if (DistanceSinceLastToken > 0)
+            if (IsTokenInProgress())
             {
                 if (IsCurrentTokenNumeric(canContainDot: true))
                 {
@@ -184,6 +180,15 @@ namespace BcsResolver.Syntax.Tokenizer
                 }
             }
         }
+
+        private bool IsTokenInProgress()
+        {
+            return DistanceSinceLastToken > 0;
+        }
+
+        private bool IsIdentifierInProgress()
+            => IsTokenInProgress()
+            && !IsCurrentTokenNumeric(canContainDot: true);
 
         internal void EnsureUnsupportedOperator(BcsExpresionTokenType preferedOperatorToken)
         {

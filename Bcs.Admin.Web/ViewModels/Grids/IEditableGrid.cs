@@ -19,5 +19,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         void SaveEdit(TGridEntity entity);
         void SaveNew();
         void Cancel();
+
+        void ReloadData();
     }
 }

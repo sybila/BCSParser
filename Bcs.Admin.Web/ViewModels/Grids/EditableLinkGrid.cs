@@ -53,7 +53,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         public void Delete(TGridEntity entity)
         {
             facade.Unlink(entity.IntermediateEntityId ?? -1);
-            DataSet.RequestRefresh(true);
+            ReloadData();
         }
 
         public void Cancel()
@@ -66,14 +66,14 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         {
             facade.CreateAndLink(NewRow, ParentEntityId);
             NewRow = null;
-            DataSet.RequestRefresh(true);
+            ReloadData();
         }
 
         public void SaveEdit(TGridEntity entity)
         {
             facade.Edit(entity);
             DataSet.RowEditOptions.EditRowId = null;
-            DataSet.RequestRefresh(true);
+            ReloadData();
         }
 
         public void Link()
@@ -83,7 +83,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             if (associateId == null) return;
 
             facade.Link(new EntityLinkDto {DetailId= ParentEntityId, AssociatedId= associateId.Value});
-            DataSet.RequestRefresh(true);
+            ReloadData();
         }
 
         public override Task Init()
@@ -105,8 +105,12 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public override Task Load()
         {
-            DataSet.OnLoadingData = options => facade.GetData(options, new IdFilter { Id = ParentEntityId });
             return base.Load();
+        }
+
+        public void ReloadData()
+        {
+            facade.FillDataSet(DataSet, new IdFilter { Id = ParentEntityId });
         }
     }
 }

@@ -23,8 +23,8 @@ namespace BcsResolver.Syntax.Parser
 
         public override string ToDisplayString()
         {
-            string left = string.Join("+", LeftSideReactants.Select(r => r.ToDisplayString()));
-            string right = string.Join("+", RightSideReactants.Select(r => r.ToDisplayString()));
+            string left = string.Join(" + ", LeftSideReactants.Select(r => r.ToDisplayString()));
+            string right = string.Join(" + ", RightSideReactants.Select(r => r.ToDisplayString()));
 
             return $"{left}{ReactionDirection.ToDisplayString()}{right}";
         }

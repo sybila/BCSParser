@@ -115,7 +115,7 @@ namespace BcsResolver.Tests.Helpers
 
         public static BcsComplexSymbol CreateThreePartComplex(List<BcsLocationSymbol> withLocations = null)
         {
-            var namedLocationSymbols = withLocations.OfType<BcsNamedSymbol>().ToList();
+            var namedLocationSymbols = withLocations?.OfType<BcsNamedSymbol>().ToList() ?? new List<BcsNamedSymbol>();
 
             return new BcsComplexSymbol
             {

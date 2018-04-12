@@ -22,8 +22,6 @@ namespace BcsResolver.Syntax.Tokenizer
         Dot,
         [Description(",")]
         Comma,
-        [Description("+")]
-        Interaction,
         [Description("<=")]
         ReactionDirectionLeft,
         [Description("=>")]

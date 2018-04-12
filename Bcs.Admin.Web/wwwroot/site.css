@@ -3,6 +3,9 @@
     margin-bottom: 10px;
 }
 
+div.code-editor{
+    height:auto;
+}
 
 div.col-panel {
     display: inline-flex;

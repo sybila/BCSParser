@@ -6,5 +6,6 @@ namespace BcsAdmin.BL.Dto
     {
         public TextRange Range { get; set; }
         public string CssClass { get; set; }
+        public string TooltipText { get; set; }
     }
 }

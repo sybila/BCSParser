@@ -129,7 +129,7 @@ namespace BcsResolver.Tests
         [TestMethod]
         public void Parser_ReactionBothSides_Valid()
         {
-            var tree = BcsSyntaxFactory.ParseReaction("2.0 FRS::cyt+ 4R::cyt<=> 1.55FRSR::cyt");
+            var tree = BcsSyntaxFactory.ParseReaction("2.0 FRS::cyt + 4R::cyt<=> 1.55FRSR::cyt");
 
             var firstReactantLeft = tree.AssertCast<BcsReactionNode>().LeftSideReactants.AssertCount(2).ElementAt(0);
             var secondReactantLeft = tree.AssertCast<BcsReactionNode>().LeftSideReactants.AssertCount(2).ElementAt(1);
@@ -147,7 +147,7 @@ namespace BcsResolver.Tests
             Assert.AreEqual("R", r2Identifier.Name);
             Assert.AreEqual("FRSR", l1Identifier.Name);
 
-            Assert.AreEqual("2FRS::cyt+4R::cyt<=>1.55FRSR::cyt", tree.ToDisplayString());
+            Assert.AreEqual("2FRS::cyt + 4R::cyt<=>1.55FRSR::cyt", tree.ToDisplayString());
         }
 
         [TestMethod]

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BcsResolver.Extensions;
-using BcsResolver.File;
 using BcsResolver.SemanticModel.Tree;
 
 namespace BcsResolver.SemanticModel.SymbolTree

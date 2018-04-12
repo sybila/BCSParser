@@ -15,35 +15,13 @@ namespace BcsAdmin.BL
 {
     public static class Extensions
     {
-        public static GridViewDataSetLoadedData<TListDTO> GetData<TListDTO, TFilterDTO>(this IListFacade<TListDTO, TFilterDTO> facade, IGridViewDataSetLoadOptions loadOptions, TFilterDTO filter)
+        public static void FillDataSet<TListDTO, TFilterDTO>(this IListFacade<TListDTO, TFilterDTO> facade, GridViewDataSet<TListDTO> dataSet, TFilterDTO filter)
         {
             using (facade.UnitOfWorkProvider.Create())
             {
                 var query = facade.QueryFactory();
                 query.Filter = filter;
-                return (GridViewDataSetLoadedData<TListDTO>)query.CastTo<AppQuery<TListDTO>>().Execute(loadOptions);
-            }
-        }
-
-        public static GridViewDataSetLoadedData<TGridEntity> GetData<TGridEntity>(this IGridFacade<TGridEntity> facade, IGridViewDataSetLoadOptions loadOptions, IdFilter filter)
-            where TGridEntity : IEntity<int>
-        {
-            using (facade.UnitOfWorkProvider.Create())
-            {
-                var query = facade.QueryFactory();
-                query.Filter = filter;
-                return (GridViewDataSetLoadedData<TGridEntity>)query.CastTo<AppQuery<TGridEntity>>().Execute(loadOptions);
-            }
-        }
-
-        public static GridViewDataSetLoadedData<TGridEntity> GetData<TGridEntity>(this ILinkGridFacade<TGridEntity> facade, IGridViewDataSetLoadOptions loadOptions, IdFilter filter)
-           where TGridEntity : IEntity<int>
-        {
-            using (facade.UnitOfWorkProvider.Create())
-            {
-                var query = facade.QueryFactory();
-                query.Filter = filter;
-                return (GridViewDataSetLoadedData<TGridEntity>)query.CastTo<AppQuery<TGridEntity>>().Execute(loadOptions);
+                dataSet.LoadFromQuery(query);
             }
         }
 

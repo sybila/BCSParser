@@ -15,9 +15,9 @@ namespace BcsAdmin.BL.Queries
         {
         }
 
-        public virtual GridViewDataSetLoadedData Execute(IGridViewDataSetLoadOptions loadOptions)
+        public override IList<TResult> Execute()
         {
-            return loadOptions.GetDataFromQueryable(GetQueryable());
+            return base.Execute();
         }
     }
 }

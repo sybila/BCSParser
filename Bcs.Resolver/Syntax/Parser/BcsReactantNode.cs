@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using BcsResolver.Syntax.Tokenizer;
 
 namespace BcsResolver.Syntax.Parser
@@ -19,7 +20,7 @@ namespace BcsResolver.Syntax.Parser
 
         public override string ToDisplayString()
         {
-            return $"{Coeficient}{Complex.ToDisplayString()}";
+            return $"{Coeficient.ToString(CultureInfo.InvariantCulture)}{Complex.ToDisplayString()}";
         }
     }
 }
