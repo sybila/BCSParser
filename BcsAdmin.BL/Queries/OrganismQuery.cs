@@ -1,31 +1,35 @@
-﻿using BcsAdmin.DAL.Models;
+﻿using BcsAdmin.DAL.Api;
 using System.Linq;
 using Riganti.Utils.Infrastructure.Core;
 using BcsAdmin.BL.Dto;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class OrganismQuery : IdFilteredQuery<EntityOrganismDto>
+    public class OrganismQuery : ManyToManyQuery<ApiEntity, ApiOrganism, EntityOrganismDto>
     {
-        public OrganismQuery(IUnitOfWorkProvider unitOfWorkProvider)
-            : base(unitOfWorkProvider)
+        public OrganismQuery(IRepository<ApiEntity, int> parentEntityRepository, 
+            IRepository<ApiOrganism, int> associatedEntityRepository) 
+            : base(parentEntityRepository, associatedEntityRepository)
         {
         }
 
-        protected override IQueryable<EntityOrganismDto> GetQueryable()
+        protected override IList<int> GetAssocitedEntityIds(ApiEntity parent)
         {
-            var context = Context.CastTo<AppDbContext>();
-            context.EpEntity.Load();
-            context.EpOrganism.Load();
-            return context.EpEntityOrganism.Where(e => e.EntityId == Filter.Id).Select(e => new EntityOrganismDto
-            {
-                Id = e.Organism.Id,
-                Name = e.Organism.Name,
-                Code = e.Organism.Code,
-                GeneGroup = e.GeneGroup,
-                IntermediateEntityId = e.Id
-            });
+            return parent.Organisms;
+        }
+
+        protected override IQueryable<EntityOrganismDto> ProcessEntities(IQueryable<ApiOrganism> q, ApiEntity parentEntity)
+        {
+            return q.Select(e => new EntityOrganismDto
+             {
+                 Id = e.Id,
+                 Name = e.Name,
+                 Code = "",
+                 GeneGroup = "",
+                 IntermediateEntityId = parentEntity.Id
+             });
         }
     }
 }

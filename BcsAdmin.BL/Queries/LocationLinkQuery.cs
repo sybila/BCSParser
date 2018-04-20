@@ -1,27 +1,34 @@
-﻿using BcsAdmin.DAL.Models;
+﻿using BcsAdmin.DAL.Api;
 using System.Linq;
 using Riganti.Utils.Infrastructure.Core;
 using BcsAdmin.BL.Dto;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class LocationLinkQuery : IdFilteredQuery<LocationLinkDto>
+    public class LocationLinkQuery : ManyToManyQuery<ApiEntity, ApiEntity, LocationLinkDto>
     {
-        public LocationLinkQuery(IUnitOfWorkProvider unitOfWorkProvider)
-            : base(unitOfWorkProvider)
+        public LocationLinkQuery(
+            IRepository<ApiEntity, int> parentEntityRepository,
+            IRepository<ApiEntity, int> associatedEntityRepository) 
+            : base(parentEntityRepository, associatedEntityRepository)
         {
         }
 
-        protected override IQueryable<LocationLinkDto> GetQueryable()
+        protected override IList<int> GetAssocitedEntityIds(ApiEntity parent)
         {
-            var context = Context.CastTo<AppDbContext>();
-            context.EpEntity.Load();
-            return context.EpEntityLocation.Where(e => e.Entity.Id == Filter.Id).Select(e => new LocationLinkDto
+            return parent.Compartments;
+        }
+
+        protected override IQueryable<LocationLinkDto> ProcessEntities(IQueryable<ApiEntity> q, ApiEntity parentEntity)
+        {
+            return q.Select(e => new LocationLinkDto
             {
-                Id = e.Location.Id,
-                Code = e.Location.Code,
-                Name = e.Location.Name
+                Id = e.Id,
+                Code = e.Code,
+                Name = e.Name,
+                IntermediateEntityId = parentEntity.Id
             });
         }
     }

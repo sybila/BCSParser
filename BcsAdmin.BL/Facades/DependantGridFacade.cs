@@ -11,53 +11,40 @@ using BcsAdmin.BL.Repositories;
 using AutoMapper;
 using DotVVM.Framework.Controls;
 using Riganti.Utils.Infrastructure;
+using System.Threading.Tasks;
 
 namespace BcsAdmin.BL.Facades
 {
-    public class DependantLinkGridFacade<TIntermediateEntity, TEntity, TEntityDto> : FacadeBase, ILinkGridFacade<TEntityDto>
-        where TIntermediateEntity : IEntity<int>
+    public abstract class DependantLinkGridFacade<TParentEntity, TEntity, TEntityDto> : FacadeBase, ILinkGridFacade<TEntityDto>
+        where TParentEntity : IEntity<int>
         where TEntity : IEntity<int>
         where TEntityDto : IEntity<int>, new()
     {
         public Func<IFilteredQuery<TEntityDto, IdFilter>> QueryFactory { get; set; }
 
         private readonly IRepository<TEntity, int> associatedEntityRepository;
-        private readonly IRepository<TIntermediateEntity, int> intermediateRepository;
+        private readonly IRepository<TParentEntity, int> parentRepository;
         private readonly IMapper mapper;
 
         public DependantLinkGridFacade(
-            IRepository<TIntermediateEntity, int> intermediateRepository,
+            IRepository<TParentEntity, int> parentRepository,
             IRepository<TEntity, int> associatedEntityRepository,
-            Func<IdFilteredQuery<TEntityDto>> queryFactory,
+            Func<ManyToManyQuery<TParentEntity, TEntity, TEntityDto>> queryFactory,
             IUnitOfWorkProvider unitOfWorkProvider,
             IMapper mapper)
         {
             UnitOfWorkProvider = unitOfWorkProvider;
             this.associatedEntityRepository = associatedEntityRepository;
-            this.intermediateRepository = intermediateRepository;
+            this.parentRepository = parentRepository;
             this.QueryFactory = queryFactory;
             this.mapper = mapper;
         }
 
-        public void FillDataSet(GridViewDataSet<TEntityDto> dataSet, IdFilter filter)
+        public async Task FillDataSetAsync(GridViewDataSet<TEntityDto> dataSet, IdFilter filter)
         {
-            using (UnitOfWorkProvider.Create())
-            {
-                var query = QueryFactory();
-                query.Filter = filter;
-                dataSet.LoadFromQuery(query);
-            }
-        }
-
-        public IEnumerable<TEntityDto> GetList(IdFilter filter, Action<IFilteredQuery<TEntityDto, IdFilter>> queryConfiguration = null)
-        {
-            using (UnitOfWorkProvider.Create())
-            {
-                var query = QueryFactory();
-                query.Filter = filter;
-                queryConfiguration?.Invoke(query);
-                return query.Execute();
-            }
+            var query = QueryFactory();
+            query.Filter = filter;
+            await dataSet.LoadFromQueryAsync(query);
         }
 
         public TEntityDto CreateAssociated()
@@ -69,9 +56,12 @@ namespace BcsAdmin.BL.Facades
         {
             using (var uow = UnitOfWorkProvider.Create())
             {
-                var intermediate = intermediateRepository.InitializeNew();
-                mapper.Map(link, intermediate);
-                intermediateRepository.Insert(intermediate);
+                var parentEntity = parentRepository.GetById(link.DetailId);
+
+                LinkCore(parentEntity, link.AssociatedId);
+
+                parentRepository.Update(parentEntity);
+
                 uow.Commit();
             }
         }
@@ -102,13 +92,21 @@ namespace BcsAdmin.BL.Facades
             }
         }
 
-        public void Unlink(int intermediateId)
+        public void Unlink(EntityLinkDto link)
         {
             using (var uow = UnitOfWorkProvider.Create())
             {
-                intermediateRepository.Delete(intermediateId);
+                var parentEntity = parentRepository.GetById(link.DetailId);
+
+                UnlinkCore(parentEntity, link.AssociatedId);
+
+                parentRepository.Update(parentEntity);
+
                 uow.Commit();
             }
         }
+
+        protected abstract void UnlinkCore(TParentEntity parentEntity, int associatedId);
+        internal abstract void LinkCore(TParentEntity parentEntity, int associatedId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using DotVVM.Framework.Controls;
 using DotVVM.Framework.ViewModel;
 using Riganti.Utils.Infrastructure.Core;
+using System.Threading.Tasks;
 
 namespace Bcs.Admin.Web.ViewModels.Grids
 {
@@ -14,12 +15,12 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         TGridEntity NewRow { get; }
 
         void Edit(TGridEntity entity);
-        void Delete(TGridEntity entity);
+        Task DeleteAsync(TGridEntity entity);
         void Add();
-        void SaveEdit(TGridEntity entity);
-        void SaveNew();
+        Task SaveEditAsync(TGridEntity entity);
+        Task SaveNewAsync();
         void Cancel();
 
-        void ReloadData();
+        Task ReloadDataAsync();
     }
 }

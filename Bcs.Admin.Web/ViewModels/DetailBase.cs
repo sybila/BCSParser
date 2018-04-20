@@ -39,10 +39,6 @@ namespace Bcs.Admin.Web.ViewModels
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        [Display(GroupName = "Fields", Name = "Xml for visualisation")]
-        [DataType(DataType.MultilineText)]
-        public string VisualisationXml { get; set; }
-
         [Display(GroupName = "Fields", Name = "Active")]
         public bool Active { get; set; }
 
@@ -82,20 +78,20 @@ namespace Bcs.Admin.Web.ViewModels
         {
             Classifications.ParentEntityId = Id;
             await Classifications.Init();
-            Classifications.ReloadData();
+            await Classifications.ReloadDataAsync();
 
             Organisms.ParentEntityId = Id;
             await Organisms.Init();
-            Organisms.ReloadData();
+            await Organisms.ReloadDataAsync();
 
             Locations.ParentEntityId = Id;
             await Locations.Init();
-             Locations.ReloadData();
+            await Locations.ReloadDataAsync();
             Locations.EntitySearchSelect.Filter.AllowedEntityTypes = new[] { HierarchyType.Compartment };
 
             Notes.ParentEntityId = Id;
             await Notes.Init();
-            Notes.ReloadData();
+            await Notes.ReloadDataAsync();
         }
 
         public virtual void CancelAllActions()

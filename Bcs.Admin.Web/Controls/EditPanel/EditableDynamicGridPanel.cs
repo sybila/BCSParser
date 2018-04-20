@@ -186,7 +186,7 @@ namespace Bcs.Admin.Web.Controls.EditPanel
 
             var saveButton = CreateIconButton("save", "Save", SaveNewCommand);
             saveButton.SetValue(Validation.EnabledProperty, true);
-            saveButton.SetBinding(Validation.TargetProperty, ControlCreationHelper.CreateValueBinding(context, this.GetDataContextType(), "_this.NewRow"));
+            saveButton.SetBinding(Validation.TargetProperty, NewEntityDto);
 
             var newForm = new HtmlGenericControl("div");
             newForm.SetBinding(VisibleProperty, NewEntityFormVisible);

@@ -1,32 +1,24 @@
-﻿using BcsAdmin.DAL.Models;
+﻿using BcsAdmin.DAL.Api;
 using System.Linq;
 using Riganti.Utils.Infrastructure.Core;
 using BcsAdmin.BL.Dto;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class NoteQuery : IdFilteredQuery<EntityNoteDto>
+    public class NoteQuery : OneToManyQuery<ApiEntity, EntityNoteDto>
     {
-        public NoteQuery(IUnitOfWorkProvider unitOfWorkProvider)
-            : base(unitOfWorkProvider)
+        public NoteQuery(IRepository<ApiEntity, int> parentEntityRepository) 
+            : base(parentEntityRepository)
         {
         }
 
-        protected override IQueryable<EntityNoteDto> GetQueryable()
+        protected override Task<IQueryable<EntityNoteDto>> GetQueriableAsync(CancellationToken cancellationToken)
         {
-            var context = Context.CastTo<AppDbContext>();
-            context.EpUser.Load();
-            context.EpEntity.Load();
-            return context.EpEntityNote.Where(e => e.Entity.Id == Filter.Id).Select(e => new EntityNoteDto
-            {
-                Id = e.Id,
-                Text = e.Text,
-                Inserted = e.Inserted,
-                Updated = e.Updated,
-                UserName = e.User.Name,
-                IntermediateEntityId = e.Id
-            });
+            //no api
+            return Task.FromResult(Enumerable.Empty<EntityNoteDto>().AsQueryable());
         }
     }
 }

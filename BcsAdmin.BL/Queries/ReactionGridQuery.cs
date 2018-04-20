@@ -2,42 +2,40 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Filters;
+using BcsAdmin.DAL.Api;
 using BcsAdmin.DAL.Models;
 using Riganti.Utils.Infrastructure.Core;
 using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class ReactionGridQuery : AppQuery<ReactionRowDto>, IFilteredQuery<ReactionRowDto, ReactionFilter>
+    public class ReactionGridQuery : AppApiQuery<ReactionRowDto>, IFilteredQuery<ReactionRowDto, ReactionFilter>
     {
         private readonly IMapper mapper;
 
         public ReactionFilter Filter { get; set; }
 
-        public ReactionGridQuery(IUnitOfWorkProvider unitOfWorkProvider, IMapper mapper)
-            : base(unitOfWorkProvider)
+        public ReactionGridQuery(IMapper mapper)
+            : base()
         {
             this.mapper = mapper;
         }
 
-        protected override IQueryable<ReactionRowDto> GetQueryable()
+        protected async override Task<IQueryable<ReactionRowDto>> GetQueriableAsync(CancellationToken cancellationToken)
         {
-            var queriable =
-                  Context.CastTo<AppDbContext>()
-                  .EpReaction
-                  .AsQueryable();
+            var queriable = await GetWebDataAsync<ApiRule>(cancellationToken, "rules");
 
             if (!string.IsNullOrWhiteSpace(Filter?.SearchText))
             {
                 if (!string.IsNullOrWhiteSpace(Filter.SearchText))
                 {
-                    queriable = queriable.Where(e
-                        => (e.Code != null ? e.Code : "").IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1
-                        || (e.Name != null ? e.Name : "").IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1);
+                    queriable = queriable.Where(e => (e.Name != null ? e.Name : "").IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1);
                 }
             }
 

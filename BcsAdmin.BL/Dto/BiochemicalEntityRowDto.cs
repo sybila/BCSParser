@@ -25,5 +25,9 @@ namespace Bcs.Admin.BL.Dto
         public List<string> Children { get; set; }
 
         public List<string> Locations { get; set; }
+
+        public IList<int> ChildIds { get; set; }
+
+        public IList<int> LocationIds { get; set; }
     }
 }

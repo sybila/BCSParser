@@ -1,6 +1,6 @@
 ﻿using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Queries;
-using BcsAdmin.DAL.Models;
+using BcsAdmin.DAL.Api;
 using Riganti.Utils.Infrastructure.Core;
 using Riganti.Utils.Infrastructure.Services.Facades;
 using System;
@@ -15,23 +15,20 @@ namespace BcsAdmin.BL.Facades
 {
     public class AdvancedEntitySearchFacade : FacadeBase
     {
-        private readonly Func<IdFilteredQuery<EntityUsageDto>> entityUsagesQuery;
+        private readonly Func<OneToManyQuery<ApiEntity, EntityUsageDto>> entityUsagesQuery;
 
-        public AdvancedEntitySearchFacade(IUnitOfWorkProvider unitOfWorkProvider, Func<IdFilteredQuery<EntityUsageDto>> entityUsagesQuery)
+        public AdvancedEntitySearchFacade(IUnitOfWorkProvider unitOfWorkProvider, Func<OneToManyQuery<ApiEntity, EntityUsageDto>> entityUsagesQuery)
         {
             UnitOfWorkProvider = unitOfWorkProvider;
             this.entityUsagesQuery = entityUsagesQuery;
         }
 
-        public List<string> GetEntityUsageList(int entityId)
+        public async System.Threading.Tasks.Task<List<string>> GetEntityUsageListAsync(int entityId)
         {
-            using (UnitOfWorkProvider.Create())
-            {
-                var query = entityUsagesQuery();
-                query.Filter = new Filters.IdFilter { Id = entityId };
-                var usagesList = query.Execute();
-                return usagesList.Select(u => $"{u.CategoryType}: {u.FullName}").ToList();
-            }
+            var query = entityUsagesQuery();
+            query.Filter = new Filters.IdFilter { Id = entityId };
+            var usagesList = await query.ExecuteAsync();
+            return usagesList.Select(u => $"{u.CategoryType}: {u.FullName}").ToList();
         }
 
         public void FillSimilarEntitySearch(GridViewDataSet<SimilarEntityDto> dataSet, SimilarEntitySearchFilter similarEntitySearchFilter)

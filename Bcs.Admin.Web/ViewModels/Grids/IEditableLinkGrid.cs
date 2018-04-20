@@ -17,6 +17,6 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         SearchSelect EntitySearchSelect { get; set; }
         
-        void Link();
+        Task LinkAsync();
     }
 }

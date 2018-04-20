@@ -18,6 +18,7 @@ using System.Text;
 using System.Reflection;
 using System.Linq;
 using Bcs.Admin.BL.Dto;
+using BcsAdmin.DAL.Api;
 
 namespace BcsAdmin.BL
 {
@@ -25,56 +26,41 @@ namespace BcsAdmin.BL
     {
         public static void RegisterMapperBL(this IMapperConfigurationExpression cfg)
         {
-            cfg.CreateMap<EpReaction, ReactionRowDto>();
-            cfg.CreateMap<EpReaction, BiochemicalReactionDetailDto>();
-            cfg.CreateMap<BiochemicalReactionDetailDto, EpReaction> ();
+            cfg.CreateMap<ApiRule, ReactionRowDto>();
+            cfg.CreateMap<ApiRule, BiochemicalReactionDetailDto>();
+            cfg.CreateMap<BiochemicalReactionDetailDto, ApiRule> ();
 
-            cfg.CreateMap<EpClassification, ClassificationDto>();
+            cfg.CreateMap<ApiClassification, ClassificationDto>();
             cfg.CreateMap<EpEntityNote, EntityNoteDto>();
 
             //Entity mapped grid entities
-            cfg.CreateMap<EpEntity, ComponentLinkDto>()
-                .ForMember(t => t.HierarchyType, a => a.MapFrom(s => s.HierarchyType));
-            cfg.CreateMap<ComponentLinkDto, EpEntity>()
+            cfg.CreateMap<ApiEntity, ComponentLinkDto>();
+            cfg.CreateMap<ComponentLinkDto, ApiEntity>()
                 .ForMember(t => t.Code, m => m.MapFrom(s => s.Code))
                 .ForMember(t => t.Name, m => m.MapFrom(s => s.Name))
-                .ForMember(t => t.HierarchyType, m => m.MapFrom(s => s.HierarchyType))
+                .ForMember(t => t.Type, m => m.MapFrom(s => s.HierarchyType))
                 .ForMember(t => t.Id, m => m.MapFrom(s => s.Id))
                 .ForAllOtherMembers(a => a.Ignore());
-            cfg.CreateMap<EpEntity, LocationLinkDto>()
+            cfg.CreateMap<ApiEntity, LocationLinkDto>()
                 .ForMember(m => m.IntermediateEntityId, a => a.Ignore());
-            cfg.CreateMap<LocationLinkDto, EpEntity>()
+            cfg.CreateMap<LocationLinkDto, ApiEntity>()
                 .ForMember(t => t.Code, m => m.MapFrom(s => s.Code))
                 .ForMember(t => t.Name, m => m.MapFrom(s => s.Name))
-                .ForMember(t => t.HierarchyType, m => m.MapFrom(s => (int)Dto.HierarchyType.Compartment))
+                .ForMember(t => t.Type, m => m.MapFrom(s => (int)Dto.HierarchyType.Compartment))
                 .ForMember(t => t.Id, m => m.MapFrom(s => s.Id))
                 .ForAllOtherMembers(a => a.Ignore());
-            cfg.CreateMap<EpEntity, StateEntityDto>()
-                .ForMember(m => m.IntermediateEntityId, a => a.Ignore());
-            cfg.CreateMap<StateEntityDto, EpEntity>()
+            cfg.CreateMap<ApiEntity, StateEntityDto>();
+            cfg.CreateMap<StateEntityDto, ApiEntity>()
                .ForMember(t => t.Code, m => m.MapFrom(s => s.Code))
-                .ForMember(t => t.Name, m => m.MapFrom(s => s.Name))
-                .ForMember(t => t.HierarchyType, m => m.MapFrom(s => (int)Dto.HierarchyType.State))
+                .ForMember(t => t.Type, m => m.MapFrom(s => (int)Dto.HierarchyType.State))
                 .ForMember(t => t.Id, m => m.MapFrom(s => s.Id))
-                .ForMember(t => t.ParentId, m => m.MapFrom(s => s.IntermediateEntityId))
                 .ForAllOtherMembers(a => a.Ignore());
 
             //other grid entities
-            cfg.CreateMap<EpOrganism, EntityOrganismDto>()
+            cfg.CreateMap<ApiOrganism, EntityOrganismDto>()
                 .ForMember(m => m.GeneGroup, a => a.Ignore())
+                .ForMember(m => m.Code, a => a.Ignore())
                 .ForMember(m => m.IntermediateEntityId, a => a.Ignore());
-            cfg.CreateMap<EntityLinkDto, EpEntityClassification>()
-                .ForMember(s => s.ClassificationId, a => a.MapFrom(s => s.AssociatedId))
-                .ForMember(s => s.EntityId, a => a.MapFrom(s => s.DetailId));
-            cfg.CreateMap<EntityLinkDto, EpEntityComposition>()
-               .ForMember(s => s.ChildEntityId, a => a.MapFrom(s => s.AssociatedId))
-               .ForMember(s => s.ParentEntityId, a => a.MapFrom(s => s.DetailId));
-            cfg.CreateMap<EntityLinkDto, EpEntityLocation>()
-                .ForMember(s => s.ParentEntityId, a => a.MapFrom(s => s.AssociatedId))
-                .ForMember(s => s.ChildEntityId, a => a.MapFrom(s => s.DetailId));
-            cfg.CreateMap<EntityLinkDto, EpEntityOrganism>()
-                .ForMember(s=> s.EntityId, a=> a.MapFrom(s=> s.DetailId))
-                .ForMember(s => s.OrganismId, a => a.MapFrom(s => s.AssociatedId));
 
             //Entity notes
             cfg.CreateMap<EpEntityNote, EntityNoteDto>()

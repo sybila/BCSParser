@@ -1,9 +1,11 @@
 ﻿using System;
 using Riganti.Utils.Infrastructure.Core;
 using Riganti.Utils.Infrastructure.Services.Facades;
-using BcsAdmin.DAL.Models;
 using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Filters;
+using BcsAdmin.DAL.Models;
+using DotVVM.Framework.Controls;
+using System.Threading.Tasks;
 
 namespace BcsAdmin.BL.Facades
 {
@@ -14,19 +16,6 @@ namespace BcsAdmin.BL.Facades
             Func<IFilteredQuery<EntityNoteDto, IdFilter>> queryFactory,
             IRepository<EpEntityNote, int> repository,
             IEntityDTOMapper<EpEntityNote, EntityNoteDto> mapper)
-            : base(queryFactory, repository, mapper)
-        {
-            UnitOfWorkProvider = unitOfWorkProvider;
-        }
-    }
-
-    public class StateGridFacade : FilteredCrudFacadeBase<EpEntity, int, StateEntityDto, StateEntityDto, IdFilter>, IGridFacade<StateEntityDto>
-    {
-        public StateGridFacade(
-            IUnitOfWorkProvider unitOfWorkProvider,
-            Func<IFilteredQuery<StateEntityDto, IdFilter>> queryFactory, 
-            IRepository<EpEntity, int> repository, 
-            IEntityDTOMapper<EpEntity, StateEntityDto> mapper) 
             : base(queryFactory, repository, mapper)
         {
             UnitOfWorkProvider = unitOfWorkProvider;

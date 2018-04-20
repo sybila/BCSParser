@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
+using BcsAdmin.DAL.Api;
 
 namespace BcsAdmin.BL.Dto
 {
@@ -15,6 +16,6 @@ namespace BcsAdmin.BL.Dto
 
         [Required]
         public string Name { get; set; }
-        public string Type { get; set; }
+        public ApiClassificationType Type { get; set; }
     }
 }

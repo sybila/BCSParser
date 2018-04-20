@@ -1,12 +1,12 @@
 ﻿using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Queries;
-using BcsAdmin.DAL.Models;
 using Riganti.Utils.Infrastructure.Core;
 using Riganti.Utils.Infrastructure.Services.Facades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BcsAdmin.BL.Facades
 {
@@ -20,13 +20,12 @@ namespace BcsAdmin.BL.Facades
             this.entityTypeQueryFunc = entityTypeQueryFunc;
         }
 
-        public IList<string> GetEntityTypeNames()
+        public async Task<IList<string>> GetEntityTypeNames()
         {
-            using (var uow = UnitOfWorkProvider.Create())
-            {
-                var q = entityTypeQueryFunc();
-                return q.Execute();
-            }
+
+            var q = entityTypeQueryFunc();
+            return await q.ExecuteAsync();
+
         }
 
         public List<BiochemicalEntityTypeDto> GetEntityTypes()

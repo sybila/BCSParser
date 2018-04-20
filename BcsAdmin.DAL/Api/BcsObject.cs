@@ -1,4 +1,6 @@
-﻿using Riganti.Utils.Infrastructure.Core;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Riganti.Utils.Infrastructure.Core;
 using System.Collections.Generic;
 
 namespace BcsAdmin.DAL.Api
@@ -10,6 +12,8 @@ namespace BcsAdmin.DAL.Api
         public string Description { get; set; }
         public IList<int> Classifications { get; set; }
         public IList<int> Organisms { get; set; }
-        public ApiEntityStatus Status { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public ApiEntityStatus? Status { get; set; }
     }
 }

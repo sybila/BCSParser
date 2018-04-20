@@ -47,10 +47,10 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             DataSet.RowEditOptions.EditRowId = -1;
         }
 
-        public void Delete(TGridEntity entity)
+        public async Task DeleteAsync(TGridEntity entity)
         {
             facade.Delete(entity.Id);
-            ReloadData();
+            await ReloadDataAsync();
         }
 
         public void Edit(TGridEntity entity)
@@ -60,19 +60,19 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             DataSet.RowEditOptions.EditRowId = entity.Id;
         }
 
-        public void SaveNew()
+        public async Task SaveNewAsync()
         {
             facade.Save(NewRow);
             Cancel();
-            ReloadData();
+            await ReloadDataAsync();
         }
 
-        public void SaveEdit(TGridEntity entity)
+        public async Task SaveEditAsync(TGridEntity entity)
         {
             entity.IntermediateEntityId = ParentEntityId;
             facade.Save(entity);
             Cancel();
-            ReloadData();
+            await ReloadDataAsync();
         }
 
         public override Task Init()
@@ -102,9 +102,9 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             return base.PreRender();
         }
 
-        public void ReloadData()
+        public async Task ReloadDataAsync()
         {
-            facade.FillDataSet(DataSet, new IdFilter { Id = ParentEntityId });
+            await facade.FillDataSetAsync(DataSet, new IdFilter { Id = ParentEntityId });
         }
     }
 }

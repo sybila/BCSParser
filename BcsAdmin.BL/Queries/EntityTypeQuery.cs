@@ -1,27 +1,26 @@
-﻿using BcsAdmin.DAL.Models;
+﻿using BcsAdmin.DAL.Api;
 using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Riganti.Utils.Infrastructure.Core;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class EntityTypeNamesQuery : AppQuery<string>
+    public class EntityTypeNamesQuery : AppApiQuery<string>
     {
-        public EntityTypeNamesQuery(IUnitOfWorkProvider unitOfWorkProvider) 
-            : base(unitOfWorkProvider)
+        protected async override Task<IQueryable<string>> GetQueriableAsync(CancellationToken cancellationToken)
         {
-        }
+            var query = await GetWebDataAsync<ApiEntity>(cancellationToken, "entities");
 
-        protected override IQueryable<string> GetQueryable()
-        {
-            return Context.CastTo<AppDbContext>().EpEntity
-                .Select(e => e.HierarchyType)
+            return query
+                .Where(e=> e.Type.HasValue)
+                .Select(e => e.Type.Value)
                 .Distinct()
-                .Select(e=> e.ToString("F"));
-                
+                .Select(e => e.ToString("F"));
         }
     }
 }

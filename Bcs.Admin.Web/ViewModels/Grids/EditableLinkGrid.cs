@@ -50,10 +50,10 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             DataSet.RowEditOptions.EditRowId = entity.Id;
         }
 
-        public void Delete(TGridEntity entity)
+        public async Task DeleteAsync(TGridEntity entity)
         {
-            facade.Unlink(entity.IntermediateEntityId ?? -1);
-            ReloadData();
+            facade.Unlink(new EntityLinkDto { DetailId = ParentEntityId, AssociatedId = entity.Id });
+            await ReloadDataAsync();
         }
 
         public void Cancel()
@@ -62,28 +62,28 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             DataSet.RowEditOptions.EditRowId = null;
         }
 
-        public void SaveNew()
+        public async Task SaveNewAsync()
         {
             facade.CreateAndLink(NewRow, ParentEntityId);
             NewRow = null;
-            ReloadData();
+            await ReloadDataAsync();
         }
 
-        public void SaveEdit(TGridEntity entity)
+        public async Task SaveEditAsync(TGridEntity entity)
         {
             facade.Edit(entity);
             DataSet.RowEditOptions.EditRowId = null;
-            ReloadData();
+            await ReloadDataAsync();
         }
 
-        public void Link()
+        public async Task LinkAsync()
         {
             var associateId = EntitySearchSelect?.SelectedSuggestion?.Id;
 
             if (associateId == null) return;
 
             facade.Link(new EntityLinkDto {DetailId= ParentEntityId, AssociatedId= associateId.Value});
-            ReloadData();
+            await ReloadDataAsync();
         }
 
         public override Task Init()
@@ -103,14 +103,14 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             return base.Init();
         }
 
-        public override Task Load()
+        public override async Task Load()
         {
-            return base.Load();
+            await base.Load();
         }
 
-        public void ReloadData()
+        public async Task ReloadDataAsync()
         {
-            facade.FillDataSet(DataSet, new IdFilter { Id = ParentEntityId });
+            await facade.FillDataSetAsync(DataSet, new IdFilter { Id = ParentEntityId });
         }
     }
 }

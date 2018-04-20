@@ -1,35 +1,32 @@
-﻿using BcsAdmin.DAL.Models;
+﻿using BcsAdmin.DAL.Api;
 using System.Linq;
 using Riganti.Utils.Infrastructure.Core;
 using BcsAdmin.BL.Dto;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class StateEntityQuery : IdFilteredQuery<StateEntityDto>
+    public class StateEntityQuery : OneToManyQuery<ApiEntity, StateEntityDto>
     {
-        public StateEntityQuery(IUnitOfWorkProvider unitOfWorkProvider)
-            : base(unitOfWorkProvider)
+        public StateEntityQuery(IRepository<ApiEntity, int> parentEntityRepository) : base(parentEntityRepository)
         {
         }
 
-        protected override IQueryable<StateEntityDto> GetQueryable()
+        protected async override Task<IQueryable<StateEntityDto>> GetQueriableAsync(CancellationToken cancellationToken)
         {
-            var context = Context.CastTo<AppDbContext>();
-            context.EpEntity.Load();
-            context.EpEntityComposition.Load();
+            var parent = await ParentEntityRepository.GetByIdAsync(cancellationToken, Filter.Id);
 
-            var parentEntity = context.EpEntity.Find(Filter.Id);
-
-            if (parentEntity == null) { return Enumerable.Empty<StateEntityDto>().AsQueryable(); }
-
-            return context.EpEntity.Where(e => e.ParentId == parentEntity.Id).Select(e => new StateEntityDto
-            {
-                Id = e.Id,
-                Code = e.Code,
-                Name = e.Name,
-                IntermediateEntityId = null
-            });
+            return (parent?.States 
+                ??  new List<ApiState> {})
+                .Select(e => new StateEntityDto
+                {
+                    Code = e.Code,
+                    Description = e.Description
+                })
+                .AsQueryable();
         }
     }
 }

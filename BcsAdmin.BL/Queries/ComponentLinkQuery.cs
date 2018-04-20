@@ -1,35 +1,37 @@
-﻿using BcsAdmin.DAL.Models;
+﻿using BcsAdmin.DAL.Api;
 using System.Linq;
 using Riganti.Utils.Infrastructure.Core;
 using BcsAdmin.BL.Dto;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Collections.Generic;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class ComponentLinkQuery : IdFilteredQuery<ComponentLinkDto>
+    public class ComponentLinkQuery : ManyToManyQuery<ApiEntity, ApiEntity, ComponentLinkDto>
     {
-        public ComponentLinkQuery(IUnitOfWorkProvider unitOfWorkProvider)
-            : base(unitOfWorkProvider)
+        public ComponentLinkQuery(
+            IRepository<ApiEntity, int> parentEntityRepository,
+            IRepository<ApiEntity, int> associatedEntityRepository) 
+            : base(parentEntityRepository, associatedEntityRepository)
         {
         }
 
-        protected override IQueryable<ComponentLinkDto> GetQueryable()
+        protected override IList<int> GetAssocitedEntityIds(ApiEntity parent)
         {
-            var context = Context.CastTo<AppDbContext>();
-            context.EpEntity.Load();
-            context.EpEntityComposition.Load();
+            return parent.Children;
+        }
 
-            var parentEntity = context.EpEntity.Find(Filter.Id);
-
-            if (parentEntity == null) { return Enumerable.Empty<ComponentLinkDto>().AsQueryable(); }
-
-            return context.EpEntityComposition.Where(e => e.ComposedEntity.Id == Filter.Id).Select(e => new ComponentLinkDto
+        protected override IQueryable<ComponentLinkDto> ProcessEntities(IQueryable<ApiEntity> q, ApiEntity parentEntity)
+        {
+            return q.Select(e => new ComponentLinkDto
             {
-                Id = e.Component.Id,
-                Code = e.Component.Code,
-                HierarchyType = (int)e.Component.HierarchyType,
-                Name = e.Component.Name,
-                IntermediateEntityId = e.Id
+                Id = e.Id,
+                Code = e.Code,
+                HierarchyType = (int)e.Type,
+                Name = e.Name,
+                IntermediateEntityId = parentEntity.Id
             });
         }
     }

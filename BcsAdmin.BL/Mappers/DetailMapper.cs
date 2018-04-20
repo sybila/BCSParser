@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BcsAdmin.BL.Dto;
+using BcsAdmin.DAL.Api;
 using BcsAdmin.DAL.Models;
 using Riganti.Utils.Infrastructure.Services.Facades;
 using System;
@@ -9,7 +10,7 @@ using System.Text;
 
 namespace BcsAdmin.BL.Mappers
 {
-    public class DetailMapper : IEntityDTOMapper<EpEntity, BiochemicalEntityDetailDto>
+    public class DetailMapper : IEntityDTOMapper<ApiEntity, BiochemicalEntityDetailDto>
     {
         private readonly IMapper mapper;
 
@@ -18,42 +19,31 @@ namespace BcsAdmin.BL.Mappers
             this.mapper = mapper;
         }
 
-        public BiochemicalEntityDetailDto MapToDTO(EpEntity entity)
+        public BiochemicalEntityDetailDto MapToDTO(ApiEntity entity)
         {
             return new BiochemicalEntityDetailDto
             {
                 Id = entity.Id,
                 Code = entity.Code,
                 Name = entity.Name,
-                Active = entity.Active == 0,
                 Description = entity.Description,
-                SelectedHierarchyType = (int)entity.HierarchyType,
-                VisualisationXml = entity.VisualisationXml
-
+                SelectedHierarchyType = (int)entity.Type,
             };
         }
 
-        public EpEntity MapToEntity(BiochemicalEntityDetailDto source)
+        public ApiEntity MapToEntity(BiochemicalEntityDetailDto source)
         {
-            var target = new EpEntity();
+            var target = new ApiEntity();
             PopulateEntity(source, target);
             return target;
         }
 
-        public void PopulateEntity(BiochemicalEntityDetailDto source, EpEntity target)
+        public void PopulateEntity(BiochemicalEntityDetailDto source, ApiEntity target)
         {
-            target.Active = !source.Active ? (int?)null : 1;
             target.Code = source.Code;
             target.Name = source.Name;
             target.Description = source.Description;
-            target.HierarchyType = (DAL.Models.HierarchyType)source.SelectedHierarchyType;
-            target.VisualisationXml = source.VisualisationXml;
-            target.Type = 
-                source.SelectedHierarchyType == 0
-                ? "state"
-                : "entity";
-
-
+            target.Type = (DAL.Api.ApiEntityType)source.SelectedHierarchyType;
         }
     }
 }

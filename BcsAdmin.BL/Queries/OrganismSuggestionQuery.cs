@@ -1,47 +1,37 @@
-﻿using BcsAdmin.DAL.Models;
+﻿using BcsAdmin.DAL.Api;
 using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 using System;
 using System.Linq;
 using Riganti.Utils.Infrastructure.Core;
 using BcsAdmin.BL.Filters;
 using BcsAdmin.BL.Dto;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class OrganismSuggestionQuery : EntityFrameworkQuery<SuggestionDto>, IFilteredQuery<SuggestionDto, SuggestionFilter>
+    public class OrganismSuggestionQuery : AppApiQuery<SuggestionDto>, IFilteredQuery<SuggestionDto, SuggestionFilter>
     {
         public SuggestionFilter Filter { get; set; }
 
-        public OrganismSuggestionQuery(IUnitOfWorkProvider unitOfWorkProvider)
-            : base(unitOfWorkProvider)
+        protected async override Task<IQueryable<SuggestionDto>> GetQueriableAsync(CancellationToken cancellationToken)
         {
-        }
-
-        protected override IQueryable<SuggestionDto> GetQueryable()
-        {
-            var context = Context.CastTo<AppDbContext>();
-
-            var queriable =
-                    context
-                    .EpOrganism
-                    .AsQueryable();
+            var queriable = await GetWebDataAsync<ApiOrganism>(cancellationToken, "organisms");
 
             //FIXME null resistant
             if (!string.IsNullOrWhiteSpace(Filter.SearchText))
             {
-                queriable = queriable.Where(e
-                    => e.Code.IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1
-                    || e.Name.IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1);
+                queriable = queriable.Where(e => (e.Name ?? "").IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1);
             }
 
             return queriable
-                .OrderBy(e => e.Code)
+                .OrderBy(e => e.Name)
                 .Take(10)
                 .Select(e => new SuggestionDto
                 {
                     Id = e.Id,
-                    Description = e.Name,
-                    Name = e.Code
+                    Description = "",
+                    Name = e.Name
                 });
         }
     }

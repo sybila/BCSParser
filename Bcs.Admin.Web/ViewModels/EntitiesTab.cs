@@ -27,18 +27,19 @@ namespace Bcs.Admin.Web.ViewModels
             this.listFacade = listFacade;
         }
 
-        public void Refresh(bool goTofirstPage = false)
+        public async Task RefreshAsync(bool goTofirstPage = false)
         {
             if (goTofirstPage)
             {
                 DataSet.GoToFirstPage();
             }
-            ReloadData();
+            await ReloadDataAsync();
         }
 
-        private void ReloadData()
+        private async Task ReloadDataAsync()
         {
-            listFacade.FillDataSet(DataSet, Filter);
+            await listFacade.FillDataSetAsync(DataSet, Filter);
+            DataSet.IsRefreshRequired = false;
         }
 
         public override Task Init()
@@ -57,13 +58,13 @@ namespace Bcs.Admin.Web.ViewModels
             return base.Init();
         }
 
-        public override Task Load()
+        public async override Task Load()
         {
-            if (!Context.IsPostBack)
-            {
-                ReloadData();
-            }
-            return base.Load();
+            //if (!Context.IsPostBack)
+            //{
+                await ReloadDataAsync();
+            //}
+            await base.Load();
         }
     }
 
@@ -91,10 +92,10 @@ namespace Bcs.Admin.Web.ViewModels
             Filter = new BiochemicalEntityFilter();
         }
 
-        public override Task Init()
+        public async override Task Init()
         {
-            EntityTypes = basicListFacade.GetEntityTypeNames();
-            return base.Init();
+            EntityTypes = await basicListFacade.GetEntityTypeNames();
+            await base.Init();
         }
     }
 }

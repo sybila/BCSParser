@@ -69,7 +69,7 @@ namespace Bcs.Admin.Web.ViewModels
                 ? Id
                 : 0;
             await Components.Init();
-            Components.ReloadData();
+            await Components.ReloadDataAsync();
             Components.EntitySearchSelect.Filter.AllowedEntityTypes =
                 AllowedChildHierarchyTypes
                 .Select(t => (HierarchyType)t.Id)
@@ -80,7 +80,7 @@ namespace Bcs.Admin.Web.ViewModels
               ? Id
               : 0;
             await States.Init();
-            States.ReloadData();
+            await States.ReloadDataAsync();
 
             await base.PoputateGridsAsync();
         }
@@ -94,7 +94,7 @@ namespace Bcs.Admin.Web.ViewModels
 
         public async Task AskDelete()
         {
-            var usages = usageFacade.GetEntityUsageList(Id);
+            var usages = await usageFacade.GetEntityUsageListAsync(Id);
 
             if (usages.Count > 0)
             {

@@ -10,31 +10,32 @@ using BcsAdmin.BL.Facades;
 using Riganti.Utils.Infrastructure;
 using BcsAdmin.BL.Queries;
 using BcsAdmin.BL.Filters;
+using System.Threading.Tasks;
 
 namespace BcsAdmin.BL
 {
     public static class Extensions
     {
-        public static void FillDataSet<TListDTO, TFilterDTO>(this IListFacade<TListDTO, TFilterDTO> facade, GridViewDataSet<TListDTO> dataSet, TFilterDTO filter)
+        public async static Task LoadFromQueryAsync<T>(this GridViewDataSet<T> dataSet, IQuery<T> query)
         {
-            using (facade.UnitOfWorkProvider.Create())
+            query.Skip = dataSet.PagingOptions.PageIndex * dataSet.PagingOptions.PageSize;
+            query.Take = dataSet.PagingOptions.PageSize;
+            query.ClearSortCriteria();
+
+            if (!string.IsNullOrEmpty(dataSet.SortingOptions.SortExpression))
             {
-                var query = facade.QueryFactory();
-                query.Filter = filter;
-                dataSet.LoadFromQuery(query);
+                query.AddSortCriteria(dataSet.SortingOptions.SortExpression, dataSet.SortingOptions.SortDescending ? SortDirection.Descending : SortDirection.Ascending);
             }
+
+            dataSet.PagingOptions.TotalItemsCount = await query.GetTotalRowCountAsync();
+            dataSet.Items = await query.ExecuteAsync();
         }
 
-        public static NextExpressionIncludeCollectionDefinition<TEntity, TResultList, TResult, TNextResult> Then<TEntity, TResultList, TResult, TNextResult>(
-            this IChainableIncludeDefinition<TEntity, TResultList> target,
-            Expression<Func<TResult, TNextResult>> expression
-        )
-             where TEntity : class
-             where TResultList : class, IEnumerable<TResult>
-             where TResult : class
-             where TNextResult : class
+        public async static Task FillDataSetAsync<TListDTO, TFilterDTO>(this ICrudFilteredListFacade<TListDTO, TFilterDTO> facade, GridViewDataSet<TListDTO> dataSet, TFilterDTO filter)
         {
-            return new NextExpressionIncludeCollectionDefinition<TEntity, TResultList, TResult, TNextResult>(target, expression);
+            var query = facade.QueryFactory();
+            query.Filter = filter;
+            await dataSet.LoadFromQueryAsync(query);
         }
     }
 }

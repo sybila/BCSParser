@@ -20,7 +20,7 @@ namespace BcsAdmin.BL.Dto
     public class ComponentLinkDto : BiochemicalEntityLinkDto
     {
         [Required]
-        [Display(Name = "Hierarchy type")]
+        [Display(Name = "Agent Type")]
         public int? HierarchyType { get; set; } = null;
 
         public ComponentLinkDto()
@@ -29,7 +29,11 @@ namespace BcsAdmin.BL.Dto
         }
     }
 
-    public class StateEntityDto : BiochemicalEntityLinkDto
+    public class StateEntityDto : IEntity<int>, IAssociatedEntity
     {
+        public int Id { get; set; } = -1;
+        public string Code { get; set; }
+        public string Description { get; set; }
+        public int? IntermediateEntityId { get; set; }
     }
 }

@@ -1,20 +1,18 @@
-﻿using System;
+﻿using BcsAdmin.DAL.Api;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Riganti.Utils.Infrastructure.Core;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BcsAdmin.BL.Repositories.Api
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-    using Riganti.Utils.Infrastructure.Core;
-    using Riganti.Utils.Infrastructure.EntityFrameworkCore;
-    using System.Linq.Expressions;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Net.Http;
-    using Newtonsoft.Json;
-    using global::BcsAdmin.DAL.Api;
 
     namespace BcsAdmin.BL.Repositories
     {
@@ -24,6 +22,14 @@ namespace BcsAdmin.BL.Repositories.Api
                 : base(dateTimeProvider)
             {
                 RepoName = "entities";
+            }
+
+            public override ApiEntity InitializeNew()
+            {
+                var @new = base.InitializeNew();
+                @new.Type = ApiEntityType.Atomic;
+                @new.Status = ApiEntityStatus.Inactive;
+                return @new;
             }
         }
 
@@ -45,7 +51,7 @@ namespace BcsAdmin.BL.Repositories.Api
             }
         }
 
-        public class ApiRulesRepository : ApiGenericRepository<ApiOrganism>
+        public class ApiRulesRepository : ApiGenericRepository<ApiRule>
         {
             public ApiRulesRepository(IDateTimeProvider dateTimeProvider)
                 : base(dateTimeProvider)
@@ -54,22 +60,37 @@ namespace BcsAdmin.BL.Repositories.Api
             }
         }
 
-        public class ApiGenericRepository<TEntity> : IRepository<TEntity, int>
+        public abstract class ApiGenericRepository<TEntity> : IRepository<TEntity, int>
             where TEntity : class, IEntity<int>, new()
         {
-            public string AppUrl { get; set; } = "https://api.e-cyanobacterium.org/";
+            public string AppUrl { get; set; } = "https://api.e-cyanobacterium.org";
             public string RepoName { get; set; }
+            protected virtual string GetFullUrl(IEnumerable<int> ids) => $"{AppUrl}/{RepoName}/{string.Join(",", ids)}";
             protected virtual string GetFullUrl(int id) => $"{AppUrl}/{RepoName}/{id}";
             protected virtual string GetFullUrl() => $"{AppUrl}/{RepoName}";
 
             protected HttpClient HttpClient { get; set; } = new HttpClient();
-
+            public JsonSerializerSettings JsonSerializerSettings { get; }
 
             public ApiGenericRepository(IDateTimeProvider dateTimeProvider)
             {
+                var contractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new SnakeCaseNamingStrategy
+                    {
+                        OverrideSpecifiedNames = false
+                    }
+                };
+
+                JsonSerializerSettings = new JsonSerializerSettings
+                {
+                    ContractResolver = contractResolver,
+                    Formatting = Formatting.Indented,
+                    NullValueHandling = NullValueHandling.Ignore
+                };
             }
 
-            public TEntity InitializeNew()
+            public virtual TEntity InitializeNew()
             {
                 return new TEntity();
             }
@@ -89,7 +110,13 @@ namespace BcsAdmin.BL.Repositories.Api
 
             public virtual void Delete(int id)
             {
-                HttpClient.DeleteAsync(GetFullUrl(id)).Wait();
+                DeteleAsync(id).Wait();
+            }
+
+            private async Task DeteleAsync(int id)
+            {
+                var response = await HttpClient.DeleteAsync(GetFullUrl(id));
+                await HandleResponseAsync(response);
             }
 
             public void Delete(IEnumerable<int> ids)
@@ -102,7 +129,13 @@ namespace BcsAdmin.BL.Repositories.Api
 
             public void Insert(TEntity entity)
             {
-                HttpClient.PutAsync(GetFullUrl(entity.Id), new StringContent(JsonConvert.SerializeObject(entity))).Wait();
+                InsertAsync(entity).Wait();
+            }
+
+            private async Task InsertAsync(TEntity entity)
+            {
+                var response = await HttpClient.PostAsync(GetFullUrl(), PrepareContent(entity));
+                await HandleResponseAsync(response);
             }
 
             public void Insert(IEnumerable<TEntity> entities)
@@ -115,7 +148,13 @@ namespace BcsAdmin.BL.Repositories.Api
 
             public void Update(TEntity entity)
             {
-                HttpClient.PostAsync(GetFullUrl(), new StringContent(JsonConvert.SerializeObject(entity))).Wait();
+                UpdateAsync(entity).Wait();
+            }
+
+            private async Task UpdateAsync(TEntity entity)
+            {
+                var response = await HttpClient.PutAsync(GetFullUrl(entity.Id), PrepareContent(entity));
+                await HandleResponseAsync(response);
             }
 
             public void Update(IEnumerable<TEntity> entities)
@@ -144,13 +183,8 @@ namespace BcsAdmin.BL.Repositories.Api
 
             public async Task<TEntity> GetByIdAsync(CancellationToken cancellationToken, int id, params Expression<Func<TEntity, object>>[] includes)
             {
-                var response = await HttpClient.GetAsync(GetFullUrl(id), cancellationToken);
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-
-                var responseData = JsonConvert.DeserializeObject<ResponseData<TEntity>>(responseBody);
-
-                return responseData.Data.Data;
+                var r = await GetByIdsAsync(cancellationToken, new int[] { id });
+                return r?.FirstOrDefault();
             }
 
             public async Task<TEntity> GetByIdAsync(int id, IIncludeDefinition<TEntity>[] includes)
@@ -158,9 +192,9 @@ namespace BcsAdmin.BL.Repositories.Api
                 return await GetByIdAsync(id);
             }
 
-            public Task<TEntity> GetByIdAsync(CancellationToken cancellationToken, int id, IIncludeDefinition<TEntity>[] includes)
+            public async Task<TEntity> GetByIdAsync(CancellationToken cancellationToken, int id, IIncludeDefinition<TEntity>[] includes)
             {
-                throw new NotImplementedException();
+                return await GetByIdAsync(cancellationToken, id);
             }
 
             public IList<TEntity> GetByIds(IEnumerable<int> ids, params Expression<Func<TEntity, object>>[] includes)
@@ -173,42 +207,61 @@ namespace BcsAdmin.BL.Repositories.Api
                 throw new NotImplementedException();
             }
 
-            public Task<IList<TEntity>> GetByIdsAsync(IEnumerable<int> ids, params Expression<Func<TEntity, object>>[] includes)
+            public async Task<IList<TEntity>> GetByIdsAsync(IEnumerable<int> ids, params Expression<Func<TEntity, object>>[] includes)
             {
-                throw new NotImplementedException();
+                var token = new CancellationToken();
+                return await GetByIdsAsync(token, ids);
             }
 
-            public Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids, params Expression<Func<TEntity, object>>[] includes)
+            public async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids, params Expression<Func<TEntity, object>>[] includes)
             {
-                throw new NotImplementedException();
+                if (!ids.Any()) { return new List<TEntity>(); };
+
+                var response = await HttpClient.GetAsync(GetFullUrl(ids), cancellationToken);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                var responseData = JsonConvert.DeserializeObject<EntityResponseData<List<TEntity>>>(responseBody, JsonSerializerSettings);
+
+                return responseData.Data;
             }
 
-            public Task<IList<TEntity>> GetByIdsAsync(IEnumerable<int> ids, IIncludeDefinition<TEntity>[] includes)
+            public async Task<IList<TEntity>> GetByIdsAsync(IEnumerable<int> ids, IIncludeDefinition<TEntity>[] includes)
             {
-                throw new NotImplementedException();
+                return await GetByIdsAsync(ids);
             }
 
-            public Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids, IIncludeDefinition<TEntity>[] includes)
+            public async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids, IIncludeDefinition<TEntity>[] includes)
             {
-                throw new NotImplementedException();
+                return await GetByIdsAsync(cancellationToken, ids);
             }
 
-            private class ResponseData<TTEntity> where TTEntity : class, IEntity<int>, new()
+            private async Task HandleResponseAsync(HttpResponseMessage response)
             {
-                public ResponseStatus Status { get; set; }
-                public string Messsage { get; set; }
-                public int Code { get; set; }
-                public WtfData<TTEntity> Data { get; set; }
+                string responseContent = await response.Content.ReadAsStringAsync();
+
+                var responseObject = JsonConvert.DeserializeObject<ResponseData>(responseContent);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"{responseObject.Code}: {responseObject.Message}");
+                }
             }
 
-            private class WtfData<TTEntity> where TTEntity : class, IEntity<int>, new()
+            private HttpContent PrepareContent(TEntity entity)
             {
-                public TEntity Data { get; set; }
-            }
-            public enum ResponseStatus
-            {
-                Ok,
-                Error
+                var content =  new StringContent(
+                    JsonConvert.SerializeObject(entity, JsonSerializerSettings),
+                    Encoding.UTF8, "application/json");
+
+                content.Headers.Add("type", "object");
+
+                return content;
             }
         }
     }

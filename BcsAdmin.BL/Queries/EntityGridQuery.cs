@@ -1,4 +1,4 @@
-﻿using BcsAdmin.DAL.Models;
+﻿using BcsAdmin.DAL.Api;
 using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,41 +8,35 @@ using Riganti.Utils.Infrastructure.Core;
 using Microsoft.EntityFrameworkCore;
 using BcsAdmin.BL.Filters;
 using Bcs.Admin.BL.Dto;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class EntityGridQuery : AppQuery<BiochemicalEntityRowDto>, IFilteredQuery<BiochemicalEntityRowDto, BiochemicalEntityFilter>
+    public class EntityGridQuery : AppApiQuery<BiochemicalEntityRowDto>, IFilteredQuery<BiochemicalEntityRowDto, BiochemicalEntityFilter>
     {
+
         public BiochemicalEntityFilter Filter { get; set; }
 
-        public EntityGridQuery(IUnitOfWorkProvider unitOfWorkProvider)
-            : base(unitOfWorkProvider)
+        private IRepository<ApiEntity, int> entityRepository;
+
+        public EntityGridQuery(IRepository<ApiEntity, int> repository)
         {
+            this.entityRepository = repository;
         }
 
-        protected override IQueryable<BiochemicalEntityRowDto> GetQueryable()
+        protected async override Task<IQueryable<BiochemicalEntityRowDto>> GetQueriableAsync(CancellationToken cancellationToken)
         {
-            var context = Context.CastTo<AppDbContext>();
+            var data = await GetWebDataAsync<ApiQueryEntity>(cancellationToken, "entities");
 
-            context.EpEntity.Load();
-            context.EpEntityLocation.Load();
-            context.EpEntityComposition.Load();
-
-            var queriable =
-                    context
-                    .EpEntity
-                    .Select(e => new BiochemicalEntityRowDto
-                    {
-                        Id = e.Id,
-                        Name = e.Name,
-                        Code = e.Code,
-                        Locations = e.Locations.Select(el => el.Location.Code).ToList(),
-                        Type = e.HierarchyType.ToString("F"),
-                        Children = e.HierarchyType == HierarchyType.Atomic
-                            ? e.Children.Select(ce => $"{ce.HierarchyType.ToString("F")}: {ce.Code}").ToList()
-                            : e.Components.Select(ce => $"{ce.Component.HierarchyType.ToString("F")}: {ce.Component.Code}").ToList(),
-                        EntityTypeCss = $"entity-{e.HierarchyType.ToString("F")}".ToLower()
-                    });
+            var queriable = data.Select(e => new BiochemicalEntityRowDto
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Code = e.Code,
+                Type = e.Type != null ? e.Type.Value.ToString("F") : "<null>",          
+                EntityTypeCss = $"entity-{(e.Type != null ? e.Type.Value.ToString("F") : "unknown")}".ToLower()
+            });
 
             if (!string.IsNullOrWhiteSpace(Filter.SearchText))
             {
@@ -52,10 +46,41 @@ namespace BcsAdmin.BL.Queries
             }
             if (Filter.EntityTypeFilter.Any())
             {
-                queriable = queriable.Where(e => Filter.EntityTypeFilter.Any(f => (e.Type != null ? e.Type : "").Equals(f, StringComparison.OrdinalIgnoreCase)));
+                queriable = queriable.Where(e => Filter.EntityTypeFilter.Any(f => f.Equals(f, StringComparison.OrdinalIgnoreCase)));
             }
-
             return queriable;
         }
+
+        //protected async override Task<IList<BiochemicalEntityRowDto>> PostProcessResultsAsync(CancellationToken cancellationToken, IList<BiochemicalEntityRowDto> results)
+        //{
+        //    foreach (var item in results)
+        //    {
+        //        item.Locations = await GetLocations(item, cancellationToken);
+        //        item.Children = await CreateChildLabelsAsync(item, cancellationToken);
+        //    }
+        //    return results;
+        //}
+
+        //private async Task<List<string>> GetLocations(BiochemicalEntityRowDto parent, CancellationToken cancellationToken)
+        //{
+        //    var locs = await entityRepository.GetByIdsAsync(cancellationToken, parent.LocationIds);
+        //    return locs.Select(e => e.Code).ToList();
+        //}
+
+        //private async Task<List<string>> CreateChildLabelsAsync(BiochemicalEntityRowDto parent, CancellationToken cancellationToken)
+        //{
+        //    if (parent.ChildIds.Any())
+        //    {
+        //        var children = await entityRepository.GetByIdsAsync(cancellationToken, parent.ChildIds);
+        //        return children
+        //            .Select(e => $"{(e.Type != null ? e.Type.Value.ToString("F") : "")}: {e.Code}")
+        //            .ToList();
+        //    }
+        //    else
+        //    {
+        //        return parent.Children;
+        //    }
+        
+        //}
     }
 }

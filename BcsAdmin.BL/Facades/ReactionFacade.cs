@@ -6,7 +6,7 @@ using Bcs.Admin.BL.Dto;
 using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Filters;
 using BcsAdmin.BL.Services;
-using BcsAdmin.DAL.Models;
+using BcsAdmin.DAL.Api;
 using BcsResolver.File;
 using BcsResolver.SemanticModel;
 using BcsResolver.Syntax;
@@ -16,14 +16,14 @@ using Riganti.Utils.Infrastructure.Services.Facades;
 
 namespace BcsAdmin.BL.Facades
 {
-    public class ReactionFacade : FilteredCrudFacadeBase<EpReaction, int, ReactionRowDto, BiochemicalReactionDetailDto, ReactionFilter>, IListFacade<ReactionRowDto, ReactionFilter>
+    public class ReactionFacade : FilteredCrudFacadeBase<ApiRule, int, ReactionRowDto, BiochemicalReactionDetailDto, ReactionFilter>, IListFacade<ReactionRowDto, ReactionFilter>
     {
         private readonly IBcsWorkspace bcsWorkspace;
 
         public ReactionFacade(
             Func<IFilteredQuery<ReactionRowDto, ReactionFilter>> queryFactory,
-            IRepository<EpReaction, int> repository,
-            IEntityDTOMapper<EpReaction, BiochemicalReactionDetailDto> mapper,
+            IRepository<ApiRule, int> repository,
+            IEntityDTOMapper<ApiRule, BiochemicalReactionDetailDto> mapper,
             IUnitOfWorkProvider unitOfWorkProvider,
             IBcsWorkspace bcsWorkspace)
             : base(queryFactory, repository, mapper)

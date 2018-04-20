@@ -1,31 +1,22 @@
-﻿using BcsAdmin.DAL.Models;
+﻿using BcsAdmin.DAL.Api;
 using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 using System;
 using System.Linq;
 using Riganti.Utils.Infrastructure.Core;
 using BcsAdmin.BL.Filters;
 using BcsAdmin.BL.Dto;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class ClassificationSuggestionQuery : EntityFrameworkQuery<SuggestionDto>, IFilteredQuery<SuggestionDto, SuggestionFilter>
+    public class ClassificationSuggestionQuery : AppApiQuery<SuggestionDto>, IFilteredQuery<SuggestionDto, SuggestionFilter>
     {
         public SuggestionFilter Filter { get; set; }
 
-        public ClassificationSuggestionQuery(IUnitOfWorkProvider unitOfWorkProvider)
-            : base(unitOfWorkProvider)
+        protected override async Task<IQueryable<SuggestionDto>> GetQueriableAsync(CancellationToken cancellationToken)
         {
-        }
-
-        protected override IQueryable<SuggestionDto> GetQueryable()
-        {
-
-            var context = Context.CastTo<AppDbContext>();
-
-            var queriable =
-                    context
-                    .EpClassification
-                    .AsQueryable();
+            var queriable = await GetWebDataAsync<ApiClassification>(cancellationToken,"classfications");
 
             if (!string.IsNullOrWhiteSpace(Filter.SearchText))
             {
@@ -40,7 +31,7 @@ namespace BcsAdmin.BL.Queries
                 .Select(e => new SuggestionDto
                 {
                     Id = e.Id,
-                    Description = e.Type,
+                    Description = e.Type.ToString(),
                     Name = e.Name
                 });
         }

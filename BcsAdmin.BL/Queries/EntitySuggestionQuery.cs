@@ -1,4 +1,4 @@
-﻿using BcsAdmin.DAL.Models;
+﻿using BcsAdmin.DAL.Api;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,30 +7,32 @@ using Riganti.Utils.Infrastructure.Core;
 using Microsoft.EntityFrameworkCore;
 using BcsAdmin.BL.Filters;
 using BcsAdmin.BL.Dto;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class EntitySuggestionQuery : AppQuery<SuggestionDto>, IFilteredQuery<SuggestionDto, SuggestionFilter>
+    public class EntitySuggestionQuery : AppApiQuery<SuggestionDto>, IFilteredQuery<SuggestionDto, SuggestionFilter>
     {
         public SuggestionFilter Filter { get; set; }
 
-        public EntitySuggestionQuery(IUnitOfWorkProvider unitOfWorkProvider)
-            : base(unitOfWorkProvider)
+        public EntitySuggestionQuery()
         {
+            RepoName = "entities";
         }
 
-        protected override IQueryable<SuggestionDto> GetQueryable()
+        protected async override Task<IQueryable<SuggestionDto>> GetQueriableAsync(CancellationToken cancellationToken)
         {
             var alloedTypes = Filter?.AllowedEntityTypes ?? new Dto.HierarchyType[] { };
-
-            var context = Context.CastTo<AppDbContext>();
 
             if (string.IsNullOrWhiteSpace(Filter?.SearchText))
             {
                 return Enumerable.Empty<SuggestionDto>().AsQueryable();
             }
 
-            var entities = context.EpEntity.Where(e => alloedTypes.Contains((Dto.HierarchyType)e.HierarchyType));
+            var data = await GetWebDataAsync<ApiEntity>(cancellationToken,"entities");
+
+            var entities = data.Where(e => alloedTypes.Contains((Dto.HierarchyType)e.Type));
 
 
             var codeStartsWith = entities
@@ -55,7 +57,6 @@ namespace BcsAdmin.BL.Queries
                     Description = e.Name,
                     Name = e.Code
                 }).AsQueryable();
-
         }
     }
 }
