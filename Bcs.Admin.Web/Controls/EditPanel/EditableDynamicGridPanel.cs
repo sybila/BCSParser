@@ -127,8 +127,16 @@ namespace Bcs.Admin.Web.Controls.EditPanel
             get { return (IValueBinding)GetValue(NewEntityDtoProperty); }
             set { SetValue(NewEntityDtoProperty, value); }
         }
+
+        public BindingCompilationService BindingCompilationService { get; }
+
         public static readonly DotvvmProperty NewEntityDtoProperty
             = DotvvmProperty.Register<IValueBinding, EditableDynamicGridPanel>(c => c.NewEntityDto, null);
+
+        public EditableDynamicGridPanel(BindingCompilationService bindingCompilationService)
+        {
+            BindingCompilationService = bindingCompilationService;
+        }
 
         protected override void SetUpToolColumn(GridViewTemplateColumn toolColumn)
         {
@@ -161,7 +169,7 @@ namespace Bcs.Admin.Web.Controls.EditPanel
             {
                 var inputGroupBtn = CreateDivWithClass("input-group-btn", CreateIconButton("link", "Link existing", LinkEntity));
 
-                var searchDropDown = new SearchDropDown();
+                var searchDropDown = new SearchDropDown(BindingCompilationService);
                 searchDropDown.TextBoxSize = SearchDropDown.Size.Small;
                 searchDropDown.SetBinding(DataContextProperty, LinkEntitySearchSelect);
                 searchDropDown.SetDataContextType(this.CreateChildStack(LinkEntitySearchSelect.ResultType));

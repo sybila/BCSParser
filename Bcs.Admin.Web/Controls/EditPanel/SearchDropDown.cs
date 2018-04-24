@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Bcs.Admin.Web.ViewModels;
@@ -17,7 +18,10 @@ namespace Bcs.Admin.Web.Controls.EditPanel
 {
     public class SearchDropDown : HtmlGenericControl
     {
-        public enum Size {
+        private readonly BindingCompilationService bindingService;
+
+        public enum Size
+        {
             Small,
             Normal,
             Large
@@ -32,45 +36,46 @@ namespace Bcs.Admin.Web.Controls.EditPanel
             = DotvvmProperty.Register<Size, SearchDropDown>(c => c.TextBoxSize, Size.Normal);
 
 
-        public SearchDropDown() : base("div")
+        public SearchDropDown(BindingCompilationService bindingService) : base("div")
         {
-
+            this.bindingService = bindingService;
         }
 
 
         /// <summary>
         ///   <div DataContext="{value: Components.EntitySearchSelect}" class="dropdown">
-            //    <div class="has-feedback" Class-open="{value: Suggestions.Count != 0 && SelectedLink == null }" Class-has-success="{value: SelectedLink != null}">
-            //        <cc:TextBoxEx class="form-control" Text="{value: Text}" KeyUp="{command:  RefreshSuggestions()}" data-toggle="dropdown" />
-            //        <span Class-glyphicon-ok="{value: SelectedLink != null}" class="glyphicon form-control-feedback"></span>
-            //        <dot:Repeater DataSource = "{value: Suggestions}" WrapperTagName="ul" class="dropdown-menu">
-            //            <li><dot:LinkButton Text = "{value: Code+"("+Name+")"}" Click="{command: _parent.Select(_this)}" /></li>
-            //        </dot:Repeater>
-            //    </div>
-            //</div>
+        //    <div class="has-feedback" Class-open="{value: Suggestions.Count != 0 && SelectedLink == null }" Class-has-success="{value: SelectedLink != null}">
+        //        <cc:TextBoxEx class="form-control" Text="{value: Text}" KeyUp="{command:  RefreshSuggestions()}" data-toggle="dropdown" />
+        //        <span Class-glyphicon-ok="{value: SelectedLink != null}" class="glyphicon form-control-feedback"></span>
+        //        <dot:Repeater DataSource = "{value: Suggestions}" WrapperTagName="ul" class="dropdown-menu">
+        //            <li><dot:LinkButton Text = "{value: Code+"("+Name+")"}" Click="{command: _parent.Select(_this)}" /></li>
+        //        </dot:Repeater>
+        //    </div>
+        //</div>
         /// </summary>
         /// <param name="context"></param>
         protected override void OnInit(IDotvvmRequestContext context)
         {
             Attributes["class"] = "dropdown";
 
-
-
             if (!(DataContext is SearchSelect))
             {
                 throw new InvalidOperationException($"DataContext mustbe of type {nameof(SearchSelect)}");
             }
+            var selectedLinkNotNull = CreateValueBinding(h => ((SearchSelect)h[0]).SelectedSuggestion);
+            //CreateValueBinding(context, $"{nameof(SearchSelect.SelectedSuggestion)} != null");
+            var suggestionsBinding = CreateValueBinding(h => ((SearchSelect)h[0]).Suggestions);
+            //CreateValueBinding(context, nameof(SearchSelect.Suggestions));
 
-            var selectedLinkNotNull = CreateValueBinding(context, $"{nameof(SearchSelect.SelectedSuggestion)} != null");
-            var suggestionsBinding = CreateValueBinding(context, nameof(SearchSelect.Suggestions));
+            var textBinding = CreateValueBinding(h => ((SearchSelect)h[0]).Filter.SearchText);
+            //CreateValueBinding(context, "Filter.SearchText");
 
-            var textBinding = CreateValueBinding(context, "Filter.SearchText");
-            var keyUpBinding = CreateCommandBinding(context, "RefreshSuggestions()");
+            var keyUpBinding = CreateCommandBinding(h => ((SearchSelect)h[0]).RefreshSuggestionsAsync(), "__$SearchSelect_RefreshSuggestions");
 
             var textbox = new TextBoxEx();
             textbox.Attributes["class"] = $"form-control { GetSizeClass()}";
             textbox.Attributes["data-toggle"] = "dropdown";
-            textbox.SetBinding(TextBox.TextProperty,textBinding);
+            textbox.SetBinding(TextBox.TextProperty, textBinding);
             textbox.SetBinding(TextBoxEx.KeyUpProperty, keyUpBinding);
 
             var iconSpan = new HtmlGenericControl("span");
@@ -84,24 +89,27 @@ namespace Bcs.Admin.Web.Controls.EditPanel
             repeater.Attributes["style"] = $"top:30px";
 
             repeater.ItemTemplate = new DelegateTemplate((cbf, sp, c) =>
-                {
-                    var dcts = DataContextStack.Create(suggestionsBinding.ResultType.GenericTypeArguments[0], this.GetDataContextType());
+            {
+                var dcts = DataContextStack.Create(suggestionsBinding.ResultType.GenericTypeArguments[0], this.GetDataContextType());
 
-                    c.SetDataContextType(dcts);
+                c.SetDataContextType(dcts);
 
-                    var selectBinding = ControlCreationHelper.CreateCommandBinding(context, dcts, "_parent.Select(_this)");
-                    var nameBinding = ControlCreationHelper.CreateValueBinding(context, dcts, $"{nameof(SuggestionDto.Name)}+\"(\"+{nameof(SuggestionDto.Description)}+\")\"");
+                var selectBinding = CreateCommandBinding(h=> ((SearchSelect)h[1]).Select(((SuggestionDto)h[0])), "__$SearchSelect_Select");
+                //CreateCommandBinding(context, dcts, "_parent.Select(_this)");
+                var nameBinding = CreateValueBinding(h => $"()", dcts);
+                //ControlCreationHelper.CreateValueBinding(context, dcts, $"{nameof(SuggestionDto.Name)}+\"(\"+{nameof(SuggestionDto.Description)}+\")\"");
 
-                    var linkButton = new LinkButton();
-                    linkButton.SetBinding(ButtonBase.ClickProperty, selectBinding);
-                    linkButton.SetBinding(ButtonBase.TextProperty, nameBinding);
+                var linkButton = new LinkButton();
+                linkButton.SetBinding(ButtonBase.ClickProperty, selectBinding);
+                linkButton.SetBinding(ButtonBase.TextProperty, nameBinding);
 
-                    var li = new HtmlGenericControl("li");
-                    li.Children.Add(linkButton);
-                    c.Children.Add(li);
-                });
+                var li = new HtmlGenericControl("li");
+                li.Children.Add(linkButton);
+                c.Children.Add(li);
+            });
 
-            var classOpenBinding = CreateValueBinding(context, $"{nameof(SearchSelect.Suggestions)}.Count != 0 && {nameof(SearchSelect.SelectedSuggestion)} == null");
+            var classOpenBinding = CreateValueBinding(h => ((SearchSelect)h[0]).Suggestions.Count != 0 && ((SearchSelect)h[0]).SelectedSuggestion == null);
+                //CreateValueBinding(context, $"{nameof(SearchSelect.Suggestions)}.Count != 0 && {nameof(SearchSelect.SelectedSuggestion)} == null");
 
             var buttonGroup = ControlCreationHelper.CreateDivWithClass("has-feedback");
             buttonGroup.SetBinding(CssClassesGroupDescriptor.GetDotvvmProperty("open"), classOpenBinding);
@@ -115,13 +123,28 @@ namespace Bcs.Admin.Web.Controls.EditPanel
             base.OnInit(context);
         }
 
-        private IValueBinding CreateValueBinding(IDotvvmRequestContext context, string bindingText)
+        private ValueBindingExpression<T> CreateValueBinding<T>(Expression<Func<object[], T>> func, DataContextStack dataContextStack = null)
         {
-            return ControlCreationHelper.CreateValueBinding(context, this.GetDataContextType(), bindingText);
+            return ValueBindingExpression.CreateBinding(
+                bindingService.WithoutInitialization(),
+                func,
+                dataContextStack ?? this.GetDataContextType());
         }
-        private ICommandBinding CreateCommandBinding(IDotvvmRequestContext context, string bindingText)
+
+        private CommandBindingExpression CreateCommandBinding(Action<object[]> action, string id)
         {
-            return ControlCreationHelper.CreateCommandBinding(context, this.GetDataContextType(), bindingText);
+            return new CommandBindingExpression(
+                bindingService,
+                action,
+                id);
+        }
+
+        private CommandBindingExpression CreateCommandBinding(Func<object[], Task> action, string id)
+        {
+            return new CommandBindingExpression(
+                bindingService,
+                action,
+                id);
         }
 
         private string GetSizeClass()

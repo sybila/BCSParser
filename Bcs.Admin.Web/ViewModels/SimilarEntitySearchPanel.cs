@@ -30,7 +30,7 @@ namespace Bcs.Admin.Web.ViewModels
             this.searchFacade = searchFacade;
             this.suggestionsFacade = suggestionsFacade;
             EntityToCheckSearchSelect = searchSelect;
-            EntityToCheckSearchSelect.SuggestionProvider = suggestionsFacade.GetSuggestions;
+            EntityToCheckSearchSelect.SuggestionProvider = suggestionsFacade.GetSuggestionsAsync;
             EntityToCheckSearchSelect.Filter.AllowedEntityTypes = new[] {
                 HierarchyType.Atomic,
                 HierarchyType.Compartment,

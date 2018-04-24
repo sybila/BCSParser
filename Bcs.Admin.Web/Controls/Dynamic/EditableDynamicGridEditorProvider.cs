@@ -28,7 +28,7 @@ namespace Bcs.Admin.Web.Controls.Dynamic
         {
             var gridDataContext = property.PropertyInfo.PropertyType;
 
-            var grid = new EditableDynamicGridPanel();
+            var grid = new EditableDynamicGridPanel(context.BindingCompilationService);
             container.Children.Add(grid);
             grid.SetDataContextType(DataContextStack.Create(gridDataContext, container.GetDataContextType()));
 

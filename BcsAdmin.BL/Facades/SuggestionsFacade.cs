@@ -20,14 +20,12 @@ namespace BcsAdmin.BL.Facades
 
         public Func<TQuery> EntitySuggestionQuery { get; }
 
-        public IList<SuggestionDto> GetSuggestions(SuggestionFilter filter)
+        public async System.Threading.Tasks.Task<IList<SuggestionDto>> GetSuggestionsAsync(SuggestionFilter filter)
         {
-            using (var uow = UnitOfWorkProvider.Create())
-            {
                 var q = EntitySuggestionQuery();
                 q.Filter = filter;
-                return q.Execute();
-            }
+                return await q.ExecuteAsync();
+            
         }
     }
 }

@@ -59,48 +59,7 @@ namespace Bcs.Admin.Web.Controls.EditPanel
 
             return toggleButton;
         }
-
-
-
-        public static IValueBinding CreateValueBinding(IDotvvmRequestContext context, DataContextStack contextTypeStack, string bindingText)
-        {
-            var bindingService = (BindingCompilationService)context.Services.GetService(typeof(BindingCompilationService));
-            return new ValueBindingExpression(
-                bindingService,
-                new object[] {
-                    new BindingParserOptions(typeof(ValueBindingExpression)),
-                    new OriginalStringBindingProperty(bindingText),
-                    contextTypeStack
-                });
-        }
-
-        public static ICommandBinding CreateCommandBinding(IDotvvmRequestContext context, DataContextStack contextTypeStack, string bindingText)
-        {
-            var bindingService = (BindingCompilationService)context.Services.GetService(typeof(BindingCompilationService));
-            var bindingId = Convert.ToBase64String(Encoding.ASCII.GetBytes(contextTypeStack.DataContextType.Name + "." + bindingText));
-            var properties = new object[]{
-                contextTypeStack,
-                new OriginalStringBindingProperty(bindingText),
-                new IdBindingProperty(bindingId)
-            };
-
-            return new CommandBindingExpression(bindingService, properties);
-        }
-
-        public static ICommandBinding CreateStaticCommandBinding(IDotvvmRequestContext context, DataContextStack contextTypeStack, string bindingText)
-        {
-            var bindingService = (BindingCompilationService)context.Services.GetService(typeof(BindingCompilationService));
-            var bindingId = Convert.ToBase64String(Encoding.ASCII.GetBytes(contextTypeStack.DataContextType.Name + "." + bindingText));
-            var properties = new object[]{
-                contextTypeStack,
-                new OriginalStringBindingProperty(bindingText),
-                new IdBindingProperty(bindingId)
-            };
-
-            return new StaticCommandBindingExpression(bindingService, properties);
-        }
-
-
+        
         public static HtmlGenericControl CreateDivWithClass(string classValue, params DotvvmControl[] children)
         {
             var div = new HtmlGenericControl("div");
