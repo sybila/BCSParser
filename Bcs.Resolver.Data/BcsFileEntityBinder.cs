@@ -197,10 +197,10 @@ namespace BcsResolver.File
             };
         }
 
-        private BcsLocationSymbol BindLocation(string entity)
+        private BcsCompartmentSymbol BindLocation(string entity)
         {
             //Todo another entity chceck
-            return resolvedSymbols.GetOrAdd(entity, new BcsLocationSymbol { Name = entity }) as BcsLocationSymbol;
+            return resolvedSymbols.GetOrAdd(entity, new BcsCompartmentSymbol { Name = entity }) as BcsCompartmentSymbol;
         }
 
         private BcsEntity EnsureEntityId(string entity) => metadataProvider.GetEntity(entity);

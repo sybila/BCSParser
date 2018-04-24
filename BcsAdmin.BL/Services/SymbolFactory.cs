@@ -3,132 +3,150 @@ using System.Collections.Generic;
 using BcsResolver.SemanticModel.Tree;
 using BcsAdmin.DAL.Models;
 using System.Linq;
-using BcsResolver.Extensions;
 using System.Collections.Concurrent;
+using BcsAdmin.DAL.Api;
+using Riganti.Utils.Infrastructure.Core;
+using System.Threading.Tasks;
 
 namespace BcsAdmin.BL.Services
 {
-    public class ReferenceSymbolFactory : SymbolFactory
-    {
-        private ConcurrentDictionary<string, BcsLocationSymbol> locationMap = new ConcurrentDictionary<string, BcsLocationSymbol>();
-
-        protected override BcsLocationSymbol CreateLocation(EpEntity entity)
-        {
-            return locationMap.GetOrAdd(entity.Code ?? "", name => base.CreateLocation(entity));
-        }
-    }
-
     public class SymbolFactory
     {
-        public virtual BcsNamedSymbol CreateSymbol(EpEntity entity)
+        private readonly Func<int, ApiEntity> entityProvider;
+
+        public SymbolFactory(Func<int, ApiEntity> entityProvider)
         {
-            switch (entity.HierarchyType)
+            this.entityProvider = entityProvider;
+        }
+
+        public virtual BcsNamedSymbol CreateSymbol(int id)
+        {
+            var entity = entityProvider(id);
+
+            switch (entity.Type)
             {
-                case HierarchyType.State:
-                    return CreateState(entity);
-                case HierarchyType.Compartment:
+                case ApiEntityType.Compartment:
                     return CreateLocation(entity);
-                case HierarchyType.Complex:
+                case ApiEntityType.Complex:
                     return CreateComplex(entity);
-                case HierarchyType.Structure:
-                    return CreateStructuralAgent(entity);
-                case HierarchyType.Atomic:
+                case ApiEntityType.Structure:
+                    return  CreateStructuralAgent(entity);
+                case ApiEntityType.Atomic:
                     return CreateAtomicAgent(entity);
                 default:
-                    throw new NotSupportedException("HierarchyType is not supported");
+                    throw new NotSupportedException("Type is not supported");
             };
         }
 
-        protected virtual BcsStateSymbol CreateState(EpEntity entity)
+        protected virtual BcsStateSymbol CreateState(ApiState entity)
         {
             return new BcsStateSymbol
             {
-                FullName = entity.Name,
+                FullName = entity.Description,
                 Name = entity.Code,
             };
         }
 
-        protected virtual BcsLocationSymbol CreateLocation(EpEntity entity)
+        protected virtual BcsCompartmentSymbol CreateLocation(ApiEntity entity)
         {
-            return new BcsLocationSymbol
+            return new BcsCompartmentSymbol
             {
                 FullName = entity.Name,
                 Name = entity.Code,
             };
         }
 
-        protected virtual BcsAtomicAgentSymbol CreateAtomicAgent(EpEntity entity)
+        protected virtual BcsAtomicAgentSymbol CreateAtomicAgent(ApiEntity entity)
         {
             return new BcsAtomicAgentSymbol
             {
                 FullName = entity.Name,
                 Name = entity.Code,
-                Locations = CreateEntityLocations(entity),
-                Parts = entity.Children.Select(s => CreateSymbol<BcsStateSymbol>(s).CastTo<BcsNamedSymbol>()).ToList(),
+                Locations = CreateParts<BcsCompartmentSymbol>(entity),
+                Parts = entity.States.Select(s => CreateState(s).CastTo<BcsNamedSymbol>()).ToList(),
                 BcsSymbolType = BcsSymbolType.Agent
             };
         }
 
-        protected virtual BcsStructuralAgentSymbol CreateStructuralAgent(EpEntity entity)
+        protected virtual BcsStructuralAgentSymbol CreateStructuralAgent(ApiEntity entity)
         {
             return new BcsStructuralAgentSymbol
             {
                 FullName = entity.Name,
                 Name = entity.Code,
-                Locations = CreateEntityLocations(entity),
-                Parts = entity.Components.Where(s=> s.Component != null).Select(s => CreateSymbol<BcsAtomicAgentSymbol>(s.Component).CastTo<BcsNamedSymbol>()).ToList(),
+                Locations = CreateParts<BcsCompartmentSymbol>(entity),
+                Parts = CreateParts<BcsAtomicAgentSymbol>(entity),
                 BcsSymbolType = BcsSymbolType.StructuralAgent
             };
         }
 
-        protected virtual BcsComplexSymbol CreateComplex(EpEntity entity)
+        protected virtual BcsComplexSymbol CreateComplex(ApiEntity entity)
         {
             return new BcsComplexSymbol
             {
                 FullName = entity.Name,
                 Name = entity.Code,
-                Locations = CreateEntityLocations(entity),
-                Parts = entity.Components.Where(s=> s.Component != null).Select(s => CreateSymbol(s.Component).CastTo<BcsNamedSymbol>()).ToList(),
+                Locations = CreateParts<BcsCompartmentSymbol>(entity),
+                Parts = CreateParts(entity),
                 BcsSymbolType = BcsSymbolType.Complex
             };
         }
 
-        protected virtual List<BcsNamedSymbol> CreateEntityLocations(EpEntity entity)
+        private List<BcsNamedSymbol> CreateParts(ApiEntity entity)
         {
-            return entity.Locations.Where(el=> el.Location != null).Select(el => CreateSymbol<BcsLocationSymbol>(el.Location)).ToList();
+            var list = new List<BcsNamedSymbol>();
+            foreach (var id in entity.Compartments)
+            {
+                var location = CreateSymbol(id);
+                list.Add(location);
+            }
+            return list;
+
         }
 
-        protected virtual BcsNamedSymbol CreateSymbol<TExpectedSymbol>(EpEntity entity)
+        private List<BcsNamedSymbol> CreateParts<TPart>(ApiEntity entity)
+            where TPart : BcsNamedSymbol
+        {
+            var list = new List<BcsNamedSymbol>();
+            foreach (var id in entity.Compartments ?? new int[] { })
+            {
+                var location = CreateSymbol<TPart>(id);
+                list.Add(location);
+            }
+            return list;
+
+        }
+
+        protected virtual BcsNamedSymbol CreateSymbol<TExpectedSymbol>(int id)
             where TExpectedSymbol : BcsNamedSymbol
         {
-            var symbol = CreateSymbol(entity);
+            var symbol = CreateSymbol(id);
             try
             {
                 return EnsureType<TExpectedSymbol>(symbol).CastTo<TExpectedSymbol>();
             }
             catch (Exception ex)
             {
-                return CreateError(entity, ex);
+                return CreateError(symbol.Name, ex);
             }
         }
 
         private BcsNamedSymbol EnsureType<TSymbol>(BcsNamedSymbol namedSymbol)
             where TSymbol : BcsNamedSymbol
         {
-            if (!namedSymbol.Is<TSymbol>())
+            if (namedSymbol is TSymbol)
             {
-                throw new InvalidOperationException($"{typeof(TSymbol).FullName} was expected.");
+                return namedSymbol;
             }
-            return namedSymbol;
+            throw new InvalidOperationException($"{typeof(TSymbol).FullName} was expected.");
         }
 
-        protected BcsErrorSymbol CreateError(EpEntity entity, Exception ex)
+        protected BcsErrorSymbol CreateError(string entityName, Exception ex)
         {
             return new BcsErrorSymbol
             {
                 Error = ex.Message,
-                ExpectedType = BcsSymbolType.Location,
-                Name = entity.Code
+                Name = entityName
             };
         }
     }

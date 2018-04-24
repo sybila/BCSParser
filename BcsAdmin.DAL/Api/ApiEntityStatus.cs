@@ -4,11 +4,11 @@ namespace BcsAdmin.DAL.Api
 {
     public enum ApiEntityStatus
     {
-        [EnumMember(Value = "1")]
+        [EnumMember(Value = "pending")]
         Pending,
-        [EnumMember(Value = "2")]
+        [EnumMember(Value = "active")]
         Active,
-        [EnumMember(Value = "3")]
+        [EnumMember(Value = "inactive")]
         Inactive
     }
 }

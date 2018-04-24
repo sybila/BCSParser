@@ -16,50 +16,6 @@ namespace BcsAdmin.BL.Repositories.Api
 
     namespace BcsAdmin.BL.Repositories
     {
-        public class ApiEntityRepository : ApiGenericRepository<ApiEntity>
-        {
-            public ApiEntityRepository(IDateTimeProvider dateTimeProvider)
-                : base(dateTimeProvider)
-            {
-                RepoName = "entities";
-            }
-
-            public override ApiEntity InitializeNew()
-            {
-                var @new = base.InitializeNew();
-                @new.Type = ApiEntityType.Atomic;
-                @new.Status = ApiEntityStatus.Inactive;
-                return @new;
-            }
-        }
-
-        public class ApiClassificationRepository : ApiGenericRepository<ApiClassification>
-        {
-            public ApiClassificationRepository(IDateTimeProvider dateTimeProvider)
-                : base(dateTimeProvider)
-            {
-                RepoName = "classifications";
-            }
-        }
-
-        public class ApiOrganismsRepository : ApiGenericRepository<ApiOrganism>
-        {
-            public ApiOrganismsRepository(IDateTimeProvider dateTimeProvider)
-                : base(dateTimeProvider)
-            {
-                RepoName = "organisms";
-            }
-        }
-
-        public class ApiRulesRepository : ApiGenericRepository<ApiRule>
-        {
-            public ApiRulesRepository(IDateTimeProvider dateTimeProvider)
-                : base(dateTimeProvider)
-            {
-                RepoName = "rules";
-            }
-        }
-
         public abstract class ApiGenericRepository<TEntity> : IRepository<TEntity, int>
             where TEntity : class, IEntity<int>, new()
         {
@@ -213,7 +169,12 @@ namespace BcsAdmin.BL.Repositories.Api
                 return await GetByIdsAsync(token, ids);
             }
 
-            public async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids, params Expression<Func<TEntity, object>>[] includes)
+            public virtual async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids, params Expression<Func<TEntity, object>>[] includes)
+            {
+                return await GetByIdsCore(ids, cancellationToken);
+            }
+
+            private async Task<IList<TEntity>> GetByIdsCore(IEnumerable<int> ids, CancellationToken cancellationToken)
             {
                 if (!ids.Any()) { return new List<TEntity>(); };
 

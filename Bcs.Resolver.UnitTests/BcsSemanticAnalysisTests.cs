@@ -30,7 +30,7 @@ namespace BcsResolver.Tests
                     new BcsStructuralAgentSymbol
                     {
                         Name = "A",
-                        Locations = new List<BcsNamedSymbol> {new BcsLocationSymbol {Name = "cyt"}},
+                        Locations = new List<BcsNamedSymbol> {new BcsCompartmentSymbol {Name = "cyt"}},
                         Parts = new List<BcsNamedSymbol>
                         {
                             new BcsAtomicAgentSymbol
@@ -108,7 +108,7 @@ namespace BcsResolver.Tests
         [TestMethod]
         public void SemanticAnalysisVisitor_BindSimpleComplexWithLocation_Valid()
         {
-            var locs = new List<BcsLocationSymbol> { new BcsLocationSymbol { Name = "cyt" } };
+            var locs = new List<BcsCompartmentSymbol> { new BcsCompartmentSymbol { Name = "cyt" } };
             var complexTree = TestCaseFactory.CreateThreePartComplex(locs);
 
             var mock = new Mock<IBcsWorkspace>();
@@ -142,7 +142,7 @@ namespace BcsResolver.Tests
         [TestMethod]
         public void SemanticAnalysisVisitor_BindSimpleExplicitComplexWithStateAccess_Valid()
         {
-            var locs = new List<BcsLocationSymbol> { new BcsLocationSymbol { Name = "cyt" } };
+            var locs = new List<BcsCompartmentSymbol> { new BcsCompartmentSymbol { Name = "cyt" } };
             var complexTree = TestCaseFactory.CreateThreePartComplex(locs);
 
             var mock = new Mock<IBcsWorkspace>();
@@ -176,7 +176,7 @@ namespace BcsResolver.Tests
         [TestMethod]
         public void SemanticAnalysisVisitor_BindSimpleStateAccessComplexReference_Valid()
         {
-            var locs = new List<BcsLocationSymbol> { new BcsLocationSymbol { Name = "cyt" } };
+            var locs = new List<BcsCompartmentSymbol> { new BcsCompartmentSymbol { Name = "cyt" } };
             var complexTree = TestCaseFactory.CreateThreePartComplex(locs);
 
             var mock = new Mock<IBcsWorkspace>();
@@ -208,7 +208,7 @@ namespace BcsResolver.Tests
         [TestMethod]
         public void SemanticAnalysisVisitor_BindComplexStateAccessComplexReference_Valid()
         {
-            var locs = new List<BcsLocationSymbol> { new BcsLocationSymbol { Name = "cyt" } };
+            var locs = new List<BcsCompartmentSymbol> { new BcsCompartmentSymbol { Name = "cyt" } };
             var complexTree = TestCaseFactory.CreateThreePartComplex(locs);
 
             var mock = new Mock<IBcsWorkspace>();
@@ -244,7 +244,7 @@ namespace BcsResolver.Tests
             mock.SetupGet(p => p.Complexes).Returns(new Dictionary<string, BcsComplexSymbol> { { "mixed", complexTree } });
             mock.SetupGet(p => p.StructuralAgents).Returns(complexTree.Parts.OfType<BcsStructuralAgentSymbol>().ToDictionary(sa => sa.Name));
             mock.SetupGet(p => p.AtomicAgents).Returns(complexTree.Parts.OfType<BcsAtomicAgentSymbol>().Concat(complexTree.Parts.OfType<BcsStructuralAgentSymbol>().SelectMany(sa => sa.AtomicAgents)).ToDictionary(aa => aa.Name));
-            mock.SetupGet(p => p.Locations).Returns(new [] { (BcsLocationSymbol)complexTree.Locations[0] }.ToDictionary(k => k.Name));
+            mock.SetupGet(p => p.Locations).Returns(new [] { (BcsCompartmentSymbol)complexTree.Locations[0] }.ToDictionary(k => k.Name));
 
             var binder = new SemanticAnalysisVisitor(mock.Object, new BcsBoundSymbolFactory());
 
@@ -287,7 +287,7 @@ namespace BcsResolver.Tests
             mock.SetupGet(p => p.LocationEntityMap)
                 .Returns(new Dictionary<string, IReadOnlyList<BcsComposedSymbol>>());
 
-            mock.SetupGet(p => p.Locations).Returns(new[] { (BcsLocationSymbol)complexTree.Locations[0] }.ToDictionary(k => k.Name));
+            mock.SetupGet(p => p.Locations).Returns(new[] { (BcsCompartmentSymbol)complexTree.Locations[0] }.ToDictionary(k => k.Name));
 
             var binder = new SemanticAnalysisVisitor(mock.Object, new BcsBoundSymbolFactory());
 

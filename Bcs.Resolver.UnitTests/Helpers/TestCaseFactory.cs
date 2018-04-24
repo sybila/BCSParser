@@ -113,7 +113,7 @@ namespace BcsResolver.Tests.Helpers
                 },
             };
 
-        public static BcsComplexSymbol CreateThreePartComplex(List<BcsLocationSymbol> withLocations = null)
+        public static BcsComplexSymbol CreateThreePartComplex(List<BcsCompartmentSymbol> withLocations = null)
         {
             var namedLocationSymbols = withLocations?.OfType<BcsNamedSymbol>().ToList() ?? new List<BcsNamedSymbol>();
 
@@ -189,7 +189,7 @@ namespace BcsResolver.Tests.Helpers
 
         public static BcsComplexSymbol CreateMixedAgentComplex()
         {
-            var cyt = new BcsLocationSymbol { Name = "cyt" };
+            var cyt = new BcsCompartmentSymbol { Name = "cyt" };
             return new BcsComplexSymbol
             {
                 Name = "mixed",

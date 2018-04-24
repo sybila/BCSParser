@@ -23,9 +23,9 @@ namespace BcsResolver.SemanticModel.Tree
             {
                 return VisitComplex(symbol as BcsComplexSymbol, parameter);
             }
-            if (symbol is BcsLocationSymbol)
+            if (symbol is BcsCompartmentSymbol)
             {
-                return VisitLocation(symbol as BcsLocationSymbol, parameter);
+                return VisitLocation(symbol as BcsCompartmentSymbol, parameter);
             }
             if (symbol is BcsRuleSymbol)
             {
@@ -57,7 +57,7 @@ namespace BcsResolver.SemanticModel.Tree
             return VisitDefault(bcsErrorSymbol, parameter);
         }
 
-        protected virtual TResult VisitLocation(BcsLocationSymbol bcsLocationSymbol, TParameter parameter)
+        protected virtual TResult VisitLocation(BcsCompartmentSymbol bcsLocationSymbol, TParameter parameter)
         {
             return VisitDefault(bcsLocationSymbol, parameter);
         }

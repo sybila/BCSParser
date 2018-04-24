@@ -3,9 +3,9 @@
 namespace BcsResolver.SemanticModel.Tree
 {
     [DebuggerDisplay("[{ToDisplayString()}]")]
-    public sealed class BcsLocationSymbol : BcsNamedSymbol
+    public sealed class BcsCompartmentSymbol : BcsNamedSymbol
     {
-        public BcsLocationSymbol()
+        public BcsCompartmentSymbol()
         {
             Type = BcsSymbolType.Location;
         }

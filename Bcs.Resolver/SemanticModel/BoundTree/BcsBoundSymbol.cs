@@ -20,7 +20,7 @@ namespace BcsResolver.SemanticModel.BoundTree
     }
 
     [DebuggerDisplay("[BL: {ToString()}]")]
-    public class BcsBoundLocation : BcsBoundSymbol<BcsLocationSymbol>
+    public class BcsBoundLocation : BcsBoundSymbol<BcsCompartmentSymbol>
     {
         public IBcsBoundSymbol Content { get; set; }
 

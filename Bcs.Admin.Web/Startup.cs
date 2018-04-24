@@ -85,7 +85,7 @@ namespace Bcs.Analyzer.DemoWeb
              .AsImplementedInterfaces()
              .AsSelf();
 
-            builder.RegisterType<DbWorkspace>().As<IBcsWorkspace>().SingleInstance();
+            builder.RegisterType<ApiWorkspace>().As<IBcsWorkspace>().SingleInstance();
 
             builder.Populate(services);
 
