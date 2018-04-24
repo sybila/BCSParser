@@ -12,7 +12,7 @@ namespace Bcs.Admin.Web.ViewModels
     public class SearchSelect : DotvvmViewModelBase
     {
         [Bind(Direction.None)]
-        public Func<SuggestionFilter, IList<SuggestionDto>> SuggestionProvider { get; set; }
+        public Func<SuggestionFilter, Task<IList<SuggestionDto>>> SuggestionProvider { get; set; }
 
         public IList<SuggestionDto> Suggestions { get; set; } = new List<SuggestionDto>();
 
@@ -26,9 +26,9 @@ namespace Bcs.Admin.Web.ViewModels
             Filter.SearchText = link.Name;
         }
 
-        public void RefreshSuggestions()
+        public async Task RefreshSuggestionsAsync()
         {
-            Suggestions = SuggestionProvider(Filter);
+            Suggestions = await SuggestionProvider(Filter);
             SelectedSuggestion = null;
         }
     }

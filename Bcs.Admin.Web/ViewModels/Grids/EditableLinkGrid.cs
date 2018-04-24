@@ -36,7 +36,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             this.facade = facade;
             this.EntitySearchSelect =  entitySearchSelect;
             this.SuggestionsFacade = suggestionsFacade;
-            EntitySearchSelect.SuggestionProvider = suggestionsFacade.GetSuggestions;
+            EntitySearchSelect.SuggestionProvider = suggestionsFacade.GetSuggestionsAsync;
         }
 
         public void Add()

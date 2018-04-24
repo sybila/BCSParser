@@ -10,7 +10,6 @@ namespace Bcs.Admin.BL.Dto
         public string Description { get; set; }
         public string Equation { get; set; }
         public string Modifier { get; set; }
-        public string VisualisationXml { get; set; }
         public int? Active { get; set; }
         public int? IsValid { get; set; }
     }

@@ -11,6 +11,7 @@ using BcsResolver.Syntax.Parser;
 using BcsResolver.Syntax.Tokenizer;
 using BcsResolver.File;
 using Bcs.Resolver.Common;
+using System.Threading;
 
 namespace BcsResolver.File
 {
@@ -28,8 +29,9 @@ namespace BcsResolver.File
         public IReadOnlyDictionary<string, BcsComplexSymbol> Complexes { get; private set; }
         public IReadOnlyDictionary<string, BcsStructuralAgentSymbol> StructuralAgents { get; private set; }
         public IReadOnlyDictionary<string, BcsAtomicAgentSymbol> AtomicAgents { get; private set; }
-        public IReadOnlyDictionary<string, BcsLocationSymbol> Locations { get; set; }
+        public IReadOnlyDictionary<string, BcsCompartmentSymbol> Locations { get; set; }
         public IReadOnlyDictionary<string, IReadOnlyList<BcsComposedSymbol>> LocationEntityMap { get; set; }
+        public IReadOnlyList<SemanticError> Errors { get; set; }
 
         public IEnumerable<BcsComposedSymbol> GetAllEntities()
             => AtomicAgents.Values
@@ -37,7 +39,7 @@ namespace BcsResolver.File
                 .Concat(Complexes.Values);
 
 
-        public void CreateSemanticModel()
+        public Task CreateSemanticModelAsync(CancellationToken cancellationToken)
         {
             entityBinder = new BcsFileEntityBinder(entityMetadataProvider);
 
@@ -55,11 +57,13 @@ namespace BcsResolver.File
 
             Locations = allEntities
                 .SelectMany(ce => ce.Locations)
-                .OfType<BcsLocationSymbol>()
+                .OfType<BcsCompartmentSymbol>()
                 .Distinct()
                 .ToDictionary(k => k.Name);
 
             LocationEntityMap = allEntities.ToLocationSymbolMap();
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Bcs.Admin.BL.Dto;
 using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Filters;
@@ -31,7 +32,7 @@ namespace BcsAdmin.BL.Facades
             UnitOfWorkProvider = unitOfWorkProvider;
 
             this.bcsWorkspace = bcsWorkspace;
-            bcsWorkspace.CreateSemanticModel();
+            
         }
 
         public List<StyleSpan> GetClassificationSpans(ReactionModel reactionModel)
@@ -57,8 +58,10 @@ namespace BcsAdmin.BL.Facades
             return spans;
         }
 
-        public ReactionModel GetReactionModel(string sourceText)
+        public async Task<ReactionModel> GetReactionModelAsync(string sourceText)
         {
+            await bcsWorkspace.CreateSemanticModelAsync(new System.Threading.CancellationToken());
+
             var provider = new WorkspaceModelProvider(bcsWorkspace);
             var reactionModel = provider.CreateReactionModel(sourceText);
             return reactionModel;

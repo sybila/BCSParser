@@ -26,7 +26,7 @@ namespace BcsResolver.Tests
 
             var workspace = new BcsFileWorkspace(mock.Object);
 
-            workspace.CreateSemanticModel();
+            workspace.CreateSemanticModelAsync();
 
             var complex = workspace.Complexes.First().Value;
             Assert.AreEqual(complex.Name, "cx1");
@@ -47,7 +47,7 @@ namespace BcsResolver.Tests
 
             var workspace = new BcsFileWorkspace(mock.Object);
 
-            workspace.CreateSemanticModel();
+            workspace.CreateSemanticModelAsync();
 
             var componentSymbol = workspace.StructuralAgents.First().Value;
             Assert.AreEqual(componentSymbol.Name, "ct1");
@@ -68,7 +68,7 @@ namespace BcsResolver.Tests
 
             var workspace = new BcsFileWorkspace(mock.Object);
 
-            workspace.CreateSemanticModel();
+            workspace.CreateSemanticModelAsync();
 
             var agentSymbol = workspace.AtomicAgents.First().Value;
             Assert.AreEqual("ag1", agentSymbol.Name);
@@ -93,7 +93,7 @@ namespace BcsResolver.Tests
 
             var workspace = new BcsFileWorkspace(mock.Object);
 
-            workspace.CreateSemanticModel();
+            workspace.CreateSemanticModelAsync();
 
             var complexSymbol = workspace.Complexes.First().Value;
             var cComponents = complexSymbol.StructuralAgents.AssertCount(2);
@@ -141,7 +141,7 @@ namespace BcsResolver.Tests
             mock.Setup(p => p.GetAvailableEntityIds()).Returns(() => new[] { "ctE" });
 
             var workspace = new BcsFileWorkspace(mock.Object);
-            workspace.CreateSemanticModel();
+            workspace.CreateSemanticModelAsync();
 
             var componentSymbol = workspace.StructuralAgents.AssertCount(1).First().Value;
             var errorSymbol = componentSymbol.Parts.AssertCount(1).First().AssertCast<BcsErrorSymbol>();

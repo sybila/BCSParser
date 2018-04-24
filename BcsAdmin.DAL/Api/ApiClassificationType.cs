@@ -3,6 +3,6 @@
     public enum ApiClassificationType
     {
         Entity,
-        Rule
+        Reaction
     }
 }

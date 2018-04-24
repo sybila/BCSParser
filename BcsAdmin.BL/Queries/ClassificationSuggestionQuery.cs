@@ -16,7 +16,7 @@ namespace BcsAdmin.BL.Queries
 
         protected override async Task<IQueryable<SuggestionDto>> GetQueriableAsync(CancellationToken cancellationToken)
         {
-            var queriable = await GetWebDataAsync<ApiClassification>(cancellationToken,"classfications");
+            var queriable = await GetWebDataAsync<ApiClassification>(cancellationToken, "classifications");
 
             if (!string.IsNullOrWhiteSpace(Filter.SearchText))
             {

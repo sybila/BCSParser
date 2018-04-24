@@ -22,11 +22,11 @@ namespace Bcs.Admin.Web.ViewModels
         [Bind(Direction.None)]
         protected ReactionFacade ReactionFacade => (ReactionFacade)Facade;
 
-        [CodeEditor(nameof(UpdateEquation))]
+        [CodeEditor(nameof(UpdateEquationAsync))]
         [Display(GroupName = "Fields")]
         public string Equation { get; set; }
 
-        [CodeEditor(nameof(UpdateModifier))]
+        [CodeEditor(nameof(UpdateModifierAsync))]
         [Display(GroupName = "Fields")]
         public string Modifier { get; set; }
 
@@ -44,30 +44,30 @@ namespace Bcs.Admin.Web.ViewModels
             textPresenter = new TextPresenter();
         }
 
-        public void UpdateEquation()
+        public async Task UpdateEquationAsync()
         {
             var equationText = textPresenter.ToRawText(Equation);
-            var model = ReactionFacade.GetReactionModel(equationText);
+            var model = await ReactionFacade.GetReactionModelAsync(equationText);
             var spans = ReactionFacade.GetClassificationSpans(model);
 
             Equation = textPresenter.CreateRichText(equationText, spans);
             EquationErrors = model?.Errors.Select(e => e.Message).ToList() ?? new List<string>();
         }
 
-        public void UpdateModifier()
+        public async Task UpdateModifierAsync()
         {
             var equationText = textPresenter.ToRawText(Modifier);
 
-            var model =ReactionFacade.GetReactionModel(equationText);
+            var model = await ReactionFacade.GetReactionModelAsync(equationText);
 
             Modifier = textPresenter.CreateRichText(equationText, ReactionFacade.GetClassificationSpans(model));
         }
 
-        public override Task PreRender()
+        public async override Task PreRender()
         {
-            UpdateEquation();
-            UpdateModifier();
-            return base.PreRender();
+            await UpdateEquationAsync();
+            await UpdateModifierAsync();
+            await base.PreRender();
         }
     }
 }

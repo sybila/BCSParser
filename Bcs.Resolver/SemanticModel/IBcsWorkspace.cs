@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using BcsResolver.SemanticModel.Tree;
 
 namespace BcsResolver.SemanticModel
@@ -8,9 +10,11 @@ namespace BcsResolver.SemanticModel
         IReadOnlyDictionary<string, BcsComplexSymbol> Complexes { get; }
         IReadOnlyDictionary<string, BcsStructuralAgentSymbol> StructuralAgents { get; }
         IReadOnlyDictionary<string, BcsAtomicAgentSymbol> AtomicAgents { get; }
-        IReadOnlyDictionary<string, BcsLocationSymbol> Locations { get; }
+        IReadOnlyDictionary<string, BcsCompartmentSymbol> Locations { get; }
         IReadOnlyDictionary<string, IReadOnlyList<BcsComposedSymbol>> LocationEntityMap { get; }
         IEnumerable<BcsComposedSymbol> GetAllEntities();
-        void CreateSemanticModel();
+        Task CreateSemanticModelAsync(CancellationToken cencellationToken);
+
+        IReadOnlyList<SemanticError> Errors { get; }
     }
 }

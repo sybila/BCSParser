@@ -54,7 +54,7 @@ namespace BcsResolver.SemanticModel
 
             if (parameter == null)
             {
-                BcsLocationSymbol locationSymbol = Workspace.Locations.ContainsKey(nameToBind) ? Workspace.Locations[nameToBind] : null;
+                BcsCompartmentSymbol locationSymbol = Workspace.Locations.ContainsKey(nameToBind) ? Workspace.Locations[nameToBind] : null;
 
                 if (locationSymbol == null)
                 {
@@ -253,7 +253,7 @@ namespace BcsResolver.SemanticModel
                     directBoundParent.CastTo<IBcsComposedBoundSymbol>().AddContent(childName, boundChild);
                 }
             }
-            else if (directBoundParent?.Symbol is BcsLocationSymbol)
+            else if (directBoundParent?.Symbol is BcsCompartmentSymbol)
             {
                 var boundLocation = directBoundParent.CastTo<BcsBoundLocation>();
 
@@ -298,7 +298,7 @@ namespace BcsResolver.SemanticModel
             }
         }
 
-        private BcsComplexSymbol GetSymbolByComponentsAndLocation(BcsComplexNode bcsComplex, BcsLocationSymbol locationSymbol)
+        private BcsComplexSymbol GetSymbolByComponentsAndLocation(BcsComplexNode bcsComplex, BcsCompartmentSymbol locationSymbol)
         {
             var complexStructuralAgentNames = bcsComplex.Parts.Elements.Select(e => e.Identifier?.Name ?? "").ToList();
 
@@ -359,7 +359,7 @@ namespace BcsResolver.SemanticModel
             return s;
         }
 
-        private TResultSymbol GetSymbolFromWokrspaceByNameAndLocation<TResultSymbol>(string nameToBind, BcsLocationSymbol locationSymbol, Func<IReadOnlyDictionary<string, TResultSymbol>> symbolProvider)
+        private TResultSymbol GetSymbolFromWokrspaceByNameAndLocation<TResultSymbol>(string nameToBind, BcsCompartmentSymbol locationSymbol, Func<IReadOnlyDictionary<string, TResultSymbol>> symbolProvider)
              where TResultSymbol : BcsComposedSymbol
         {
             TResultSymbol composedSymbol;
@@ -428,9 +428,9 @@ namespace BcsResolver.SemanticModel
                 containerSymbol.Is<BcsComplexSymbol>() && contentSymbol.Is<BcsAtomicAgentSymbol>() ||
                 containerSymbol.Is<BcsStructuralAgentSymbol>() && contentSymbol.Is<BcsAtomicAgentSymbol>() ||
                 containerSymbol.Is<BcsAtomicAgentSymbol>() && contentSymbol.Is<BcsStateSymbol>() ||
-                containerSymbol.Is<BcsLocationSymbol>() && contentSymbol.Is<BcsComposedSymbol>() ||
+                containerSymbol.Is<BcsCompartmentSymbol>() && contentSymbol.Is<BcsComposedSymbol>() ||
                 containerSymbol.Is<BcsComposedSymbol>() && contentSymbol.Is<BcsErrorSymbol>() ||
-                containerSymbol.Is<BcsLocationSymbol>() && contentSymbol.Is<BcsErrorSymbol>();
+                containerSymbol.Is<BcsCompartmentSymbol>() && contentSymbol.Is<BcsErrorSymbol>();
 
             if (!areCompatible)
             {

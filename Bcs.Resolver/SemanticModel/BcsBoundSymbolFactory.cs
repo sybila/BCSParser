@@ -39,7 +39,7 @@ namespace BcsResolver.SemanticModel
             };
         }
 
-        protected override IBcsBoundSymbol VisitLocation(BcsLocationSymbol bcsLocationSymbol, BcsExpressionNode parameter)
+        protected override IBcsBoundSymbol VisitLocation(BcsCompartmentSymbol bcsLocationSymbol, BcsExpressionNode parameter)
         {
             return new BcsBoundLocation
             {
