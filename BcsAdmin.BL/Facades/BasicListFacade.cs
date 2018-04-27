@@ -22,10 +22,11 @@ namespace BcsAdmin.BL.Facades
 
         public async Task<IList<string>> GetEntityTypeNames()
         {
-
-            var q = entityTypeQueryFunc();
-            return await q.ExecuteAsync();
-
+            return new List<string>() {
+                "Compartment",
+                "Atomic",
+                "Structure",
+                "Complex"};
         }
 
         public List<BiochemicalEntityTypeDto> GetEntityTypes()

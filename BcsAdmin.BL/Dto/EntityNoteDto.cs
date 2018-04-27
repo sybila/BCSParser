@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BcsAdmin.BL.Dto
 {
-    public class EntityNoteDto : IEntity<int>, IAssociatedEntity
+    public class EntityNoteDto : IEntity<int>
     {
         [Display(AutoGenerateField = false)]
         public int Id { get; set; }
@@ -22,8 +22,5 @@ namespace BcsAdmin.BL.Dto
 
         [Editable(false)]
         public DateTime? Updated { get; set; }
-
-        [Display(AutoGenerateField = false)]
-        public int? IntermediateEntityId { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BcsAdmin.BL;
 using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Facades;
+using BcsAdmin.BL.Facades.Defs;
 using BcsAdmin.BL.Filters;
 using DotVVM.Framework.Controls;
 using DotVVM.Framework.Hosting;
@@ -14,10 +15,10 @@ using Riganti.Utils.Infrastructure.Core;
 
 namespace Bcs.Admin.Web.ViewModels.Grids
 {
-    public class EditableGrid<TGridEntity> : DotvvmViewModelBase, IEditableGrid<TGridEntity>
-        where TGridEntity : class, IEntity<int>, IAssociatedEntity
+    public class EditableGrid<TKey, TGridEntity> : DotvvmViewModelBase, IEditableGrid<TKey, TGridEntity>
+        where TGridEntity : class, IEntity<TKey>
     {
-        private readonly IGridFacade<TGridEntity> facade;
+        private readonly IGridFacade<TKey, TGridEntity> facade;
 
         public int ParentEntityId { get; set; }
 
@@ -30,7 +31,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public bool IsCollapsed { get; set; }
 
-        public EditableGrid(IGridFacade<TGridEntity> facade)
+        public EditableGrid(IGridFacade<TKey, TGridEntity> facade)
         {
             this.facade = facade;
         }
@@ -38,7 +39,6 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         public void Add()
         {
             NewRow = facade.InitializeNew();
-            NewRow.IntermediateEntityId = ParentEntityId;
         }
 
         public void Cancel()
@@ -49,28 +49,26 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public async Task DeleteAsync(TGridEntity entity)
         {
-            facade.Delete(entity.Id);
+            facade.Delete(ParentEntityId, entity.Id);
             await ReloadDataAsync();
         }
 
         public void Edit(TGridEntity entity)
         {
             Cancel();
-            entity.IntermediateEntityId = ParentEntityId;
             DataSet.RowEditOptions.EditRowId = entity.Id;
         }
 
         public async Task SaveNewAsync()
         {
-            facade.Save(NewRow);
+            facade.Save(ParentEntityId, NewRow);
             Cancel();
             await ReloadDataAsync();
         }
 
         public async Task SaveEditAsync(TGridEntity entity)
         {
-            entity.IntermediateEntityId = ParentEntityId;
-            facade.Save(entity);
+            facade.Save(ParentEntityId, entity);
             Cancel();
             await ReloadDataAsync();
         }

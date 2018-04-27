@@ -91,7 +91,8 @@ namespace BcsAdmin.BL.Repositories.Api
             private async Task InsertAsync(TEntity entity)
             {
                 var response = await HttpClient.PostAsync(GetFullUrl(), PrepareContent(entity));
-                await HandleResponseAsync(response);
+                var newId = await HandleResponseAsync(response);
+                entity.Id = newId ?? 0;
             }
 
             public void Insert(IEnumerable<TEntity> entities)
@@ -202,7 +203,7 @@ namespace BcsAdmin.BL.Repositories.Api
                 return await GetByIdsAsync(cancellationToken, ids);
             }
 
-            private async Task HandleResponseAsync(HttpResponseMessage response)
+            private async Task<int?> HandleResponseAsync(HttpResponseMessage response)
             {
                 string responseContent = await response.Content.ReadAsStringAsync();
 
@@ -212,6 +213,7 @@ namespace BcsAdmin.BL.Repositories.Api
                 {
                     throw new Exception($"{responseObject.Code}: {responseObject.Message}");
                 }
+                return responseObject?.Id;
             }
 
             private HttpContent PrepareContent(TEntity entity)

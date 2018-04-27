@@ -51,9 +51,8 @@ namespace BcsAdmin.BL
                 .ForAllOtherMembers(a => a.Ignore());
             cfg.CreateMap<ApiEntity, StateEntityDto>();
             cfg.CreateMap<StateEntityDto, ApiEntity>()
-               .ForMember(t => t.Code, m => m.MapFrom(s => s.Code))
+               .ForMember(t => t.Code, m => m.MapFrom(s => s.Id))
                 .ForMember(t => t.Type, m => m.MapFrom(s => (int)Dto.HierarchyType.State))
-                .ForMember(t => t.Id, m => m.MapFrom(s => s.Id))
                 .ForAllOtherMembers(a => a.Ignore());
 
             //other grid entities
@@ -63,14 +62,8 @@ namespace BcsAdmin.BL
                 .ForMember(m => m.IntermediateEntityId, a => a.Ignore());
 
             //Entity notes
-            cfg.CreateMap<EpEntityNote, EntityNoteDto>()
-                .ForMember(m => m.IntermediateEntityId, a => a.MapFrom(s => s.EntityId));
-            cfg.CreateMap<EntityNoteDto, EpEntityNote>()
-                .ForMember(m => m.EntityId, a => a.MapFrom(s => s.IntermediateEntityId))
-                .ForMember(m => m.Inserted, a => a.Ignore())
-                .ForMember(m => m.Updated, a => a.Ignore())
-                .ForMember(m => m.User, a => a.Ignore())
-                .ForMember(m => m.UserId, a => a.Ignore());
+            cfg.CreateMap<ApiNote, EntityNoteDto>();
+            cfg.CreateMap<EntityNoteDto, ApiNote>();
         }
 
         public static void RegisterFactory<TContract, TImplementation>(this IServiceCollection services)

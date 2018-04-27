@@ -21,7 +21,7 @@ namespace Bcs.Admin.Web.Controls.Dynamic
 
         public override bool CanHandleProperty(PropertyInfo propertyInfo, DynamicDataContext context)
         {
-            return propertyInfo.PropertyType.IsAssignableToGenericType(typeof(IEditableGrid<>));
+            return propertyInfo.PropertyType.IsAssignableToGenericType(typeof(IEditableGrid<,>));
         }
 
         public override void CreateControl(DotvvmControl container, PropertyDisplayMetadata property, DynamicDataContext context)

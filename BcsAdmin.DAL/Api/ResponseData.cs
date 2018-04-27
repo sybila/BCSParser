@@ -10,6 +10,7 @@ namespace BcsAdmin.DAL.Api
         public ResponseStatus Status { get; set; }
         public string Message { get; set; }              
         public int Code { get; set; }
+        public int? Id { get; set; }
     }
 
 

@@ -4,19 +4,95 @@ using Riganti.Utils.Infrastructure.Services.Facades;
 using BcsAdmin.DAL.Api;
 using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Filters;
+using System.Collections.Generic;
+using BcsAdmin.BL.Queries;
+using System.Linq;
+using BcsAdmin.BL.Facades.Defs;
+using DotVVM.Framework.Controls;
+using System.Threading.Tasks;
 
 namespace BcsAdmin.BL.Facades
 {
-    public class StateGridFacade : FilteredCrudFacadeBase<ApiEntity, int, StateEntityDto, StateEntityDto, IdFilter>, IGridFacade<StateEntityDto>
+    public class StateGridFacade : IGridFacade<string, StateEntityDto>
     {
-        public StateGridFacade(
-            IUnitOfWorkProvider unitOfWorkProvider,
-            Func<IFilteredQuery<StateEntityDto, IdFilter>> queryFactory, 
-            IRepository<ApiEntity, int> repository, 
-            IEntityDTOMapper<ApiEntity, StateEntityDto> mapper) 
-            : base(queryFactory, repository, mapper)
+        public Func<IFilteredQuery<StateEntityDto, IdFilter>> QueryFactory { get; }
+        private readonly IRepository<ApiEntity, int> entityRepository;
+
+        public StateGridFacade(IRepository<ApiEntity, int> entityRepository, Func<OneToManyQuery<ApiEntity, StateEntityDto>> queryFactory)
         {
-            UnitOfWorkProvider = unitOfWorkProvider;
+            this.entityRepository = entityRepository;
+            QueryFactory = queryFactory;
+        }
+
+        public StateEntityDto InitializeNew()
+        {
+            return new StateEntityDto();
+        }
+
+        public StateEntityDto GetDetail(int parentId, string code)
+        {
+            var parent = entityRepository.GetById(parentId);
+            var state = parent.States.SingleOrDefault(s => s.Code == code);
+
+            return new StateEntityDto {
+                Id = state.Code,
+                Description = state.Description
+            };
+        }
+
+        public StateEntityDto Save(int parentId, StateEntityDto data)
+        {
+            var parent = entityRepository.GetById(parentId);
+            var state = parent.States.SingleOrDefault(s => s.Code == data.Id);
+
+            var newState = new ApiState
+            {
+                Code = data.Id,
+                Description = data.Description
+            };
+
+            if (state != null)
+            {
+                parent.States.Remove(state);
+            }
+            parent.States.Add(newState);
+
+            ClearAll(parent);
+            entityRepository.Update(parent);
+            return data;
+        }
+
+        public void Delete(int parentId, string code)
+        {
+            var parent = entityRepository.GetById(parentId);
+            var state  = parent.States.SingleOrDefault(s => s.Code == code);
+            parent.States.Remove(state);
+
+            ClearAll(parent);
+            entityRepository.Update(parent);
+        }
+
+        private static void ClearAll(ApiEntity parentEntity)
+        {
+            parentEntity.Annotations = null;
+            parentEntity.Children = null;
+            parentEntity.Code = null;
+            parentEntity.Description = null;
+            parentEntity.Name = null;
+            parentEntity.Organisms = null;
+            parentEntity.Parent = null;
+            parentEntity.Parents = null;
+            parentEntity.Status = null;
+            parentEntity.Type = null;
+            parentEntity.Classifications = null;
+            parentEntity.Compartments = null;
+        }
+
+        public async Task FillDataSetAsync(GridViewDataSet<StateEntityDto> dataSet, IdFilter filter)
+        {
+            var query = QueryFactory();
+            query.Filter = filter;
+            await dataSet.LoadFromQueryAsync(query);
         }
     }
 }

@@ -7,7 +7,7 @@ using BcsAdmin.DAL.Api;
 
 namespace BcsAdmin.BL.Dto
 {
-    public class ClassificationDto : IAssociatedEntity
+    public class ClassificationDto : IAssociatedEntity, IEntity<int>
     {
         [Display(AutoGenerateField = false)]
         public int Id { get; set; }

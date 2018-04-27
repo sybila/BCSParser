@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BcsAdmin.BL.Dto
 {
-    public abstract class BiochemicalEntityLinkDto : IAssociatedEntity
+    public abstract class BiochemicalEntityLinkDto : IAssociatedEntity, IEntity<int>
     {
         [Display(AutoGenerateField =false)]
         public int Id { get; set; }
@@ -29,11 +29,11 @@ namespace BcsAdmin.BL.Dto
         }
     }
 
-    public class StateEntityDto : IEntity<int>, IAssociatedEntity
+    public class StateEntityDto : IEntity<string>
     {
-        public int Id { get; set; } = -1;
-        public string Code { get; set; }
+        [Required]
+        [Display(Name = "Code")]
+        public string Id { get; set; }
         public string Description { get; set; }
-        public int? IntermediateEntityId { get; set; }
     }
 }

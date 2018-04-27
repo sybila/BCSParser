@@ -70,7 +70,7 @@ namespace Bcs.Analyzer.DemoWeb
             builder.RegisterType<BootstrapFormGroupBuilder>().As<IFormBuilder>();
 
             builder.RegisterGeneric(typeof(EditableLinkGrid<,>)).As(typeof(IEditableLinkGrid<,>));
-            builder.RegisterGeneric(typeof(EditableGrid<>)).As(typeof(IEditableGrid<>));
+            builder.RegisterGeneric(typeof(EditableGrid<,>)).As(typeof(IEditableGrid<,>));
             builder.RegisterGeneric(typeof(SuggestionsFacade<>)).As(typeof(SuggestionsFacade<>));
             builder.RegisterGeneric(typeof(AutoDtoMapper<,>)).As(typeof(IEntityDTOMapper<,>));
             builder.RegisterGeneric(typeof(ApiGenericRepository<>)).As(typeof(IRepository<,>));

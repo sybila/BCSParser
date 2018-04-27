@@ -15,10 +15,22 @@ namespace BcsAdmin.BL.Queries
         {
         }
 
-        protected override Task<IQueryable<EntityNoteDto>> GetQueriableAsync(CancellationToken cancellationToken)
+        protected async override Task<IQueryable<EntityNoteDto>> GetQueriableAsync (CancellationToken cancellationToken)
         {
-            //no api
-            return Task.FromResult(Enumerable.Empty<EntityNoteDto>().AsQueryable());
+            if(Filter.Id == 0)
+            {
+                return new EntityNoteDto[] { }.AsQueryable();
+            }
+
+            var results = await GetWebDataAsync<ApiNote>(cancellationToken, $"entities/{Filter.Id}/notes");
+
+            return results.Select(n => new EntityNoteDto
+            {
+                Text = n.Text,
+                UserName = n.UserName,
+                Id = n.Id,
+            })
+            .AsQueryable();
         }
     }
 }

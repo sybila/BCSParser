@@ -9,7 +9,7 @@ using Riganti.Utils.Infrastructure.Core;
 
 namespace Bcs.Admin.Web.ViewModels.Grids
 {
-    public interface IEditableLinkGrid<TGridEntity, TSuggestionQuery> : IEditableGrid<TGridEntity>
+    public interface IEditableLinkGrid<TGridEntity, TSuggestionQuery> : IEditableGrid<int, TGridEntity>
         where TGridEntity : class, IEntity<int>
         where TSuggestionQuery : IFilteredQuery<SuggestionDto, SuggestionFilter>
     {

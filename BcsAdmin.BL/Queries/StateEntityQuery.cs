@@ -23,7 +23,7 @@ namespace BcsAdmin.BL.Queries
                 ??  new List<ApiState> {})
                 .Select(e => new StateEntityDto
                 {
-                    Code = e.Code,
+                    Id = e.Code,
                     Description = e.Description
                 })
                 .AsQueryable();

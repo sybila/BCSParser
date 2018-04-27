@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BcsResolver.Extensions
 {
@@ -8,15 +9,30 @@ namespace BcsResolver.Extensions
         public static TValue GetValue<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
             => dictionary[key];
 
-        //public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
-        //{
-        //    TValue value;
-        //    if (!dictionary.TryGetValue(key, out value))
-        //    {
-        //        return default(TValue);
-        //    }
-        //    return value;
-        //}
+        /// <summary>
+        /// Splits an array into several smaller arrays.
+        /// </summary>
+        /// <typeparam name="T">The type of the array.</typeparam>
+        /// <param name="array">The array to split.</param>
+        /// <param name="size">The size of the smaller arrays.</param>
+        /// <returns>An array containing smaller arrays.</returns>
+        public static IEnumerable<IEnumerable<T>> Split<T>(this T[] array, int size)
+        {
+            for (var i = 0; i < (float)array.Length / size; i++)
+            {
+                yield return array.Skip(i * size).Take(size);
+            }
+        }
+
+        public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
+        {
+            TValue value;
+            if (!dictionary.TryGetValue(key, out value))
+            {
+                return default(TValue);
+            }
+            return value;
+        }
 
         public static TTarget ApplyAction<TTarget>(this TTarget target, Action<TTarget> outerAction)
         {

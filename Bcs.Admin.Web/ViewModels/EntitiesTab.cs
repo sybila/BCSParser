@@ -60,10 +60,10 @@ namespace Bcs.Admin.Web.ViewModels
 
         public async override Task Load()
         {
-            //if (!Context.IsPostBack)
-            //{
+            if (!Context.IsPostBack)
+            {
                 await ReloadDataAsync();
-            //}
+            }
             await base.Load();
         }
     }

@@ -23,6 +23,11 @@ namespace BcsAdmin.BL.Services
         {
             var entity = entityProvider(id);
 
+            if(entity == null)
+            {
+                return CreateError("<null>", new Exception("Entity not found."));
+            }
+
             switch (entity.Type)
             {
                 case ApiEntityType.Compartment:

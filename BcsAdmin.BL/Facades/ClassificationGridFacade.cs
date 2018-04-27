@@ -22,11 +22,31 @@ namespace BcsAdmin.BL.Facades
         protected override void UnlinkCore(ApiEntity parentEntity, int associatedId)
         {
             parentEntity.Classifications.Remove(associatedId);
+            ClearAll(parentEntity);
         }
 
         internal override void LinkCore(ApiEntity parentEntity, int associatedId)
         {
             parentEntity.Classifications.Add(associatedId);
+            ClearAll(parentEntity);
+        }
+
+        private static void ClearAll(ApiEntity parentEntity)
+        {
+            parentEntity.Code = null;
+            parentEntity.Description = null;
+            parentEntity.Name = null;           
+            parentEntity.Parent = null;
+            parentEntity.Parents = null;
+            parentEntity.Status = null;
+            parentEntity.Type = null;
+
+
+            parentEntity.Children = null;
+            parentEntity.Annotations = null;
+            parentEntity.Compartments = null;
+            parentEntity.States = null;
+            parentEntity.Organisms = null;
         }
     }
 }

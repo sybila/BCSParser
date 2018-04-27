@@ -37,7 +37,7 @@ namespace Bcs.Admin.Web.ViewModels
         public IEditableLinkGrid<ComponentLinkDto, EntitySuggestionQuery> Components { get; set; }
 
         [Display(GroupName = "Grids")]
-        public IEditableGrid<StateEntityDto> States { get; set; }
+        public IEditableGrid<string, StateEntityDto> States { get; set; }
 
         public List<BiochemicalEntityTypeDto> AllowedChildHierarchyTypes { get; set; }
 
@@ -50,8 +50,8 @@ namespace Bcs.Admin.Web.ViewModels
             IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid,
             IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid,
             IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> organisms,
-            IEditableGrid<StateEntityDto> stateGrid,
-            IEditableGrid<EntityNoteDto> noteGrid)
+            IEditableGrid<string, StateEntityDto> stateGrid,
+            IEditableGrid<int, EntityNoteDto> noteGrid)
             : base(dashboardFacade, mapper, locationGrid, classificationGrid, organisms, noteGrid)
         {
             this.basicListFacade = basicListFacade;

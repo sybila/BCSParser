@@ -52,7 +52,7 @@ namespace Bcs.Admin.Web.ViewModels
         public IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> Organisms { get; set; }
 
         [Display(GroupName = "Grids")]
-        public IEditableGrid<EntityNoteDto> Notes { get; set; }
+        public IEditableGrid<int, EntityNoteDto> Notes { get; set; }
 
         public AlertViewModel Alert { get; set; }
 
@@ -62,7 +62,7 @@ namespace Bcs.Admin.Web.ViewModels
             IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid,
             IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid,
             IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> organisms,
-            IEditableGrid<EntityNoteDto> noteGrid)
+            IEditableGrid<int, EntityNoteDto> noteGrid)
         {
             Mapper = mapper;
             Facade = facade;

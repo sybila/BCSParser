@@ -16,11 +16,22 @@ namespace BcsAdmin.BL.Queries
         {
             var query = await GetWebDataAsync<ApiEntity>(cancellationToken, "entities");
 
-            return query
-                .Where(e=> e.Type.HasValue)
-                .Select(e => e.Type.Value)
-                .Distinct()
-                .Select(e => e.ToString("F"));
+            //var r = query
+            //    .Where(e => e.Type.HasValue)
+            //    .Select(e => e.Type.Value)
+            //    .Distinct()
+            //    .Select(e => e.ToString("F"));
+
+            //var a = r.ToList();
+
+            return new List<string>() {
+                "Compartment",
+                "Atomic",
+                "Structure",
+                "Complex"}
+            .AsQueryable();
+
+
         }
     }
 }

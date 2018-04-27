@@ -5,7 +5,7 @@ using Riganti.Utils.Infrastructure.Core;
 
 namespace BcsAdmin.BL.Dto
 {
-    public interface IAssociatedEntity : IEntity<int>
+    public interface IAssociatedEntity
     {
         int? IntermediateEntityId { get; set; }
     }

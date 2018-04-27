@@ -38,7 +38,7 @@ namespace Bcs.Admin.Web.ViewModels
             IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid, 
             IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid, 
             IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> organisms, 
-            IEditableGrid<EntityNoteDto> noteGrid) 
+            IEditableGrid<int, EntityNoteDto> noteGrid) 
             : base(reactionFacade, mapper, locationGrid, classificationGrid, organisms, noteGrid)
         {
             textPresenter = new TextPresenter();
