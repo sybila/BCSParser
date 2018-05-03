@@ -10,7 +10,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
     {
         int ItemsCount { get; }
         int ParentEntityId { get; set; }
-
+        string ParentRepositoryName { get; set; }
         GridViewDataSet<TGridEntity> DataSet { get; }
         TGridEntity NewRow { get; }
 

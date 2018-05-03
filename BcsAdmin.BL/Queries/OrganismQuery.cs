@@ -7,22 +7,22 @@ using System.Collections.Generic;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class OrganismQuery : ManyToManyQuery<ApiEntity, ApiOrganism, EntityOrganismDto>
+    public class OrganismQuery : ManyToManyQuery<OrganismArray, ApiOrganism, OrganismDto>
     {
-        public OrganismQuery(IRepository<ApiEntity, int> parentEntityRepository, 
+        public OrganismQuery(IRepository<OrganismArray, int> parentEntityRepository, 
             IRepository<ApiOrganism, int> associatedEntityRepository) 
             : base(parentEntityRepository, associatedEntityRepository)
         {
         }
 
-        protected override IList<int> GetAssocitedEntityIds(ApiEntity parent)
+        protected override IList<int> GetAssocitedEntityIds(OrganismArray parent)
         {
             return parent.Organisms;
         }
 
-        protected override IQueryable<EntityOrganismDto> ProcessEntities(IQueryable<ApiOrganism> q, ApiEntity parentEntity)
+        protected override IQueryable<OrganismDto> ProcessEntities(IQueryable<ApiOrganism> q, OrganismArray parentEntity)
         {
-            return q.Select(e => new EntityOrganismDto
+            return q.Select(e => new OrganismDto
              {
                  Id = e.Id,
                  Name = e.Name,

@@ -32,9 +32,10 @@ namespace BcsAdmin.BL.Repositories.Api
             {
                 var contractResolver = new DefaultContractResolver
                 {
-                    NamingStrategy = new SnakeCaseNamingStrategy
+                    NamingStrategy = new CamelCaseNamingStrategy
                     {
-                        OverrideSpecifiedNames = false
+                        OverrideSpecifiedNames = false,
+                        
                     }
                 };
 

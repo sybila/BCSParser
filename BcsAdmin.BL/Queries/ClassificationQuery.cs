@@ -9,14 +9,14 @@ using System.Collections.Generic;
 
 namespace BcsAdmin.BL.Queries
 {
-    public class ClassificationQuery : ManyToManyQuery<ApiEntity, ApiClassification, ClassificationDto>
+    public class ClassificationQuery : ManyToManyQuery<ClassificationArray, ApiClassification, ClassificationDto>
     {
-        public ClassificationQuery(IRepository<ApiEntity, int> parentEntityRepository, IRepository<ApiClassification, int> associatedEntityRepository)
+        public ClassificationQuery(IRepository<ClassificationArray, int> parentEntityRepository, IRepository<ApiClassification, int> associatedEntityRepository)
             : base(parentEntityRepository, associatedEntityRepository)
         {
         }
 
-        protected override IQueryable<ClassificationDto> ProcessEntities(IQueryable<ApiClassification> q, ApiEntity parentEntity)
+        protected override IQueryable<ClassificationDto> ProcessEntities(IQueryable<ApiClassification> q, ClassificationArray parentEntity)
         {
             return q
                 .Where(e => e.Id == Filter.Id)
@@ -29,7 +29,7 @@ namespace BcsAdmin.BL.Queries
             });
         }
 
-        protected override IList<int> GetAssocitedEntityIds(ApiEntity parent)
+        protected override IList<int> GetAssocitedEntityIds(ClassificationArray parent)
         {
             return parent.Classifications;
         }

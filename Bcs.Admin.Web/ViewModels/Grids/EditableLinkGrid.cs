@@ -22,6 +22,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         [Bind(Direction.Both)]
         public int ParentEntityId { get; set; }
+        public string ParentRepositoryName { get; set; }
 
         public GridViewDataSet<TGridEntity> DataSet { get; set; }
         public TGridEntity NewRow { get; set; }
@@ -52,7 +53,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public async Task DeleteAsync(TGridEntity entity)
         {
-            facade.Unlink(new EntityLinkDto { DetailId = ParentEntityId, AssociatedId = entity.Id });
+            facade.Unlink(ParentRepositoryName, new EntityLinkDto { DetailId = ParentEntityId, AssociatedId = entity.Id });
             await ReloadDataAsync();
         }
 
@@ -64,7 +65,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public async Task SaveNewAsync()
         {
-            facade.CreateAndLink(NewRow, ParentEntityId);
+            facade.CreateAndLink(ParentEntityId, ParentRepositoryName, NewRow);
             NewRow = null;
             await ReloadDataAsync();
         }
@@ -82,7 +83,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
             if (associateId == null) return;
 
-            facade.Link(new EntityLinkDto {DetailId= ParentEntityId, AssociatedId= associateId.Value});
+            facade.Link(ParentRepositoryName, new EntityLinkDto {DetailId= ParentEntityId, AssociatedId= associateId.Value});
             await ReloadDataAsync();
         }
 

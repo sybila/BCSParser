@@ -9,14 +9,16 @@ namespace BcsAdmin.BL.Facades
 {
     public class ComponentsGridFacade : DependantLinkGridFacade<ApiEntity, ApiEntity, ComponentLinkDto>
     {
+        private readonly Func<IRepository<ApiEntity, int>> parentRepositoryFunc;
         public ComponentsGridFacade(
-            IRepository<ApiEntity, int> parentRepository,
+            Func<IRepository<ApiEntity, int>> parentRepositoryFunc,
             IRepository<ApiEntity, int> associatedEntityRepository,
             Func<ManyToManyQuery<ApiEntity, ApiEntity, ComponentLinkDto>> queryFactory,
             IUnitOfWorkProvider unitOfWorkProvider, 
             IMapper mapper) 
-            : base(parentRepository, associatedEntityRepository, queryFactory, unitOfWorkProvider, mapper)
+            : base(associatedEntityRepository, queryFactory, mapper)
         {
+            this.parentRepositoryFunc = parentRepositoryFunc;
         }
 
         protected override void UnlinkCore(ApiEntity parentEntity, int associatedId)
@@ -46,5 +48,8 @@ namespace BcsAdmin.BL.Facades
             parentEntity.Classifications = null;
             parentEntity.Compartments = null;
         }
+
+        protected override IRepository<ApiEntity, int> GetParentRepository(string paentRepositoryName) =>
+            parentRepositoryFunc();
     }
 }

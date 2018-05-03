@@ -37,11 +37,16 @@ namespace Bcs.Admin.Web.ViewModels
             IMapper mapper,
             IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid, 
             IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid, 
-            IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> organisms, 
+            IEditableLinkGrid<OrganismDto, OrganismSuggestionQuery> organisms,
+            IEditableGrid<int, AnnotationDto> annotationGrid,
             IEditableGrid<int, EntityNoteDto> noteGrid) 
-            : base(reactionFacade, mapper, locationGrid, classificationGrid, organisms, noteGrid)
+            : base(reactionFacade, mapper, annotationGrid, classificationGrid, organisms, noteGrid)
         {
             textPresenter = new TextPresenter();
+            Organisms.ParentRepositoryName = "rules";
+            Classifications.ParentRepositoryName = "rules";
+            Annotations.ParentRepositoryName = "rules";
+            Notes.ParentRepositoryName = "rules";
         }
 
         public async Task UpdateEquationAsync()

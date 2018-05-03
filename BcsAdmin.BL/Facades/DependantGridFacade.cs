@@ -1,112 +1,78 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Riganti.Utils.Infrastructure.Core;
-using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 using Riganti.Utils.Infrastructure.Services.Facades;
-using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Filters;
-using BcsAdmin.BL.Queries;
-using BcsAdmin.BL.Repositories;
-using AutoMapper;
+using BcsAdmin.DAL.Models;
 using DotVVM.Framework.Controls;
-using Riganti.Utils.Infrastructure;
 using System.Threading.Tasks;
+using BcsAdmin.BL.Facades.Defs;
 
 namespace BcsAdmin.BL.Facades
 {
-    public abstract class DependantLinkGridFacade<TParentEntity, TEntity, TEntityDto> : FacadeBase, ILinkGridFacade<TEntityDto>
-        where TParentEntity : IEntity<int>
-        where TEntity : IEntity<int>
-        where TEntityDto : IEntity<int>, new()
+    public abstract class DependantGridFacade<TApiEntity, TEntityDto> : IGridFacade<int, TEntityDto>
+        where TApiEntity : IEntity<int>
+        where TEntityDto : class, IEntity<int>, new()
     {
-        public Func<IFilteredQuery<TEntityDto, IdFilter>> QueryFactory { get; set; }
+        protected Func<IRepository<TApiEntity, int>> RepositoryFactory { get; }
+        protected IEntityDTOMapper<TApiEntity, TEntityDto> Mapper { get; }
+        public Func<IFilteredQuery<TEntityDto, IdFilter>> QueryFactory { get; }
 
-        private readonly IRepository<TEntity, int> associatedEntityRepository;
-        private readonly IRepository<TParentEntity, int> parentRepository;
-        private readonly IMapper mapper;
-
-        public DependantLinkGridFacade(
-            IRepository<TParentEntity, int> parentRepository,
-            IRepository<TEntity, int> associatedEntityRepository,
-            Func<ManyToManyQuery<TParentEntity, TEntity, TEntityDto>> queryFactory,
-            IUnitOfWorkProvider unitOfWorkProvider,
-            IMapper mapper)
+        public DependantGridFacade(
+            Func<IFilteredQuery<TEntityDto, IdFilter>> queryFactory,
+            Func<IRepository<TApiEntity, int>> repositoryFactory,
+            IEntityDTOMapper<TApiEntity, TEntityDto> mapper)
         {
-            UnitOfWorkProvider = unitOfWorkProvider;
-            this.associatedEntityRepository = associatedEntityRepository;
-            this.parentRepository = parentRepository;
-            this.QueryFactory = queryFactory;
-            this.mapper = mapper;
+            QueryFactory = queryFactory;
+            this.RepositoryFactory = repositoryFactory;
+            this.Mapper = mapper;
+        }
+
+        public void Delete(int parentId, string parentRepositoryName, int id)
+        {
+            var r = GetRepository(parentId, parentRepositoryName);
+            r.Delete(id);
+        }
+
+        public TEntityDto GetDetail(int parentId, string parentRepositoryName, int id)
+        {
+            var r = GetRepository(parentId, parentRepositoryName);
+            var apiEntity = r.GetById(id);
+
+            return Mapper.MapToDTO(apiEntity);
+        }
+
+        public TEntityDto InitializeNew()
+        {
+            return new TEntityDto
+            {
+
+            };
+        }
+
+        public TEntityDto Save(int parentId, string parentRepositoryName, TEntityDto data)
+        {
+            var r = GetRepository(parentId, parentRepositoryName);
+
+            var apiEntity = Mapper.MapToEntity(data);
+
+            if (data.Id == 0)
+            {
+                r.Insert(apiEntity);
+            }
+            else
+            {
+                r.Update(apiEntity);
+            }
+            return Mapper.MapToDTO(apiEntity);
         }
 
         public async Task FillDataSetAsync(GridViewDataSet<TEntityDto> dataSet, IdFilter filter)
         {
-            var query = QueryFactory();
-            query.Filter = filter;
-            await dataSet.LoadFromQueryAsync(query);
+            var q = QueryFactory();
+            q.Filter = filter;
+            await dataSet.LoadFromQueryAsync(q);
         }
 
-        public TEntityDto CreateAssociated()
-        {
-            return new TEntityDto();
-        }
-
-        public void Link(EntityLinkDto link)
-        {
-            using (var uow = UnitOfWorkProvider.Create())
-            {
-                var parentEntity = parentRepository.GetById(link.DetailId);
-
-                LinkCore(parentEntity, link.AssociatedId);
-
-                parentRepository.Update(parentEntity);
-
-                uow.Commit();
-            }
-        }
-
-        public void CreateAndLink(TEntityDto entity, int detailId)
-        {
-            using (var uow = UnitOfWorkProvider.Create())
-            {
-                var newEntity = associatedEntityRepository.InitializeNew();
-                newEntity.Id = -1;
-                mapper.Map(entity, newEntity);
-                associatedEntityRepository.Insert(newEntity);
-                uow.Commit();
-
-                Link(new EntityLinkDto { DetailId = detailId, AssociatedId = newEntity.Id });
-                uow.Commit();
-            }
-        }
-
-        public void Edit(TEntityDto entityDto)
-        {
-            using (var uow = UnitOfWorkProvider.Create())
-            {
-                var entity = associatedEntityRepository.GetById(entityDto.Id);
-                mapper.Map(entityDto, entity);
-                associatedEntityRepository.Update(entity);
-                uow.Commit();
-            }
-        }
-
-        public void Unlink(EntityLinkDto link)
-        {
-            using (var uow = UnitOfWorkProvider.Create())
-            {
-                var parentEntity = parentRepository.GetById(link.DetailId);
-
-                UnlinkCore(parentEntity, link.AssociatedId);
-
-                parentRepository.Update(parentEntity);
-
-                uow.Commit();
-            }
-        }
-
-        protected abstract void UnlinkCore(TParentEntity parentEntity, int associatedId);
-        internal abstract void LinkCore(TParentEntity parentEntity, int associatedId);
+        protected abstract IRepository<TApiEntity, int> GetRepository(int parentId, string parentRepositoryName);
     }
 }

@@ -21,6 +21,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         private readonly IGridFacade<TKey, TGridEntity> facade;
 
         public int ParentEntityId { get; set; }
+        public string ParentRepositoryName { get; set; }
 
         public GridViewDataSet<TGridEntity> DataSet { get; set; }
 
@@ -49,7 +50,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public async Task DeleteAsync(TGridEntity entity)
         {
-            facade.Delete(ParentEntityId, entity.Id);
+            facade.Delete(ParentEntityId, ParentRepositoryName, entity.Id);
             await ReloadDataAsync();
         }
 
@@ -61,14 +62,14 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public async Task SaveNewAsync()
         {
-            facade.Save(ParentEntityId, NewRow);
+            facade.Save(ParentEntityId, ParentRepositoryName, NewRow);
             Cancel();
             await ReloadDataAsync();
         }
 
         public async Task SaveEditAsync(TGridEntity entity)
         {
-            facade.Save(ParentEntityId, entity);
+            facade.Save(ParentEntityId, ParentRepositoryName, entity);
             Cancel();
             await ReloadDataAsync();
         }

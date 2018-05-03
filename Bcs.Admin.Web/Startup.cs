@@ -62,10 +62,9 @@ namespace Bcs.Analyzer.DemoWeb
             builder.RegisterAssemblyModules(typeof(AppDbContext).GetTypeInfo().Assembly);
 
             builder.RegisterType(typeof(AppDbContext)).As<DbContext>();
-            builder.RegisterType(typeof(EntityFrameworkUnitOfWorkProvider)).As<IUnitOfWorkProvider>();
-            builder.RegisterType(typeof(EntityFrameworkUnitOfWork)).As<IUnitOfWork>();
+            builder.RegisterType(typeof(ApiUnitOfWorkProvider)).As<IUnitOfWorkProvider>();
+            builder.RegisterType(typeof(ApiUnitOfWork)).As<IUnitOfWork>();
             builder.RegisterType(typeof(UtcDateTimeProvider)).As<IDateTimeProvider>();
-            builder.RegisterType(typeof(ThreadLocalUnitOfWorkRegistry)).As<IUnitOfWorkRegistry>().InstancePerLifetimeScope();
 
             builder.RegisterType<BootstrapFormGroupBuilder>().As<IFormBuilder>();
 
@@ -79,6 +78,7 @@ namespace Bcs.Analyzer.DemoWeb
             builder.RegisterAllBySuffix(typeof(Registry).Assembly, "Query");
             builder.RegisterAllBySuffix(typeof(Registry).Assembly, "Repository");
             builder.RegisterAllBySuffix(typeof(Registry).Assembly, "Facade");
+
 
             builder.RegisterAssemblyTypes(typeof(Registry).Assembly)
              .Where(t => t.Name.EndsWith("Mapper"))

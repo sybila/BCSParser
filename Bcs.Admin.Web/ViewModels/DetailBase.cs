@@ -43,13 +43,13 @@ namespace Bcs.Admin.Web.ViewModels
         public bool Active { get; set; }
 
         [Display(GroupName = "Grids")]
-        public IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> Locations { get; set; }
+        public IEditableGrid<int, AnnotationDto> Annotations { get; set; }
 
         [Display(GroupName = "Grids")]
         public IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> Classifications { get; set; }
 
         [Display(GroupName = "Grids")]
-        public IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> Organisms { get; set; }
+        public IEditableLinkGrid<OrganismDto, OrganismSuggestionQuery> Organisms { get; set; }
 
         [Display(GroupName = "Grids")]
         public IEditableGrid<int, EntityNoteDto> Notes { get; set; }
@@ -59,23 +59,26 @@ namespace Bcs.Admin.Web.ViewModels
         public DetailBase(
             ICrudDetailFacade<TDto, int> facade,
             IMapper mapper,
-            IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid,
+            IEditableGrid<int, AnnotationDto> annotationGrid,
             IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid,
-            IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> organisms,
+            IEditableLinkGrid<OrganismDto, OrganismSuggestionQuery> organisms,
             IEditableGrid<int, EntityNoteDto> noteGrid)
         {
             Mapper = mapper;
             Facade = facade;
 
-            Locations = locationGrid;
+            Annotations = annotationGrid;
             Classifications = classificationGrid;
             Notes = noteGrid;
-
             Organisms = organisms;
         }
 
         public virtual async Task PoputateGridsAsync()
         {
+            Annotations.ParentEntityId = Id;
+            await Annotations.Init();
+            await Annotations.ReloadDataAsync();
+
             Classifications.ParentEntityId = Id;
             await Classifications.Init();
             await Classifications.ReloadDataAsync();
@@ -84,11 +87,6 @@ namespace Bcs.Admin.Web.ViewModels
             await Organisms.Init();
             await Organisms.ReloadDataAsync();
 
-            Locations.ParentEntityId = Id;
-            await Locations.Init();
-            await Locations.ReloadDataAsync();
-            Locations.EntitySearchSelect.Filter.AllowedEntityTypes = new[] { HierarchyType.Compartment };
-
             Notes.ParentEntityId = Id;
             await Notes.Init();
             await Notes.ReloadDataAsync();
@@ -96,8 +94,8 @@ namespace Bcs.Admin.Web.ViewModels
 
         public virtual void CancelAllActions()
         {
+            Annotations.Cancel();
             Classifications.Cancel();
-            Locations.Cancel();
             Organisms.Cancel();
             Notes.Cancel();
         }

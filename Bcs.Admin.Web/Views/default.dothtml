@@ -14,10 +14,10 @@
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="input-group input-group-sm col-md-12">
-                        <dot:TextBox Changed="{command: RefreshAsync(true)}" class="form-control" Text="{value: Filter.SearchText}" />
+                        <dot:TextBox class="form-control" Text="{value: Filter.SearchText}" />
                         <div class="input-group-btn">
                             <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: RefreshAsync(true)}">
-                                <i class="glyphicon glyphicon-search"></i>
+                                <i class="glyphicon glyphicon-search"></i> Apply filters
                             </dot:Button>
                         </div>
                     </div>
@@ -25,7 +25,7 @@
                         There are 
                         <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span> 
                         results. Showing 
-                        <dot:TextBox class="form-control input-sm inline-control" Changed="{command: RefreshAsync(true)}" Text="{value: DataSet.PagingOptions.PageSize}" /> 
+                        <dot:TextBox class="form-control input-sm inline-control" Text="{value: DataSet.PagingOptions.PageSize}" /> 
                         items per page.
                     </div>
                 </div>
@@ -33,8 +33,7 @@
                     <dot:Repeater class="row" DataSource="{value: EntityTypes}">
                         <dot:CheckBox 
                                       style="min-width:150px;" 
-                                      class="col-md-4" Text="{value: _this}" 
-                                      Changed="{command: _parent.RefreshAsync(true)}" 
+                                      class="col-md-4" Text="{value: _this}"
                                       CheckedItems="{value: _parent.Filter.EntityTypeFilter}" 
                                       CheckedValue="{value: _this}" />
                     </dot:Repeater>
@@ -81,10 +80,10 @@
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="input-group input-group-sm col-md-12">
-                        <dot:TextBox Changed="{command: RefreshAsync(true)}" class="form-control" Text="{value: Filter.SearchText}" />
+                        <dot:TextBox class="form-control" Text="{value: Filter.SearchText}" />
                         <div class="input-group-btn">
                             <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: RefreshAsync(true)}">
-                                <i class="glyphicon glyphicon-search"></i>
+                                <i class="glyphicon glyphicon-search"></i> Apply filters
                             </dot:Button>
                         </div>
                     </div>
@@ -92,7 +91,7 @@
                         There are 
                         <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span> 
                         results. Showing
-                        <dot:TextBox class="form-control input-sm inline-control" Changed="{command: RefreshAsync(true)}" Text="{value: DataSet.PagingOptions.PageSize}" />
+                        <dot:TextBox class="form-control input-sm inline-control" Text="{value: DataSet.PagingOptions.PageSize}" />
                         items per page.
                     </div>
                 </div>

@@ -4,49 +4,41 @@ using BcsAdmin.DAL.Api;
 using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Queries;
 using AutoMapper;
+using System.Collections.Generic;
+using BcsAdmin.BL.Repositories.Api;
 
 namespace BcsAdmin.BL.Facades
 {
-    public class ClassificationGridFacade : DependantLinkGridFacade<ApiEntity, ApiClassification, ClassificationDto>
+    public class ClassificationGridFacade : DependantLinkGridFacade<ClassificationArray, ApiClassification, ClassificationDto>
     {
+        private readonly Func<IRepository<ClassificationArray, int>> parentRepositoryFunc;
+
         public ClassificationGridFacade(
-            IRepository<ApiEntity, int> parentRepository,
+            Func<IRepository<ClassificationArray, int>> parentRepositoryFunc,
             IRepository<ApiClassification, int> associatedEntityRepository, 
-            Func<ManyToManyQuery<ApiEntity, ApiClassification, ClassificationDto>> queryFactory, 
+            Func<ManyToManyQuery<ClassificationArray, ApiClassification, ClassificationDto>> queryFactory, 
             IUnitOfWorkProvider unitOfWorkProvider, 
             IMapper mapper) 
-            : base(parentRepository, associatedEntityRepository, queryFactory, unitOfWorkProvider, mapper)
+            : base(associatedEntityRepository, queryFactory, mapper)
         {
+            this.parentRepositoryFunc = parentRepositoryFunc;
         }
 
-        protected override void UnlinkCore(ApiEntity parentEntity, int associatedId)
+        protected override IRepository<ClassificationArray, int> GetParentRepository(string paentRepositoryName)
         {
-            parentEntity.Classifications.Remove(associatedId);
-            ClearAll(parentEntity);
+            var r = (ClassificationArrayRepository)parentRepositoryFunc();
+            r.RepoName = paentRepositoryName;
+            return r;
         }
 
-        internal override void LinkCore(ApiEntity parentEntity, int associatedId)
+        protected override void UnlinkCore(ClassificationArray parentEntity, int associatedId)
         {
             parentEntity.Classifications.Add(associatedId);
-            ClearAll(parentEntity);
         }
 
-        private static void ClearAll(ApiEntity parentEntity)
+        internal override void LinkCore(ClassificationArray parentEntity, int associatedId)
         {
-            parentEntity.Code = null;
-            parentEntity.Description = null;
-            parentEntity.Name = null;           
-            parentEntity.Parent = null;
-            parentEntity.Parents = null;
-            parentEntity.Status = null;
-            parentEntity.Type = null;
-
-
-            parentEntity.Children = null;
-            parentEntity.Annotations = null;
-            parentEntity.Compartments = null;
-            parentEntity.States = null;
-            parentEntity.Organisms = null;
+            parentEntity.Classifications.Remove(associatedId);
         }
     }
 }

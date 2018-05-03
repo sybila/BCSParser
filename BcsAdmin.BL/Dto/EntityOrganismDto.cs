@@ -6,7 +6,7 @@ using Riganti.Utils.Infrastructure.Core;
 
 namespace BcsAdmin.BL.Dto
 {
-    public class EntityOrganismDto : IEntity<int>, IAssociatedEntity
+    public class OrganismDto : IEntity<int>, IAssociatedEntity
     {
         [Display(AutoGenerateField = false)]
         public int Id { get; set; }

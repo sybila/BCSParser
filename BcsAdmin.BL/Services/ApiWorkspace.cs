@@ -96,7 +96,7 @@ namespace BcsAdmin.BL.Services
         private async Task<IList<ApiEntity>> GetEntitiesAsync(int[] ids)
         {
             var list = new List<ApiEntity>();
-            foreach (var id in ids.Split(50))
+            foreach (var id in ids.Split(1000))
             {
                 var results = await entityRepositry.GetByIdsAsync(id) ?? new ApiEntity[] { };
                 foreach (var item in results)

@@ -12,6 +12,8 @@ namespace BcsAdmin.DAL.Api
         public string Description { get; set; }
         public IList<int> Classifications { get; set; }
         public IList<int> Organisms { get; set; }
+        public IList<ApiEntityAnotation> Annotations { get; set; }
+
 
         [JsonConverter(typeof(StringEnumConverter))]
         public ApiEntityStatus? Status { get; set; }

@@ -29,7 +29,7 @@ namespace BcsAdmin.BL.Facades
             return new StateEntityDto();
         }
 
-        public StateEntityDto GetDetail(int parentId, string code)
+        public StateEntityDto GetDetail(int parentId, string parentRepositoryName, string code)
         {
             var parent = entityRepository.GetById(parentId);
             var state = parent.States.SingleOrDefault(s => s.Code == code);
@@ -40,7 +40,7 @@ namespace BcsAdmin.BL.Facades
             };
         }
 
-        public StateEntityDto Save(int parentId, StateEntityDto data)
+        public StateEntityDto Save(int parentId, string parentRepositoryName, StateEntityDto data)
         {
             var parent = entityRepository.GetById(parentId);
             var state = parent.States.SingleOrDefault(s => s.Code == data.Id);
@@ -62,7 +62,7 @@ namespace BcsAdmin.BL.Facades
             return data;
         }
 
-        public void Delete(int parentId, string code)
+        public void Delete(int parentId, string parentRepositoryName, string code)
         {
             var parent = entityRepository.GetById(parentId);
             var state  = parent.States.SingleOrDefault(s => s.Code == code);

@@ -39,6 +39,11 @@ namespace Bcs.Admin.Web.ViewModels
         [Display(GroupName = "Grids")]
         public IEditableGrid<string, StateEntityDto> States { get; set; }
 
+       
+
+        [Display(GroupName = "Grids")]
+        public IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> Locations { get; set; }
+
         public List<BiochemicalEntityTypeDto> AllowedChildHierarchyTypes { get; set; }
 
         public BiochemicalEntityDetail(
@@ -49,15 +54,22 @@ namespace Bcs.Admin.Web.ViewModels
             IEditableLinkGrid<ComponentLinkDto, EntitySuggestionQuery> componentGrid,
             IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> locationGrid,
             IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid,
-            IEditableLinkGrid<EntityOrganismDto, OrganismSuggestionQuery> organisms,
+            IEditableLinkGrid<OrganismDto, OrganismSuggestionQuery> organisms,
             IEditableGrid<string, StateEntityDto> stateGrid,
-            IEditableGrid<int, EntityNoteDto> noteGrid)
-            : base(dashboardFacade, mapper, locationGrid, classificationGrid, organisms, noteGrid)
+            IEditableGrid<int, EntityNoteDto> noteGrid,
+            IEditableGrid<int, AnnotationDto> annotationGrid)
+            : base(dashboardFacade, mapper, annotationGrid, classificationGrid, organisms, noteGrid)
         {
             this.basicListFacade = basicListFacade;
             this.usageFacade = usageFacade;
             Components = componentGrid;
             States = stateGrid;
+            Locations = locationGrid;
+
+            Organisms.ParentRepositoryName = "entities";
+            Classifications.ParentRepositoryName = "entities";
+            Annotations.ParentRepositoryName = "entities";
+            Notes.ParentRepositoryName = "entities";
         }
 
         public override async Task PoputateGridsAsync()
@@ -82,12 +94,19 @@ namespace Bcs.Admin.Web.ViewModels
             await States.Init();
             await States.ReloadDataAsync();
 
+            Locations.ParentEntityId = Id;
+            await Locations.Init();
+            await Locations.ReloadDataAsync();
+            Locations.EntitySearchSelect.Filter.AllowedEntityTypes = new[] { HierarchyType.Compartment };
+
             await base.PoputateGridsAsync();
         }
 
         public override void CancelAllActions()
         {
+            States.Cancel();
             Components.Cancel();
+            Locations.Cancel();
 
             base.CancelAllActions();
         }

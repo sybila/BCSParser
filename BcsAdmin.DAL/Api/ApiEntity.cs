@@ -23,8 +23,7 @@ namespace BcsAdmin.DAL.Api
 
         [JsonConverter(typeof(StringEnumConverter))]
         public ApiEntityType? Type { get; set; }
-        public IList<ApiEntityAnotation> Annotations { get; set; }
-
+       
         public IList<int> Children { get; set; }
         public IList<int> Compartments { get; set; }
 
