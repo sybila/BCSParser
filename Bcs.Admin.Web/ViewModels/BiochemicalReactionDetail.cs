@@ -51,28 +51,37 @@ namespace Bcs.Admin.Web.ViewModels
 
         public async Task UpdateEquationAsync()
         {
-            var equationText = textPresenter.ToRawText(Equation);
-            var model = await ReactionFacade.GetReactionModelAsync(equationText);
-            var spans = ReactionFacade.GetClassificationSpans(model);
+            await ExecuteSafeAsync(async () =>
+            {
+                var equationText = textPresenter.ToRawText(Equation);
+                var model = await ReactionFacade.GetReactionModelAsync(equationText);
+                var spans = ReactionFacade.GetClassificationSpans(model);
 
-            Equation = textPresenter.CreateRichText(equationText, spans);
-            EquationErrors = model?.Errors.Select(e => e.Message).ToList() ?? new List<string>();
+                Equation = textPresenter.CreateRichText(equationText, spans);
+                EquationErrors = model?.Errors.Select(e => e.Message).ToList() ?? new List<string>();
+            });
         }
 
         public async Task UpdateModifierAsync()
         {
-            var equationText = textPresenter.ToRawText(Modifier);
+            await ExecuteSafeAsync(async () =>
+            {
+                var equationText = textPresenter.ToRawText(Modifier);
 
-            var model = await ReactionFacade.GetReactionModelAsync(equationText);
+                var model = await ReactionFacade.GetReactionModelAsync(equationText);
 
-            Modifier = textPresenter.CreateRichText(equationText, ReactionFacade.GetClassificationSpans(model));
+                Modifier = textPresenter.CreateRichText(equationText, ReactionFacade.GetClassificationSpans(model));
+            });
         }
 
-        public override Task PoputateGridsAsync()
+        public override async Task PoputateGridsAsync()
         {
-            Classifications.EntitySearchSelect.Filter.Category = CategoryType.Rule;
+            await ExecuteSafeAsync(async () =>
+            {
+                Classifications.EntitySearchSelect.Filter.Category = CategoryType.Rule;
 
-            return base.PoputateGridsAsync();
+                await base.PoputateGridsAsync();
+            });
         }
 
         public async override Task PreRender()

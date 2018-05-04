@@ -21,6 +21,16 @@ div.margin-top{
     border-color: #dc3545;
 }
 
+.list 
+{
+    padding:5px 5px 5px 0px;
+}
+
+.list li
+{
+    list-style: none;
+}
+
 .gap{
     margin-top:5px;
     margin-bottom:5px;

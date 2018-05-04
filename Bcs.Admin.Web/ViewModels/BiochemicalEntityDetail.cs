@@ -39,7 +39,7 @@ namespace Bcs.Admin.Web.ViewModels
         [Display(GroupName = "Grids")]
         public IEditableGrid<string, StateEntityDto> States { get; set; }
 
-       
+
 
         [Display(GroupName = "Grids")]
         public IEditableLinkGrid<LocationLinkDto, EntitySuggestionQuery> Locations { get; set; }
@@ -74,34 +74,37 @@ namespace Bcs.Admin.Web.ViewModels
 
         public override async Task PoputateGridsAsync()
         {
-            AllowedChildHierarchyTypes = basicListFacade.GetEntityTypesForParentType(SelectedHierarchyType);
+            await ExecuteSafeAsync(async () =>
+            {
+                AllowedChildHierarchyTypes = basicListFacade.GetEntityTypesForParentType(SelectedHierarchyType);
 
-            Components.ParentEntityId =
-                SelectedHierarchyType > 1 && SelectedHierarchyType != 4
-                ? Id
-                : 0;
-            await Components.Init();
-            await Components.ReloadDataAsync();
-            Components.EntitySearchSelect.Filter.AllowedEntityTypes =
-                AllowedChildHierarchyTypes
-                .Select(t => (HierarchyType)t.Id)
-                .ToArray();
+                Components.ParentEntityId =
+                    SelectedHierarchyType > 1 && SelectedHierarchyType != 4
+                    ? Id
+                    : 0;
+                await Components.Init();
+                await Components.ReloadDataAsync();
+                Components.EntitySearchSelect.Filter.AllowedEntityTypes =
+                    AllowedChildHierarchyTypes
+                    .Select(t => (HierarchyType)t.Id)
+                    .ToArray();
 
-            States.ParentEntityId =
-              SelectedHierarchyType == 4
-              ? Id
-              : 0;
-            await States.Init();
-            await States.ReloadDataAsync();
+                States.ParentEntityId =
+                    SelectedHierarchyType == 4
+                    ? Id
+                    : 0;
+                await States.Init();
+                await States.ReloadDataAsync();
 
-            Locations.ParentEntityId = Id;
-            await Locations.Init();
-            await Locations.ReloadDataAsync();
-            Locations.EntitySearchSelect.Filter.AllowedEntityTypes = new[] { HierarchyType.Compartment };
+                Locations.ParentEntityId = Id;
+                await Locations.Init();
+                await Locations.ReloadDataAsync();
+                Locations.EntitySearchSelect.Filter.AllowedEntityTypes = new[] { HierarchyType.Compartment };
 
-            Classifications.EntitySearchSelect.Filter.Category = CategoryType.Entity;
+                Classifications.EntitySearchSelect.Filter.Category = CategoryType.Entity;
 
-            await base.PoputateGridsAsync();
+                await base.PoputateGridsAsync();
+            });
         }
 
         public override void CancelAllActions()
@@ -115,21 +118,25 @@ namespace Bcs.Admin.Web.ViewModels
 
         public async Task AskDelete()
         {
-            var usages = await usageFacade.GetEntityUsageListAsync(Id);
+            await ExecuteSafeAsync(async () =>
+            {
+                var usages = await usageFacade.GetEntityUsageListAsync(Id);
 
-            if (usages.Count > 0)
-            {
-                Alert = new AlertViewModel
+                if (usages.Count > 0)
                 {
-                    AlertHeading = "Delete entity",
-                    AlertText = "This entity is used by other entities are you sure you want to delete it?",
-                    AlertItems = usages
-                };
-            }
-            else
-            {
-                await DeleteAsync();
-            }
+                    Alert = new AlertViewModel
+                    {
+                        AlertHeading = "Delete entity",
+                        AlertText = "This entity is used by other entities are you sure you want to delete it?",
+                        AlertItems = usages
+                    };
+                }
+                else
+                {
+                    await DeleteAsync();
+                    SuccessMessage = "Entity deleted";
+                }
+            });
         }
 
         public IEnumerable<ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)

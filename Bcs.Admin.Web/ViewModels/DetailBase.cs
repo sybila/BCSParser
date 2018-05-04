@@ -12,7 +12,7 @@ using BcsAdmin.BL.Facades;
 
 namespace Bcs.Admin.Web.ViewModels
 {
-    public abstract class DetailBase<TDto> : DotvvmViewModelBase, IEntity<int>
+    public abstract class DetailBase<TDto> : AppViewModelBase, IEntity<int>
         where TDto : IEntity<int>
     {
         [Bind(Direction.None)]
@@ -102,19 +102,25 @@ namespace Bcs.Admin.Web.ViewModels
 
         public async Task SaveAsync()
         {
-            var dto = Mapper.Map<TDto>(this);
-            Facade.Save(dto);
-            Mapper.Map(dto, this);
+            await ExecuteSafeAsync(async () =>
+            {
+                var dto = Mapper.Map<TDto>(this);
+                Facade.Save(dto);
+                Mapper.Map(dto, this);
 
-            await PoputateGridsAsync();
-            CancelAllActions();
+                await PoputateGridsAsync();
+                CancelAllActions();
+            }, "Changes saved.");
         }
 
         public virtual async Task DeleteAsync()
         {
-            Facade.Delete(Id);
-            Close();
-            UpdateGrid?.Invoke();
+            await ExecuteSafeAsync(async () =>
+            {
+                Facade.Delete(Id);
+                Close();
+                UpdateGrid?.Invoke();
+            }, "Entity deleted");
         }
 
         public void Close()
@@ -135,10 +141,13 @@ namespace Bcs.Admin.Web.ViewModels
 
         public async Task EditAsync(int id)
         {
-            var dto = Facade.GetDetail(id);
-            Mapper.Map(dto, this);
-            await PoputateGridsAsync();
-            CancelAllActions();
+            await ExecuteSafeAsync(async () =>
+            {
+                var dto = Facade.GetDetail(id);
+                Mapper.Map(dto, this);
+                await PoputateGridsAsync();
+                CancelAllActions();
+            });
         }
     }
 }

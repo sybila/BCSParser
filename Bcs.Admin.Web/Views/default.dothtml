@@ -11,6 +11,7 @@
             <div DataContext="{value: EntitiesTab}" Visible="{value: _root.EntitiesSelected}">
                 <div class="col-md-12">
                     <h3>{{value: Name}}</h3>
+                    <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}"/>
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="input-group input-group-sm col-md-12">
@@ -77,6 +78,7 @@
             <div DataContext="{value: ReactionsTab}" Visible="{value: _root.ReactionsSelected}">
                 <div class="col-md-12">
                     <h3>{{value: Name}}</h3>
+                    <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}" />
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="input-group input-group-sm col-md-12">
@@ -127,6 +129,7 @@
         <div class="col-md-12 sub-board" DataContext="{value: EntityDetail}" Visible="{value: Id != -1}">
             <cc:PanelControl ColorStyle="Info" HeadingText="Entity detail" CloseCommand="{command: Close()}">
                 <BodyTemplate>
+                    <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}" />
                     <div class="col-md-12">
                         <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="v-bootstrap" DataContext="{value: _this}" />
                     </div>
@@ -148,6 +151,7 @@
         <div class="col-md-12 sub-board" DataContext="{value: ReactionDetail}" Visible="{value: Id != -1}">
             <cc:PanelControl ColorStyle="Info" HeadingText="Reaction detail" CloseCommand="{command: Close()}">
                 <BodyTemplate>
+                    <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}" />
                     <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="v-bootstrap" DataContext="{value: _this}" />
                 </BodyTemplate>
                 <FooterTemplate>

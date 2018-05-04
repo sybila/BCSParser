@@ -7,10 +7,9 @@ using Riganti.Utils.Infrastructure;
 
 namespace Bcs.Admin.Web.ViewModels
 {
-    public class Masterpage : DotvvmViewModelBase
+    public class Masterpage : AppViewModelBase
     {
         public string Title { get; set; }
-        public List<string> Errors { get; set; }
     }
 }
 

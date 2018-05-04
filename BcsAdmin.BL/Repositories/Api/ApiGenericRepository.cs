@@ -1,4 +1,6 @@
-﻿using BcsAdmin.DAL.Api;
+﻿using BcsAdmin.BL.Facades.Exceptions;
+using BcsAdmin.DAL.Api;
+using BcsAdmin.DAL;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Riganti.Utils.Infrastructure.Core;
@@ -212,7 +214,7 @@ namespace BcsAdmin.BL.Repositories.Api
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception($"{responseObject.Code}: {responseObject.Message}");
+                    throw new ApiDownException(responseObject != null ? $"{responseObject.Code}: {responseObject.Message}" : "Empty response.");
                 }
                 return responseObject?.Id;
             }

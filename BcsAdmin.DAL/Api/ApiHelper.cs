@@ -16,10 +16,15 @@ namespace BcsAdmin.DAL.Api
             using (var httpClient = new HttpClient())
             {
                 var response = await httpClient.GetAsync($"{appUrl}/{repoName}", cancellationToken);
-                response.EnsureSuccessStatusCode();
+                
                 string responseBody = await response.Content.ReadAsStringAsync();
 
                 var responseData = JsonConvert.DeserializeObject<EntityResponseData<TSourceEntity[]>>(responseBody);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new ApiDownException(responseData != null ? $"{responseData.Code}: {responseData.Message}" : "Empty response.");
+                }
 
                 return (responseData?.Data ?? new TSourceEntity[] { }).ToList();
             }

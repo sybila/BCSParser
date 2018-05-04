@@ -21,12 +21,8 @@
     </dot:InlineScript>
     <div class="container-fluid">
         <div class="col-md-12">
+            <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}"/>
             <h1>{{value: Title}}</h1>
-            <div style="display: none;" Visible="{value: Errors.Count != 0}" class="alert alert-danger">
-                <dot:Repeater WrapperTagName="ul" DataSource="{value:  Errors}">
-                    <li>{{value: _this}}</li>
-                </dot:Repeater>
-            </div>
         </div>
         <div class="col-md12">
             <dot:ContentPlaceHolder ID="MainContent" />
