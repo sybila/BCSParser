@@ -22,7 +22,8 @@ namespace BcsAdmin.BL.Queries
             {
                 queriable = queriable
                     .Where(e => e.Name != null)
-                    .Where(e => e.Name.IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1);
+                    .Where(e => e.Name.IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1)
+                    .Where(e => Filter.Category.TypeEquals(e.Type));
             }
 
             return queriable

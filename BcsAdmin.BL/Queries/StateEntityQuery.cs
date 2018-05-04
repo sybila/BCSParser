@@ -11,13 +11,19 @@ namespace BcsAdmin.BL.Queries
 {
     public class StateEntityQuery : OneToManyQuery<ApiEntity, StateEntityDto>
     {
-        public StateEntityQuery(IRepository<ApiEntity, int> parentEntityRepository) : base(parentEntityRepository)
+        private readonly IRepository<ApiEntity, int> parentEntityRepository;
+
+        public StateEntityQuery(IRepository<ApiEntity, int> parentEntityRepository) : base()
         {
+            this.parentEntityRepository = parentEntityRepository;
         }
+
+        protected override IRepository<ApiEntity, int> GetParentRepository() => parentEntityRepository;
 
         protected async override Task<IQueryable<StateEntityDto>> GetQueriableAsync(CancellationToken cancellationToken)
         {
-            var parent = await ParentEntityRepository.GetByIdAsync(cancellationToken, Filter.Id);
+            var parentRepo = GetParentRepository();
+            var parent = await parentRepo.GetByIdAsync(cancellationToken, Filter.Id);
 
             return (parent?.States 
                 ??  new List<ApiState> {})

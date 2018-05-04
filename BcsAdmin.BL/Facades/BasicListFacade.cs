@@ -29,6 +29,22 @@ namespace BcsAdmin.BL.Facades
                 "Complex"};
         }
 
+        public List<AnnotationTypeDto> GetAnnotationTypes()
+        {
+            return new List<AnnotationTypeDto>() {
+                new AnnotationTypeDto { Id = 0, Name = "bnid" },
+                new AnnotationTypeDto { Id = 1, Name = "chebi"},
+                new AnnotationTypeDto { Id = 2, Name = "doi"},
+                new AnnotationTypeDto { Id = 3, Name = "ec-code"},
+                new AnnotationTypeDto { Id = 4, Name = "go"},
+                new AnnotationTypeDto { Id = 5, Name = "kegg"},
+                new AnnotationTypeDto { Id = 6, Name = "pubchem"},
+                new AnnotationTypeDto { Id = 7, Name = "uniprot"},
+                new AnnotationTypeDto { Id = 8, Name = "url"},
+                new AnnotationTypeDto { Id = 9, Name = "ncbi"},
+            };
+        }
+
         public List<BiochemicalEntityTypeDto> GetEntityTypes()
         {
             return

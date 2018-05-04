@@ -28,7 +28,7 @@ namespace BcsAdmin.BL
         {
             cfg.CreateMap<ApiRule, ReactionRowDto>();
             cfg.CreateMap<ApiRule, BiochemicalReactionDetailDto>();
-            cfg.CreateMap<BiochemicalReactionDetailDto, ApiRule> ();
+            cfg.CreateMap<BiochemicalReactionDetailDto, ApiRule>();
 
             cfg.CreateMap<ApiClassification, ClassificationDto>();
             cfg.CreateMap<EpEntityNote, EntityNoteDto>();
@@ -55,8 +55,15 @@ namespace BcsAdmin.BL
                 .ForMember(t => t.Type, m => m.MapFrom(s => (int)Dto.HierarchyType.State))
                 .ForAllOtherMembers(a => a.Ignore());
 
+            cfg.CreateMap<ApiAnnotation, AnnotationDto>()
+                .ForMember(t => t.Code, m => m.MapFrom(s => s.TermId))
+                .ForMember(t => t.Type, m => m.MapFrom(s => s.TermType));
+            cfg.CreateMap<AnnotationDto, ApiAnnotation>()
+                .ForMember(t => t.TermId, m => m.MapFrom(s => s.Code))
+                .ForMember(t => t.TermType, m => m.MapFrom(s => s.Type));
+
             //other grid entities
-            cfg.CreateMap<ApiOrganism, EntityOrganismDto>()
+            cfg.CreateMap<ApiOrganism, OrganismDto>()
                 .ForMember(m => m.GeneGroup, a => a.Ignore())
                 .ForMember(m => m.Code, a => a.Ignore())
                 .ForMember(m => m.IntermediateEntityId, a => a.Ignore());

@@ -9,17 +9,22 @@ namespace BcsAdmin.BL.Queries
 {
     public class LocationLinkQuery : ManyToManyQuery<ApiEntity, ApiEntity, LocationLinkDto>
     {
+        private readonly IRepository<ApiEntity, int> parentEntityRepository;
+
         public LocationLinkQuery(
             IRepository<ApiEntity, int> parentEntityRepository,
             IRepository<ApiEntity, int> associatedEntityRepository) 
-            : base(parentEntityRepository, associatedEntityRepository)
+            : base(associatedEntityRepository)
         {
+            this.parentEntityRepository = parentEntityRepository;
         }
 
         protected override IList<int> GetAssocitedEntityIds(ApiEntity parent)
         {
             return parent.Compartments;
         }
+
+        protected override IRepository<ApiEntity, int> GetParentRepository() => parentEntityRepository;
 
         protected override IQueryable<LocationLinkDto> ProcessEntities(IQueryable<ApiEntity> q, ApiEntity parentEntity)
         {

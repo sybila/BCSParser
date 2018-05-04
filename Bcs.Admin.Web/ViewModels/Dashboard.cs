@@ -26,6 +26,7 @@ namespace Bcs.Admin.Web.ViewModels
         public BiochemicalReactionDetail ReactionDetail { get; set; }
         public SimilarEntitySearchPanel EntitySearchPanel { get; set; }
         public List<BiochemicalEntityTypeDto> HierarchyTypes { get; set; }
+        public List<AnnotationTypeDto> AnnotationTypes { get; set; }
 
         public List<SuggestionDto> EntitySuggestions { get; set; }
 
@@ -77,6 +78,7 @@ namespace Bcs.Admin.Web.ViewModels
             if((HierarchyTypes?.Count ?? 0) == 0)
             {
                 HierarchyTypes = basicListFacade.GetEntityTypes();
+                AnnotationTypes = basicListFacade.GetAnnotationTypes();
             }
             return base.Load();
         }

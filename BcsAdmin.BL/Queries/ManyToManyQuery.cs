@@ -16,15 +16,16 @@ namespace BcsAdmin.BL.Queries
     {
         private IRepository<TAssociatedEntity, int> AssociatedEntityRepository { get; }
 
-        public ManyToManyQuery(IRepository<TParentEntity, int> parentEntityRepository, IRepository<TAssociatedEntity, int> associatedEntityRepository)
-            : base(parentEntityRepository)
+        public ManyToManyQuery(IRepository<TAssociatedEntity, int> associatedEntityRepository)
+            : base()
         {
             AssociatedEntityRepository = associatedEntityRepository;
         }
 
         protected override async Task<IQueryable<TEntityDto>> GetQueriableAsync(CancellationToken cancellationToken)
         {
-            var parent = await ParentEntityRepository.GetByIdAsync(cancellationToken, Filter.Id);
+            var parentRepo = GetParentRepository();
+            var parent = await parentRepo.GetByIdAsync(cancellationToken, Filter.Id);
 
             if(parent == null) { return (new TEntityDto[] { }).AsQueryable(); }
 

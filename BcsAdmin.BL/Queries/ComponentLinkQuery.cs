@@ -11,17 +11,22 @@ namespace BcsAdmin.BL.Queries
 {
     public class ComponentLinkQuery : ManyToManyQuery<ApiEntity, ApiEntity, ComponentLinkDto>
     {
+        private readonly IRepository<ApiEntity, int> parentEntityRepository;
+
         public ComponentLinkQuery(
             IRepository<ApiEntity, int> parentEntityRepository,
             IRepository<ApiEntity, int> associatedEntityRepository) 
-            : base(parentEntityRepository, associatedEntityRepository)
+            : base(associatedEntityRepository)
         {
+            this.parentEntityRepository = parentEntityRepository;
         }
 
         protected override IList<int> GetAssocitedEntityIds(ApiEntity parent)
         {
             return parent.Children;
         }
+
+        protected override IRepository<ApiEntity, int> GetParentRepository() => parentEntityRepository;
 
         protected override IQueryable<ComponentLinkDto> ProcessEntities(IQueryable<ApiEntity> q, ApiEntity parentEntity)
         {

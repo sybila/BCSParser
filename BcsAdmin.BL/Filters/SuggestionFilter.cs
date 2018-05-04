@@ -9,6 +9,7 @@ namespace BcsAdmin.BL.Filters
     {
         public string SearchText { get; set; }
         public IList<HierarchyType> AllowedEntityTypes { get; set; }
+        public CategoryType Category { get; set; }
     }
 }
 

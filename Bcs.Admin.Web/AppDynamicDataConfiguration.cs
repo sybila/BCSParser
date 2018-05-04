@@ -36,6 +36,14 @@ namespace Bcs.Admin.Web
                 EmptyItemText = "(select entity type)",
             });
 
+            conventions.Register(p => p.Name.Equals(nameof(AnnotationDto.Type)) && p.DeclaringType == typeof(AnnotationDto), new ComboBoxSettingsAttribute()
+            {
+                DataSourceBinding = $"_root.{nameof(Dashboard.AnnotationTypes)}",
+                DisplayMember = nameof(BiochemicalEntityTypeDto.Name),
+                ValueMember = nameof(BiochemicalEntityTypeDto.Name),
+                EmptyItemText = "(select entity type)",
+            });
+
 
             var provider = new ValidatedComboBoxProvider(conventions);
             var columnProvider = new ConventionComboBoxGridColumnProvider(conventions);

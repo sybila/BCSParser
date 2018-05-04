@@ -6,14 +6,19 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using BcsAdmin.BL.Repositories.Api;
+using System;
 
 namespace BcsAdmin.BL.Queries
 {
     public class ClassificationQuery : ManyToManyQuery<ClassificationArray, ApiClassification, ClassificationDto>
     {
-        public ClassificationQuery(IRepository<ClassificationArray, int> parentEntityRepository, IRepository<ApiClassification, int> associatedEntityRepository)
-            : base(parentEntityRepository, associatedEntityRepository)
+        private readonly Func<IRepository<ClassificationArray, int>> parentEntityRepositoryFunc;
+
+        public ClassificationQuery(Func<IRepository<ClassificationArray, int>> parentEntityRepositoryFunc, IRepository<ApiClassification, int> associatedEntityRepository)
+            : base(associatedEntityRepository)
         {
+            this.parentEntityRepositoryFunc = parentEntityRepositoryFunc;
         }
 
         protected override IQueryable<ClassificationDto> ProcessEntities(IQueryable<ApiClassification> q, ClassificationArray parentEntity)
@@ -32,6 +37,13 @@ namespace BcsAdmin.BL.Queries
         protected override IList<int> GetAssocitedEntityIds(ClassificationArray parent)
         {
             return parent.Classifications;
+        }
+
+        protected override IRepository<ClassificationArray, int> GetParentRepository()
+        {
+            var parentRepo = parentEntityRepositoryFunc().CastAs<ClassificationArrayRepository>();
+            parentRepo.RepoName = Filter.ParentEntityType;
+            return parentRepo;
         }
     }
 }

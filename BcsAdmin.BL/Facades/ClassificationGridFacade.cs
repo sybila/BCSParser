@@ -33,12 +33,12 @@ namespace BcsAdmin.BL.Facades
 
         protected override void UnlinkCore(ClassificationArray parentEntity, int associatedId)
         {
-            parentEntity.Classifications.Add(associatedId);
+            parentEntity.Classifications.Remove(associatedId);
         }
 
         internal override void LinkCore(ClassificationArray parentEntity, int associatedId)
         {
-            parentEntity.Classifications.Remove(associatedId);
+            parentEntity.Classifications.Add(associatedId);
         }
     }
 }

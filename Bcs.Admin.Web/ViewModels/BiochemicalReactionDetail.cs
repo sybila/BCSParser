@@ -68,6 +68,13 @@ namespace Bcs.Admin.Web.ViewModels
             Modifier = textPresenter.CreateRichText(equationText, ReactionFacade.GetClassificationSpans(model));
         }
 
+        public override Task PoputateGridsAsync()
+        {
+            Classifications.EntitySearchSelect.Filter.Category = CategoryType.Rule;
+
+            return base.PoputateGridsAsync();
+        }
+
         public async override Task PreRender()
         {
             await UpdateEquationAsync();

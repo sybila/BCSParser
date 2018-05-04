@@ -1,5 +1,6 @@
 ﻿using Riganti.Utils.Infrastructure.Core;
 using BcsAdmin.BL.Filters;
+using System;
 
 namespace BcsAdmin.BL.Queries
 {
@@ -7,11 +8,7 @@ namespace BcsAdmin.BL.Queries
        where TParentEntity : IEntity<int>
     {
         public IdFilter Filter { get; set; }
-        protected IRepository<TParentEntity, int> ParentEntityRepository { get; }
 
-        public OneToManyQuery(IRepository<TParentEntity, int> parentEntityRepository)
-        {
-            ParentEntityRepository = parentEntityRepository;
-        }
+        protected abstract IRepository<TParentEntity, int> GetParentRepository();
     }
 }

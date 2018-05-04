@@ -103,7 +103,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public async Task ReloadDataAsync()
         {
-            await facade.FillDataSetAsync(DataSet, new IdFilter { Id = ParentEntityId });
+            await facade.FillDataSetAsync(DataSet, new IdFilter { Id = ParentEntityId, ParentEntityType = ParentRepositoryName });
         }
     }
 }

@@ -9,3 +9,11 @@ namespace BcsAdmin.DAL.Api
         public string TermType { get; set; }
     }
 }
+
+namespace BcsAdmin.DAL.Api
+{
+    public enum ApiAnotationType
+    {
+      
+    }
+}

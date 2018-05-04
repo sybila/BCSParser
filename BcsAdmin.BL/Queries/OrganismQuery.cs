@@ -4,20 +4,32 @@ using Riganti.Utils.Infrastructure.Core;
 using BcsAdmin.BL.Dto;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System;
+using BcsAdmin.BL.Repositories.Api;
 
 namespace BcsAdmin.BL.Queries
 {
     public class OrganismQuery : ManyToManyQuery<OrganismArray, ApiOrganism, OrganismDto>
     {
-        public OrganismQuery(IRepository<OrganismArray, int> parentEntityRepository, 
+        private readonly Func<IRepository<OrganismArray, int>> parentEntityRepositoryFunc;
+
+        public OrganismQuery(Func<IRepository<OrganismArray, int>> parentEntityRepositoryFunc, 
             IRepository<ApiOrganism, int> associatedEntityRepository) 
-            : base(parentEntityRepository, associatedEntityRepository)
+            : base(associatedEntityRepository)
         {
+            this.parentEntityRepositoryFunc = parentEntityRepositoryFunc;
         }
 
         protected override IList<int> GetAssocitedEntityIds(OrganismArray parent)
         {
             return parent.Organisms;
+        }
+
+        protected override IRepository<OrganismArray, int> GetParentRepository()
+        {
+            var parentRepo = parentEntityRepositoryFunc().CastAs<OrganismArrayRepository>();
+            parentRepo.RepoName = Filter.ParentEntityType;
+            return parentRepo;
         }
 
         protected override IQueryable<OrganismDto> ProcessEntities(IQueryable<ApiOrganism> q, OrganismArray parentEntity)

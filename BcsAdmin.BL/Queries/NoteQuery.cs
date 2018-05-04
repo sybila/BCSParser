@@ -21,38 +21,15 @@ namespace BcsAdmin.BL.Queries
                 return new EntityNoteDto[] { }.AsQueryable();
             }
 
-            var results = await GetWebDataAsync<ApiNote>(cancellationToken, $"entities/{Filter.Id}/notes");
+            var results = await GetWebDataAsync<ApiNote>(cancellationToken, $"{Filter.ParentEntityType}/{Filter.Id}/notes");
 
             return results.Select(n => new EntityNoteDto
             {
                 Text = n.Text,
                 UserName = n.UserName,
                 Id = n.Id,
-                Inserted = DateTime.Parse(n.Inserted),
-                Updated = DateTime.Parse(n.Updated)
-            })
-            .AsQueryable();
-        }
-    }
-
-    public class AnnotationQuery : AppApiQuery<AnnotationDto>, IFilteredQuery<AnnotationDto, IdFilter>
-    {
-        public IdFilter Filter { get; set; }
-
-        protected async override Task<IQueryable<AnnotationDto>> GetQueriableAsync(CancellationToken cancellationToken)
-        {
-            if (Filter.Id == 0)
-            {
-                return new AnnotationDto[] { }.AsQueryable();
-            }
-
-            var results = await GetWebDataAsync<ApiAnnotation>(cancellationToken, $"entities/{Filter.Id}/annotations");
-
-            return results.Select(n => new AnnotationDto
-            {
-                Id = n.Id,
-                Code = n.TermId,
-                Type = n.TermType,
+                Inserted = n.Inserted == null ? (DateTime?) null : DateTime.Parse(n.Inserted),
+                Updated = n.Updated == null ? (DateTime?) null : DateTime.Parse(n.Updated)
             })
             .AsQueryable();
         }

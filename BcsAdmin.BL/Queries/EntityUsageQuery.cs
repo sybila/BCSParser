@@ -14,14 +14,16 @@ namespace BcsAdmin.BL.Queries
     {
         private readonly IRepository<ApiEntity, int> entityRepository;
 
-        public EntityUsageQuery(IRepository<ApiEntity, int> entityRepository) : base(entityRepository)
+        public EntityUsageQuery(IRepository<ApiEntity, int> entityRepository)
         {
             this.entityRepository = entityRepository;
         }
 
+        protected override IRepository<ApiEntity, int> GetParentRepository() => entityRepository;
+
         protected async override Task<IQueryable<EntityUsageDto>> GetQueriableAsync(CancellationToken cancellationToken)
         {
-            var entity = await ParentEntityRepository.GetByIdAsync(cancellationToken, Filter.Id);
+            var entity = await GetParentRepository().GetByIdAsync(cancellationToken, Filter.Id);
 
             var allEntities = await GetWebDataAsync<ApiQueryEntity>(cancellationToken, "entities");
 

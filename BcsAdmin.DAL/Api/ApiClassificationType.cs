@@ -2,7 +2,8 @@
 {
     public enum ApiClassificationType
     {
-        Entity,
-        Reaction
+        Entity = 1,
+        Reaction = 2,
+        Rule = 3
     }
 }

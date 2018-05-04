@@ -99,6 +99,8 @@ namespace Bcs.Admin.Web.ViewModels
             await Locations.ReloadDataAsync();
             Locations.EntitySearchSelect.Filter.AllowedEntityTypes = new[] { HierarchyType.Compartment };
 
+            Classifications.EntitySearchSelect.Filter.Category = CategoryType.Entity;
+
             await base.PoputateGridsAsync();
         }
 
