@@ -30,6 +30,14 @@ namespace Bcs.Admin.Web.ViewModels
         [Display(GroupName = "Fields", Name = "Entity type")]
         public int SelectedHierarchyType { get; set; }
 
+        [Required]
+        [Display(GroupName = "Fields", Name = "Code")]
+        public string Code { get; set; }
+
+        [Required]
+        [Display(GroupName = "Fields", Name = "Name")]
+        public string Name { get; set; }
+
         [Display(AutoGenerateField = false)]
         public BiochemicalEntityLinkDto Parent { get; set; }
 
@@ -165,12 +173,6 @@ namespace Bcs.Admin.Web.ViewModels
 
 
             return new ValidationResult[] { };
-        }
-
-        public override async Task Load()
-        {
-            Alert = null;
-            await base.Load();
         }
     }
 }

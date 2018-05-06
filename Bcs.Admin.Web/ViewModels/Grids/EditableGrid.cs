@@ -15,7 +15,7 @@ using Riganti.Utils.Infrastructure.Core;
 
 namespace Bcs.Admin.Web.ViewModels.Grids
 {
-    public class EditableGrid<TKey, TGridEntity> : DotvvmViewModelBase, IEditableGrid<TKey, TGridEntity>
+    public class EditableGrid<TKey, TGridEntity> : AppViewModelBase, IEditableGrid<TKey, TGridEntity>
         where TGridEntity : class, IEntity<TKey>
     {
         private readonly IGridFacade<TKey, TGridEntity> facade;
@@ -50,8 +50,11 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public async Task DeleteAsync(TGridEntity entity)
         {
-            facade.Delete(ParentEntityId, ParentRepositoryName, entity.Id);
-            await ReloadDataAsync();
+            await ExecuteSafeAsync(async () =>
+            {
+                facade.Delete(ParentEntityId, ParentRepositoryName, entity.Id);
+                await ReloadDataAsync();
+            });
         }
 
         public void Edit(TGridEntity entity)
@@ -62,16 +65,22 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public async Task SaveNewAsync()
         {
-            facade.Save(ParentEntityId, ParentRepositoryName, NewRow);
-            Cancel();
-            await ReloadDataAsync();
+            await ExecuteSafeAsync(async () =>
+            {
+                facade.Save(ParentEntityId, ParentRepositoryName, NewRow);
+                Cancel();
+                await ReloadDataAsync();
+            });
         }
 
         public async Task SaveEditAsync(TGridEntity entity)
         {
-            facade.Save(ParentEntityId, ParentRepositoryName, entity);
-            Cancel();
-            await ReloadDataAsync();
+            await ExecuteSafeAsync(async () =>
+            {
+                facade.Save(ParentEntityId, ParentRepositoryName, entity);
+                Cancel();
+                await ReloadDataAsync();
+            });
         }
 
         public override Task Init()
@@ -91,19 +100,12 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             return base.Init();
         }
 
-        public override Task Load()
-        {
-            return base.Load();
-        }
-
-        public override Task PreRender()
-        {
-            return base.PreRender();
-        }
-
         public async Task ReloadDataAsync()
         {
-            await facade.FillDataSetAsync(DataSet, new IdFilter { Id = ParentEntityId, ParentEntityType = ParentRepositoryName });
+            await ExecuteSafeAsync(async () =>
+            {
+                await facade.FillDataSetAsync(DataSet, new IdFilter { Id = ParentEntityId, ParentEntityType = ParentRepositoryName });
+            });
         }
     }
 }

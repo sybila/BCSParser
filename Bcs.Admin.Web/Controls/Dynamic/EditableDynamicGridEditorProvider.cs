@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Bcs.Admin.Web.Controls.EditPanel;
 using Bcs.Admin.Web.Utils;
+using Bcs.Admin.Web.ViewModels;
 using Bcs.Admin.Web.ViewModels.Grids;
 using DotVVM.Framework.Binding.Expressions;
 using DotVVM.Framework.Compilation.ControlTree;
@@ -62,6 +63,14 @@ namespace Bcs.Admin.Web.Controls.Dynamic
             if (property.PropertyInfo.PropertyType.IsAssignableTo(typeof(ICollapsible)))
             {
                 grid.CollapsedBinding = context.CreateValueBinding($"{nameof(ICollapsible.IsCollapsed)}", gridDataContext);
+            }
+            if (property.PropertyInfo.PropertyType.IsAssignableTo(typeof(IStatusReporter)))
+            {
+                var statusAlerts = new StatusAlerts();
+                statusAlerts.SetBinding(StatusAlerts.ErrorsProperty, context.CreateValueBinding("Errors", gridDataContext));
+                statusAlerts.SetBinding(StatusAlerts.SuccessMessageProperty, context.CreateValueBinding("SuccessMessage", gridDataContext));
+
+                grid.Children.Add(statusAlerts);
             }
         }
 

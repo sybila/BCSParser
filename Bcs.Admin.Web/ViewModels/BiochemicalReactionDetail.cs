@@ -30,6 +30,9 @@ namespace Bcs.Admin.Web.ViewModels
         [Display(GroupName = "Fields")]
         public string Modifier { get; set; }
 
+        [Display(GroupName = "Fields", Name = "Name")]
+        public string Name { get; set; }
+
         public IList<string> EquationErrors { get; set; }
 
         public BiochemicalReactionDetail(

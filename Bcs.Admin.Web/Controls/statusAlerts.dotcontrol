@@ -1,7 +1,7 @@
 @viewModel object
 @baseType Bcs.Admin.Web.Controls.StatusAlerts, Bcs.Admin.Web
 
-<div Visible="{value: _control.SuccessMessage != null}" class="panel panel-success">
+<div Visible="{value: _control.SuccessMessage != null}" class="alert alert-success">
     {{value: _control.SuccessMessage}}
 </div>
 <div Visible="{value: _control.Errors.Count > 0}" class="alert alert-danger">

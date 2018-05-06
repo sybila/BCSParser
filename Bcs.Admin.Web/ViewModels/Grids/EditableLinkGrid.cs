@@ -9,7 +9,7 @@ using BcsAdmin.BL;
 
 namespace Bcs.Admin.Web.ViewModels.Grids
 {
-    public class EditableLinkGrid<TGridEntity, TSuggestionQuery> : DotvvmViewModelBase, IEditableLinkGrid<TGridEntity, TSuggestionQuery>
+    public class EditableLinkGrid<TGridEntity, TSuggestionQuery> : AppViewModelBase, IEditableLinkGrid<TGridEntity, TSuggestionQuery>
         where TGridEntity : class, IEntity<int>, IAssociatedEntity
         where TSuggestionQuery : IFilteredQuery<SuggestionDto, SuggestionFilter>
     {
@@ -53,8 +53,11 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public async Task DeleteAsync(TGridEntity entity)
         {
-            facade.Unlink(ParentRepositoryName, new EntityLinkDto { DetailId = ParentEntityId, AssociatedId = entity.Id });
-            await ReloadDataAsync();
+            await ExecuteSafeAsync(async () =>
+            {
+                facade.Unlink(ParentRepositoryName, new EntityLinkDto { DetailId = ParentEntityId, AssociatedId = entity.Id });
+                await ReloadDataAsync();
+            });
         }
 
         public void Cancel()
@@ -65,26 +68,35 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
         public async Task SaveNewAsync()
         {
-            facade.CreateAndLink(ParentEntityId, ParentRepositoryName, NewRow);
-            NewRow = null;
-            await ReloadDataAsync();
+            await ExecuteSafeAsync(async () =>
+            {
+                facade.CreateAndLink(ParentEntityId, ParentRepositoryName, NewRow);
+                NewRow = null;
+                await ReloadDataAsync();
+            });
         }
 
         public async Task SaveEditAsync(TGridEntity entity)
         {
-            facade.Edit(entity);
-            DataSet.RowEditOptions.EditRowId = null;
-            await ReloadDataAsync();
+            await ExecuteSafeAsync(async () =>
+            {
+                facade.Edit(entity);
+                DataSet.RowEditOptions.EditRowId = null;
+                await ReloadDataAsync();
+            });
         }
 
         public async Task LinkAsync()
         {
-            var associateId = EntitySearchSelect?.SelectedSuggestion?.Id;
+            await ExecuteSafeAsync(async () =>
+            {
+                var associateId = EntitySearchSelect?.SelectedSuggestion?.Id;
 
-            if (associateId == null) return;
+                if (associateId == null) return;
 
-            facade.Link(ParentRepositoryName, new EntityLinkDto {DetailId= ParentEntityId, AssociatedId= associateId.Value});
-            await ReloadDataAsync();
+                facade.Link(ParentRepositoryName, new EntityLinkDto { DetailId = ParentEntityId, AssociatedId = associateId.Value });
+                await ReloadDataAsync();
+            });
         }
 
         public override Task Init()
@@ -104,14 +116,12 @@ namespace Bcs.Admin.Web.ViewModels.Grids
             return base.Init();
         }
 
-        public override async Task Load()
-        {
-            await base.Load();
-        }
-
         public async Task ReloadDataAsync()
         {
-            await facade.FillDataSetAsync(DataSet, new IdFilter { Id = ParentEntityId, ParentEntityType = ParentRepositoryName });
+            await ExecuteSafeAsync(async () =>
+            {
+                await facade.FillDataSetAsync(DataSet, new IdFilter { Id = ParentEntityId, ParentEntityType = ParentRepositoryName });
+            });
         }
     }
 }

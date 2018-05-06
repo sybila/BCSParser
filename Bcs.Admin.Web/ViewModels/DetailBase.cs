@@ -28,19 +28,12 @@ namespace Bcs.Admin.Web.ViewModels
         [Display(AutoGenerateField = false)]
         public int Id { get; set; } = -1;
 
-        [Display(GroupName = "Fields", Name = "Name")]
-        public string Name { get; set; }
-
-        [Required]
-        [Display(GroupName = "Fields", Name = "Code")]
-        public string Code { get; set; }
-
         [Display(GroupName = "Fields", Name = "Description")]
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        [Display(GroupName = "Fields", Name = "Active")]
-        public bool Active { get; set; }
+        [Display(GroupName = "Fields", Name = "Valid")]
+        public bool IsValid { get; set; }
 
         [Display(GroupName = "Grids")]
         public IEditableGrid<int, AnnotationDto> Annotations { get; set; }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Bcs.Admin.Web.ViewModels.Grids
 {
-    public interface IEditableGrid<TKey, TGridEntity>: IDotvvmViewModel, ICollapsible
+    public interface IEditableGrid<TKey, TGridEntity>: IDotvvmViewModel, ICollapsible, IStatusReporter
         where TGridEntity : class, IEntity<TKey>
     {
         int ItemsCount { get; }

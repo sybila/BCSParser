@@ -5,6 +5,7 @@ using BcsResolver.SemanticModel;
 using BcsResolver.SemanticModel.Tree;
 using Riganti.Utils.Infrastructure.Core;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -95,16 +96,18 @@ namespace BcsAdmin.BL.Services
 
         private async Task<IList<ApiEntity>> GetEntitiesAsync(int[] ids)
         {
-            var list = new List<ApiEntity>();
-            foreach (var id in ids.Split(1000))
+            var list = new ConcurrentBag<ApiEntity>();
+            var tasks = ids.Split(1000).Select(async id =>
             {
                 var results = await entityRepositry.GetByIdsAsync(id) ?? new ApiEntity[] { };
                 foreach (var item in results)
                 {
                     list.Add(item);
                 }
-            }
-            return list;
+            });
+            await Task.WhenAll(tasks);
+
+            return list.ToList();
         }
     }
 }

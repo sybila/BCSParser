@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BcsAdmin.BL.Repositories.Api.Exceptions;
 
 namespace BcsAdmin.BL.Repositories.Api
 {
@@ -72,7 +73,7 @@ namespace BcsAdmin.BL.Repositories.Api
                 DeteleAsync(id).Wait();
             }
 
-            private async Task DeteleAsync(int id)
+            public async Task DeteleAsync(int id)
             {
                 var response = await HttpClient.DeleteAsync(GetFullUrl(id));
                 await HandleResponseAsync(response);
@@ -91,7 +92,7 @@ namespace BcsAdmin.BL.Repositories.Api
                 InsertAsync(entity).Wait();
             }
 
-            private async Task InsertAsync(TEntity entity)
+            public async Task InsertAsync(TEntity entity)
             {
                 var response = await HttpClient.PostAsync(GetFullUrl(), PrepareContent(entity));
                 var newId = await HandleResponseAsync(response);
@@ -111,7 +112,7 @@ namespace BcsAdmin.BL.Repositories.Api
                 UpdateAsync(entity).Wait();
             }
 
-            private async Task UpdateAsync(TEntity entity)
+            public async Task UpdateAsync(TEntity entity)
             {
                 var response = await HttpClient.PutAsync(GetFullUrl(entity.Id), PrepareContent(entity));
                 await HandleResponseAsync(response);
@@ -178,6 +179,11 @@ namespace BcsAdmin.BL.Repositories.Api
                 return await GetByIdsCore(ids, cancellationToken);
             }
 
+            public virtual async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids)
+            {
+                return await GetByIdsCore(ids, cancellationToken);
+            }
+
             private async Task<IList<TEntity>> GetByIdsCore(IEnumerable<int> ids, CancellationToken cancellationToken)
             {
                 if (!ids.Any()) { return new List<TEntity>(); };
@@ -214,7 +220,15 @@ namespace BcsAdmin.BL.Repositories.Api
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new ApiDownException(responseObject != null ? $"{responseObject.Code}: {responseObject.Message}" : "Empty response.");
+                    if (responseObject == null)
+                    {
+                        throw new ApiDownException("Empty response.");
+                    }
+                    if (responseObject.Code == 500)
+                    {
+                        throw new ApiDownException($"{responseObject.Code}: {responseObject.Message}");
+                    }
+                    throw new InvalidInputException(responseObject.Message);
                 }
                 return responseObject?.Id;
             }

@@ -12,7 +12,7 @@ namespace BcsAdmin.BL.Dto
         public string Name { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
-        public bool Active { get; set; }
+        public bool IsValid { get; set; }
         public int SelectedHierarchyType { get; set; }
     }
 }
