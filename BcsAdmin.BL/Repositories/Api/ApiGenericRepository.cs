@@ -19,7 +19,7 @@ namespace BcsAdmin.BL.Repositories.Api
 
     namespace BcsAdmin.BL.Repositories
     {
-        public abstract class ApiGenericRepository<TEntity> : IRepository<TEntity, int>
+        public abstract class ApiGenericRepository<TEntity> : IAsyncRepository<TEntity, int>, IRepository<TEntity, int>
             where TEntity : class, IEntity<int>, new()
         {
             public string AppUrl { get; set; } = "https://api.e-cyanobacterium.org";
@@ -142,6 +142,12 @@ namespace BcsAdmin.BL.Repositories.Api
                 return await GetByIdAsync(cancelationToken, id, includes);
             }
 
+            public async Task<TEntity> GetByIdAsync(CancellationToken cancellationToken, int id)
+            {
+                var r = await GetByIdsAsync(cancellationToken, new int[] { id });
+                return r?.FirstOrDefault();
+            }
+
             public async Task<TEntity> GetByIdAsync(CancellationToken cancellationToken, int id, params Expression<Func<TEntity, object>>[] includes)
             {
                 var r = await GetByIdsAsync(cancellationToken, new int[] { id });
@@ -176,15 +182,15 @@ namespace BcsAdmin.BL.Repositories.Api
 
             public virtual async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids, params Expression<Func<TEntity, object>>[] includes)
             {
-                return await GetByIdsCore(ids, cancellationToken);
+                return await GetByIds(cancellationToken, ids);
             }
 
             public virtual async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids)
             {
-                return await GetByIdsCore(ids, cancellationToken);
+                return await GetByIds(cancellationToken, ids);
             }
 
-            private async Task<IList<TEntity>> GetByIdsCore(IEnumerable<int> ids, CancellationToken cancellationToken)
+            public async Task<IList<TEntity>> GetByIds(CancellationToken cancellationToken, IEnumerable<int> ids)
             {
                 if (!ids.Any()) { return new List<TEntity>(); };
 

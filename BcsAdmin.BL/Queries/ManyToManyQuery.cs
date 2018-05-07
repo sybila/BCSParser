@@ -6,6 +6,7 @@ using Riganti.Utils.Infrastructure.Core;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
+using BcsAdmin.BL.Repositories.Api;
 
 namespace BcsAdmin.BL.Queries
 {
@@ -14,9 +15,9 @@ namespace BcsAdmin.BL.Queries
         where TParentEntity : IEntity<int>
         where TAssociatedEntity : IEntity<int>
     {
-        private IRepository<TAssociatedEntity, int> AssociatedEntityRepository { get; }
+        private IAsyncRepository<TAssociatedEntity, int> AssociatedEntityRepository { get; }
 
-        public ManyToManyQuery(IRepository<TAssociatedEntity, int> associatedEntityRepository)
+        public ManyToManyQuery(IAsyncRepository<TAssociatedEntity, int> associatedEntityRepository)
             : base()
         {
             AssociatedEntityRepository = associatedEntityRepository;

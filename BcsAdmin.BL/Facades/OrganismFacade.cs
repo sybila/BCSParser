@@ -11,11 +11,11 @@ namespace BcsAdmin.BL.Facades
 {
     public class OrganismFacade: DependantLinkGridFacade<OrganismArray, ApiOrganism, OrganismDto>
     {
-        private readonly Func<IRepository<OrganismArray, int>> parentRepositoryFunc;
+        private readonly Func<IAsyncRepository<OrganismArray, int>> parentRepositoryFunc;
 
         public OrganismFacade(
-            Func<IRepository<OrganismArray, int>> parentRepositoryFunc, 
-            IRepository<ApiOrganism, int> associatedEntityRepository, 
+            Func<IAsyncRepository<OrganismArray, int>> parentRepositoryFunc, 
+            IAsyncRepository<ApiOrganism, int> associatedEntityRepository, 
             Func<ManyToManyQuery<OrganismArray, ApiOrganism, OrganismDto>> queryFactory, 
             IUnitOfWorkProvider unitOfWorkProvider, 
             IMapper mapper) 
@@ -24,7 +24,7 @@ namespace BcsAdmin.BL.Facades
             this.parentRepositoryFunc = parentRepositoryFunc;
         }
 
-        protected override IRepository<OrganismArray, int> GetParentRepository(string paentRepositoryName)
+        protected override IAsyncRepository<OrganismArray, int> GetParentRepository(string paentRepositoryName)
         {
             var r = (OrganismArrayRepository)parentRepositoryFunc();
             r.RepoName = paentRepositoryName;

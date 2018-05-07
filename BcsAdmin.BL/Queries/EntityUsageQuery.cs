@@ -7,19 +7,20 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BcsAdmin.BL.Repositories.Api;
 
 namespace BcsAdmin.BL.Queries
 {
     public class EntityUsageQuery : OneToManyQuery<ApiEntity, EntityUsageDto>
     {
-        private readonly IRepository<ApiEntity, int> entityRepository;
+        private readonly IAsyncRepository<ApiEntity, int> entityRepository;
 
-        public EntityUsageQuery(IRepository<ApiEntity, int> entityRepository)
+        public EntityUsageQuery(IAsyncRepository<ApiEntity, int> entityRepository)
         {
             this.entityRepository = entityRepository;
         }
 
-        protected override IRepository<ApiEntity, int> GetParentRepository() => entityRepository;
+        protected override IAsyncRepository<ApiEntity, int> GetParentRepository() => entityRepository;
 
         protected async override Task<IQueryable<EntityUsageDto>> GetQueriableAsync(CancellationToken cancellationToken)
         {

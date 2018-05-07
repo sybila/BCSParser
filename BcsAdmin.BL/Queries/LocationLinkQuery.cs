@@ -4,16 +4,17 @@ using Riganti.Utils.Infrastructure.Core;
 using BcsAdmin.BL.Dto;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using BcsAdmin.BL.Repositories.Api;
 
 namespace BcsAdmin.BL.Queries
 {
     public class LocationLinkQuery : ManyToManyQuery<ApiEntity, ApiEntity, LocationLinkDto>
     {
-        private readonly IRepository<ApiEntity, int> parentEntityRepository;
+        private readonly IAsyncRepository<ApiEntity, int> parentEntityRepository;
 
         public LocationLinkQuery(
-            IRepository<ApiEntity, int> parentEntityRepository,
-            IRepository<ApiEntity, int> associatedEntityRepository) 
+            IAsyncRepository<ApiEntity, int> parentEntityRepository,
+            IAsyncRepository<ApiEntity, int> associatedEntityRepository) 
             : base(associatedEntityRepository)
         {
             this.parentEntityRepository = parentEntityRepository;
@@ -24,7 +25,7 @@ namespace BcsAdmin.BL.Queries
             return parent.Compartments;
         }
 
-        protected override IRepository<ApiEntity, int> GetParentRepository() => parentEntityRepository;
+        protected override IAsyncRepository<ApiEntity, int> GetParentRepository() => parentEntityRepository;
 
         protected override IQueryable<LocationLinkDto> ProcessEntities(IQueryable<ApiEntity> q, ApiEntity parentEntity)
         {

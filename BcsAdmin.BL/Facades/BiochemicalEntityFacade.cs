@@ -15,19 +15,18 @@ using System.Linq.Expressions;
 using BcsAdmin.BL.Queries;
 using BcsAdmin.BL.Filters;
 using Bcs.Admin.BL.Dto;
+using BcsAdmin.BL.Repositories.Api;
 
 namespace BcsAdmin.BL.Facades
 {
-    public class BiochemicalEntityFacade : FilteredCrudFacadeBase<ApiEntity, int, BiochemicalEntityRowDto, BiochemicalEntityDetailDto, BiochemicalEntityFilter>, IListFacade<BiochemicalEntityRowDto, BiochemicalEntityFilter>
+    public class BiochemicalEntityFacade : AsyncCrudFacadeBase<ApiEntity, int, BiochemicalEntityRowDto, BiochemicalEntityDetailDto, BiochemicalEntityFilter>
     {
         public BiochemicalEntityFacade(
-            IUnitOfWorkProvider unitOfWorkProvider,
             Func<IFilteredQuery<BiochemicalEntityRowDto, BiochemicalEntityFilter>> queryFactory,
-            IRepository<ApiEntity, int> repository,
+            IAsyncRepository<ApiEntity, int> repository,
             IEntityDTOMapper<ApiEntity, BiochemicalEntityDetailDto> mapper)
             : base(queryFactory, repository, mapper)
         {
-            UnitOfWorkProvider = unitOfWorkProvider;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Text;
 using Riganti.Utils.Infrastructure.Core;
 using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 using System.Linq.Expressions;
+using BcsAdmin.BL.Repositories.Api;
 
 namespace BcsAdmin.BL.Repositories
 {

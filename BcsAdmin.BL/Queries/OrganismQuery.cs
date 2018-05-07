@@ -11,10 +11,10 @@ namespace BcsAdmin.BL.Queries
 {
     public class OrganismQuery : ManyToManyQuery<OrganismArray, ApiOrganism, OrganismDto>
     {
-        private readonly Func<IRepository<OrganismArray, int>> parentEntityRepositoryFunc;
+        private readonly Func<IAsyncRepository<OrganismArray, int>> parentEntityRepositoryFunc;
 
-        public OrganismQuery(Func<IRepository<OrganismArray, int>> parentEntityRepositoryFunc, 
-            IRepository<ApiOrganism, int> associatedEntityRepository) 
+        public OrganismQuery(Func<IAsyncRepository<OrganismArray, int>> parentEntityRepositoryFunc, 
+            IAsyncRepository<ApiOrganism, int> associatedEntityRepository) 
             : base(associatedEntityRepository)
         {
             this.parentEntityRepositoryFunc = parentEntityRepositoryFunc;
@@ -25,7 +25,7 @@ namespace BcsAdmin.BL.Queries
             return parent.Organisms;
         }
 
-        protected override IRepository<OrganismArray, int> GetParentRepository()
+        protected override IAsyncRepository<OrganismArray, int> GetParentRepository()
         {
             var parentRepo = parentEntityRepositoryFunc().CastAs<OrganismArrayRepository>();
             parentRepo.RepoName = Filter.ParentEntityType;

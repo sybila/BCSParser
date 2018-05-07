@@ -12,10 +12,10 @@ namespace BcsAdmin.BL.Facades.Defs
     {
         Func<IFilteredQuery<TEntity, IdFilter>> QueryFactory { get; }
 
-        void Delete(int parentId, string parentRepositoryName, TKey key);
-        TEntity GetDetail(int parentId, string parentRepositoryName, TKey key);
+        Task DeleteAsync(int parentId, string parentRepositoryName, TKey key);
+        Task<TEntity> GetDetailAsync(int parentId, string parentRepositoryName, TKey key);
         TEntity InitializeNew();
-        TEntity Save(int parentId, string parentRepositoryName, TEntity data);
+        Task<TEntity> SaveAsync(int parentId, string parentRepositoryName, TEntity data);
 
         Task FillDataSetAsync(GridViewDataSet<TEntity> dataSet, IdFilter filter);
     }

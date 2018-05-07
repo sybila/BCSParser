@@ -52,6 +52,12 @@ namespace Bcs.Admin.Web.ViewModels
             Notes.ParentRepositoryName = "rules";
         }
 
+        protected override void AfterMap(BiochemicalReactionDetailDto dto)
+        {
+            dto.Equation = textPresenter.ToRawText(dto.Equation);
+            dto.Modifier = textPresenter.ToRawText(dto.Modifier);
+        }
+
         public async Task UpdateEquationAsync()
         {
             await ExecuteSafeAsync(async () =>

@@ -31,7 +31,7 @@ namespace BcsAdmin.BL
             dataSet.Items = await query.ExecuteAsync();
         }
 
-        public async static Task FillDataSetAsync<TListDTO, TFilterDTO>(this ICrudFilteredListFacade<TListDTO, TFilterDTO> facade, GridViewDataSet<TListDTO> dataSet, TFilterDTO filter)
+        public async static Task FillDataSetAsync<TListDTO, TFilterDTO>(this IQueryFacade<TListDTO, TFilterDTO> facade, GridViewDataSet<TListDTO> dataSet, TFilterDTO filter)
         {
             var query = facade.QueryFactory();
             query.Filter = filter;

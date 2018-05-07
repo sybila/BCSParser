@@ -11,13 +11,13 @@ namespace BcsAdmin.BL.Facades
     public class NoteGridFacade : DependantGridFacade<ApiNote, EntityNoteDto>
     {
         public NoteGridFacade(Func<IFilteredQuery<EntityNoteDto, IdFilter>> queryFactory, 
-            Func<IRepository<ApiNote, int>> repositoryFactory,
+            Func<IAsyncRepository<ApiNote, int>> repositoryFactory,
             IEntityDTOMapper<ApiNote, EntityNoteDto> mapper) 
             : base(queryFactory, repositoryFactory, mapper)
         {
         }
 
-        protected override IRepository<ApiNote, int> GetRepository(int parentId, string parentRepositoryName)
+        protected override IAsyncRepository<ApiNote, int> GetRepository(int parentId, string parentRepositoryName)
         {
             var r = RepositoryFactory().CastAs<ApiNoteRepository>();
             r.RepoName = $"{parentRepositoryName}/{parentId}/notes";

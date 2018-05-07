@@ -12,21 +12,23 @@ using AutoMapper;
 using DotVVM.Framework.Controls;
 using Riganti.Utils.Infrastructure;
 using System.Threading.Tasks;
+using BcsAdmin.BL.Repositories.Api;
+using System.Threading;
 
 namespace BcsAdmin.BL.Facades
 {
     public abstract class DependantLinkGridFacade<TParentEntity, TEntity, TEntityDto> : ILinkGridFacade<TEntityDto>
         where TParentEntity : IEntity<int>
-        where TEntity : IEntity<int>
+        where TEntity : IEntity<int>, new()
         where TEntityDto : IEntity<int>, new()
     {
         public Func<IFilteredQuery<TEntityDto, IdFilter>> QueryFactory { get; set; }
 
-        private readonly IRepository<TEntity, int> associatedEntityRepository;
+        private readonly IAsyncRepository<TEntity, int> associatedEntityRepository;
         private readonly IMapper mapper;
 
         public DependantLinkGridFacade(
-            IRepository<TEntity, int> childEntityRepository,
+            IAsyncRepository<TEntity, int> childEntityRepository,
             Func<ManyToManyQuery<TParentEntity, TEntity, TEntityDto>> queryFactory,
             IMapper mapper)
         {
@@ -47,45 +49,45 @@ namespace BcsAdmin.BL.Facades
             return new TEntityDto();
         }
 
-        public void Link(string paentRepositoryName, EntityLinkDto link)
+        public async Task LinkAsync(string paentRepositoryName, EntityLinkDto link)
         {
             var parentRepository = GetParentRepository(paentRepositoryName);
-            var parentEntity = parentRepository.GetById(link.DetailId);
+            var parentEntity = await parentRepository.GetByIdAsync(CancellationToken.None, link.DetailId);
 
             LinkCore(parentEntity, link.AssociatedId);
-            parentRepository.Update(parentEntity);
+            await parentRepository.UpdateAsync(parentEntity);
         }
 
-        public void CreateAndLink(int parentId, string paentRepositoryName, TEntityDto entity)
+        public async Task CreateAndLinkAsync(int parentId, string paentRepositoryName, TEntityDto entity)
         {
 
             var newEntity = associatedEntityRepository.InitializeNew();
             newEntity.Id = -1;
             mapper.Map(entity, newEntity);
-            associatedEntityRepository.Insert(newEntity);
+            await associatedEntityRepository.InsertAsync(newEntity);
 
-            Link(paentRepositoryName, new EntityLinkDto { DetailId = parentId, AssociatedId = newEntity.Id });
+            await LinkAsync(paentRepositoryName, new EntityLinkDto { DetailId = parentId, AssociatedId = newEntity.Id });
         }
 
-        public void Edit(TEntityDto entityDto)
+        public async Task EditAsync(TEntityDto entityDto)
         {
-            var entity = associatedEntityRepository.GetById(entityDto.Id);
+            var entity = await associatedEntityRepository.GetByIdAsync(CancellationToken.None, entityDto.Id);
             mapper.Map(entityDto, entity);
-            associatedEntityRepository.Update(entity);
+            await associatedEntityRepository.UpdateAsync(entity);
         }
 
-        public void Unlink(string paentRepositoryName, EntityLinkDto link)
+        public async Task UnlinkAsync(string paentRepositoryName, EntityLinkDto link)
         {
             var parentRepository = GetParentRepository(paentRepositoryName);
-            var parentEntity = parentRepository.GetById(link.DetailId);
+            var parentEntity = await parentRepository.GetByIdAsync(CancellationToken.None, link.DetailId);
 
             UnlinkCore(parentEntity, link.AssociatedId);
 
-            parentRepository.Update(parentEntity);
+            await parentRepository.UpdateAsync(parentEntity);
         }
 
         protected abstract void UnlinkCore(TParentEntity parentEntity, int associatedId);
         internal abstract void LinkCore(TParentEntity parentEntity, int associatedId);
-        protected abstract IRepository<TParentEntity, int> GetParentRepository(string paentRepositoryName);
+        protected abstract IAsyncRepository<TParentEntity, int> GetParentRepository(string paentRepositoryName);
     }
 }

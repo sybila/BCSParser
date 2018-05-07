@@ -52,7 +52,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         {
             await ExecuteSafeAsync(async () =>
             {
-                facade.Delete(ParentEntityId, ParentRepositoryName, entity.Id);
+                await facade.DeleteAsync(ParentEntityId, ParentRepositoryName, entity.Id);
                 await ReloadDataAsync();
             });
         }
@@ -67,7 +67,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         {
             await ExecuteSafeAsync(async () =>
             {
-                facade.Save(ParentEntityId, ParentRepositoryName, NewRow);
+                await facade.SaveAsync(ParentEntityId, ParentRepositoryName, NewRow);
                 Cancel();
                 await ReloadDataAsync();
             });
@@ -77,7 +77,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         {
             await ExecuteSafeAsync(async () =>
             {
-                facade.Save(ParentEntityId, ParentRepositoryName, entity);
+                await facade.SaveAsync(ParentEntityId, ParentRepositoryName, entity);
                 Cancel();
                 await ReloadDataAsync();
             });

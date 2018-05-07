@@ -1,31 +1,33 @@
-﻿using Riganti.Utils.Infrastructure.Core;
+﻿using BcsAdmin.BL.Repositories.Api;
+using Riganti.Utils.Infrastructure.Core;
 using Riganti.Utils.Infrastructure.Services.Facades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BcsAdmin.BL.Facades
 {
 
-    public class AsyncCrudFacadeBase<TEntity, TKey, TListDTO, TDetailDTO, TFilter>
+    public class AsyncCrudFacadeBase<TEntity, TKey, TListDTO, TDetailDTO, TFilter> : IAsyncCrudFacade<TEntity, TKey, TListDTO, TDetailDTO, TFilter>
         where TEntity : IEntity<TKey> where TDetailDTO : IEntity<TKey>
     {
         public Func<IFilteredQuery<TListDTO, TFilter>> QueryFactory { get; }
-        public IRepository<TEntity, TKey> Repository { get; }
+        public IAsyncRepository<TEntity, TKey> Repository { get; }
         public IEntityDTOMapper<TEntity, TDetailDTO> Mapper { get; }
 
-        protected AsyncCrudFacadeBase(Func<IFilteredQuery<TListDTO, TFilter>> queryFactory, IRepository<TEntity, TKey> repository, IEntityDTOMapper<TEntity, TDetailDTO> mapper)
+        protected AsyncCrudFacadeBase(Func<IFilteredQuery<TListDTO, TFilter>> queryFactory, IAsyncRepository<TEntity, TKey> repository, IEntityDTOMapper<TEntity, TDetailDTO> mapper)
         {
             QueryFactory = queryFactory;
             Repository = repository;
             Mapper = mapper;
         }
 
-        public virtual TDetailDTO GetDetail(TKey id)
+        public virtual async Task<TDetailDTO> GetDetailAsync(TKey id)
         {
-            var entity = Repository.GetById(id);
+            var entity = await Repository.GetByIdAsync(CancellationToken.None, id);
             ValidateReadPermissions(entity);
             var detail = Mapper.MapToDTO(entity);
             return detail;
@@ -38,7 +40,7 @@ namespace BcsAdmin.BL.Facades
             return detail;
         }
 
-        public virtual TDetailDTO Save(TDetailDTO detail)
+        public virtual async Task<TDetailDTO> SaveAsync(TDetailDTO detail)
         {
 
             TEntity entity;
@@ -51,7 +53,7 @@ namespace BcsAdmin.BL.Facades
             }
             else
             {
-                entity = Repository.GetById(detail.Id);
+                entity = await Repository.GetByIdAsync(CancellationToken.None, detail.Id);
                 ValidateModifyPermissions(entity, ModificationStage.BeforeMap);
             }
 
@@ -61,22 +63,12 @@ namespace BcsAdmin.BL.Facades
             ValidateModifyPermissions(entity, ModificationStage.AfterMap);
 
             // save
-            return Save(entity, isNew, detail);
+            return await SaveAsync(entity, isNew, detail);
         }
 
-        public virtual void Delete(TKey id)
+        public virtual async Task DeleteAsync(TKey id)
         {
-            Repository.Delete(id);
-
-        }
-
-        public virtual IEnumerable<TListDTO> GetList(TFilter filter, Action<IFilteredQuery<TListDTO, TFilter>> queryConfiguration = null)
-        {
-
-            var query = QueryFactory();
-            queryConfiguration?.Invoke(query);
-            return query.Execute();
-
+            await Repository.DeteleAsync(id);
         }
 
         protected virtual void PopulateDetailToEntity(TDetailDTO detail, TEntity entity)
@@ -84,16 +76,16 @@ namespace BcsAdmin.BL.Facades
             Mapper.PopulateEntity(detail, entity);
         }
 
-        protected virtual TDetailDTO Save(TEntity entity, bool isNew, TDetailDTO detail)
+        protected virtual async Task<TDetailDTO> SaveAsync(TEntity entity, bool isNew, TDetailDTO detail)
         {
             // insert or update
             if (isNew)
             {
-                Repository.Insert(entity);
+                await Repository.InsertAsync(entity);
             }
             else
             {
-                Repository.Update(entity);
+                await Repository.UpdateAsync(entity);
             }
 
             // save

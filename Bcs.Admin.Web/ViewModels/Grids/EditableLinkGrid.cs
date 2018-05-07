@@ -55,7 +55,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         {
             await ExecuteSafeAsync(async () =>
             {
-                facade.Unlink(ParentRepositoryName, new EntityLinkDto { DetailId = ParentEntityId, AssociatedId = entity.Id });
+                facade.UnlinkAsync(ParentRepositoryName, new EntityLinkDto { DetailId = ParentEntityId, AssociatedId = entity.Id });
                 await ReloadDataAsync();
             });
         }
@@ -70,7 +70,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         {
             await ExecuteSafeAsync(async () =>
             {
-                facade.CreateAndLink(ParentEntityId, ParentRepositoryName, NewRow);
+                facade.CreateAndLinkAsync(ParentEntityId, ParentRepositoryName, NewRow);
                 NewRow = null;
                 await ReloadDataAsync();
             });
@@ -80,7 +80,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
         {
             await ExecuteSafeAsync(async () =>
             {
-                facade.Edit(entity);
+                facade.EditAsync(entity);
                 DataSet.RowEditOptions.EditRowId = null;
                 await ReloadDataAsync();
             });
@@ -94,7 +94,7 @@ namespace Bcs.Admin.Web.ViewModels.Grids
 
                 if (associateId == null) return;
 
-                facade.Link(ParentRepositoryName, new EntityLinkDto { DetailId = ParentEntityId, AssociatedId = associateId.Value });
+                facade.LinkAsync(ParentRepositoryName, new EntityLinkDto { DetailId = ParentEntityId, AssociatedId = associateId.Value });
                 await ReloadDataAsync();
             });
         }

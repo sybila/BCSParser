@@ -6,16 +6,17 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
+using BcsAdmin.BL.Repositories.Api;
 
 namespace BcsAdmin.BL.Queries
 {
     public class ComponentLinkQuery : ManyToManyQuery<ApiEntity, ApiEntity, ComponentLinkDto>
     {
-        private readonly IRepository<ApiEntity, int> parentEntityRepository;
+        private readonly IAsyncRepository<ApiEntity, int> parentEntityRepository;
 
         public ComponentLinkQuery(
-            IRepository<ApiEntity, int> parentEntityRepository,
-            IRepository<ApiEntity, int> associatedEntityRepository) 
+            IAsyncRepository<ApiEntity, int> parentEntityRepository,
+            IAsyncRepository<ApiEntity, int> associatedEntityRepository) 
             : base(associatedEntityRepository)
         {
             this.parentEntityRepository = parentEntityRepository;
@@ -26,7 +27,7 @@ namespace BcsAdmin.BL.Queries
             return parent.Children;
         }
 
-        protected override IRepository<ApiEntity, int> GetParentRepository() => parentEntityRepository;
+        protected override IAsyncRepository<ApiEntity, int> GetParentRepository() => parentEntityRepository;
 
         protected override IQueryable<ComponentLinkDto> ProcessEntities(IQueryable<ApiEntity> q, ApiEntity parentEntity)
         {

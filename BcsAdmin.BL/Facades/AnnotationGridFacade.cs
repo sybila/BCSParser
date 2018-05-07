@@ -11,13 +11,13 @@ namespace BcsAdmin.BL.Facades
     public class AnnotationGridFacade : DependantGridFacade<ApiAnnotation, AnnotationDto>
     {
         public AnnotationGridFacade(Func<IFilteredQuery<AnnotationDto, IdFilter>> queryFactory,
-            Func<IRepository<ApiAnnotation, int>> repositoryFactory,
+            Func<IAsyncRepository<ApiAnnotation, int>> repositoryFactory,
             IEntityDTOMapper<ApiAnnotation, AnnotationDto> mapper)
             : base(queryFactory, repositoryFactory, mapper)
         {
         }
 
-        protected override IRepository<ApiAnnotation, int> GetRepository(int parentId, string parentRepositoryName)
+        protected override IAsyncRepository<ApiAnnotation, int> GetRepository(int parentId, string parentRepositoryName)
         {
             var r = RepositoryFactory().CastAs<AnnotationRepository>();
             r.RepoName = $"{parentRepositoryName}/{parentId}/annotations";

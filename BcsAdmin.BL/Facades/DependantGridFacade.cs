@@ -6,20 +6,22 @@ using BcsAdmin.DAL.Models;
 using DotVVM.Framework.Controls;
 using System.Threading.Tasks;
 using BcsAdmin.BL.Facades.Defs;
+using BcsAdmin.BL.Repositories.Api;
+using System.Threading;
 
 namespace BcsAdmin.BL.Facades
 {
     public abstract class DependantGridFacade<TApiEntity, TEntityDto> : IGridFacade<int, TEntityDto>
-        where TApiEntity : IEntity<int>
+        where TApiEntity : IEntity<int>, new()
         where TEntityDto : class, IEntity<int>, new()
     {
-        protected Func<IRepository<TApiEntity, int>> RepositoryFactory { get; }
+        protected Func<IAsyncRepository<TApiEntity, int>> RepositoryFactory { get; }
         protected IEntityDTOMapper<TApiEntity, TEntityDto> Mapper { get; }
         public Func<IFilteredQuery<TEntityDto, IdFilter>> QueryFactory { get; }
 
         public DependantGridFacade(
             Func<IFilteredQuery<TEntityDto, IdFilter>> queryFactory,
-            Func<IRepository<TApiEntity, int>> repositoryFactory,
+            Func<IAsyncRepository<TApiEntity, int>> repositoryFactory,
             IEntityDTOMapper<TApiEntity, TEntityDto> mapper)
         {
             QueryFactory = queryFactory;
@@ -27,16 +29,16 @@ namespace BcsAdmin.BL.Facades
             this.Mapper = mapper;
         }
 
-        public void Delete(int parentId, string parentRepositoryName, int id)
+        public async Task DeleteAsync(int parentId, string parentRepositoryName, int id)
         {
             var r = GetRepository(parentId, parentRepositoryName);
-            r.Delete(id);
+            await r.DeteleAsync(id);
         }
 
-        public TEntityDto GetDetail(int parentId, string parentRepositoryName, int id)
+        public async Task<TEntityDto> GetDetailAsync(int parentId, string parentRepositoryName, int id)
         {
             var r = GetRepository(parentId, parentRepositoryName);
-            var apiEntity = r.GetById(id);
+            var apiEntity = await r.GetByIdAsync(CancellationToken.None, id);
 
             return Mapper.MapToDTO(apiEntity);
         }
@@ -49,7 +51,7 @@ namespace BcsAdmin.BL.Facades
             };
         }
 
-        public TEntityDto Save(int parentId, string parentRepositoryName, TEntityDto data)
+        public async Task<TEntityDto> SaveAsync(int parentId, string parentRepositoryName, TEntityDto data)
         {
             var r = GetRepository(parentId, parentRepositoryName);
 
@@ -57,11 +59,11 @@ namespace BcsAdmin.BL.Facades
 
             if (data.Id == 0)
             {
-                r.Insert(apiEntity);
+                await r.InsertAsync(apiEntity);
             }
             else
             {
-                r.Update(apiEntity);
+                await r.UpdateAsync(apiEntity);
             }
             return Mapper.MapToDTO(apiEntity);
         }
@@ -73,6 +75,6 @@ namespace BcsAdmin.BL.Facades
             await dataSet.LoadFromQueryAsync(q);
         }
 
-        protected abstract IRepository<TApiEntity, int> GetRepository(int parentId, string parentRepositoryName);
+        protected abstract IAsyncRepository<TApiEntity, int> GetRepository(int parentId, string parentRepositoryName);
     }
 }

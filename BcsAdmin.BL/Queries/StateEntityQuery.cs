@@ -6,19 +6,20 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using BcsAdmin.BL.Repositories.Api;
 
 namespace BcsAdmin.BL.Queries
 {
     public class StateEntityQuery : OneToManyQuery<ApiEntity, StateEntityDto>
     {
-        private readonly IRepository<ApiEntity, int> parentEntityRepository;
+        private readonly IAsyncRepository<ApiEntity, int> parentEntityRepository;
 
-        public StateEntityQuery(IRepository<ApiEntity, int> parentEntityRepository) : base()
+        public StateEntityQuery(IAsyncRepository<ApiEntity, int> parentEntityRepository) : base()
         {
             this.parentEntityRepository = parentEntityRepository;
         }
 
-        protected override IRepository<ApiEntity, int> GetParentRepository() => parentEntityRepository;
+        protected override IAsyncRepository<ApiEntity, int> GetParentRepository() => parentEntityRepository;
 
         protected async override Task<IQueryable<StateEntityDto>> GetQueriableAsync(CancellationToken cancellationToken)
         {

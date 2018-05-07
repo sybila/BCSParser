@@ -4,16 +4,17 @@ using BcsAdmin.BL.Queries;
 using AutoMapper;
 using BcsAdmin.DAL.Api;
 using BcsAdmin.BL.Dto;
+using BcsAdmin.BL.Repositories.Api;
 
 namespace BcsAdmin.BL.Facades
 {
     public class LocationGridFacade : DependantLinkGridFacade<ApiEntity, ApiEntity, LocationLinkDto>
     {
-        private readonly Func<IRepository<ApiEntity, int>> parentRepositoryFunc;
+        private readonly Func<IAsyncRepository<ApiEntity, int>> parentRepositoryFunc;
 
         public LocationGridFacade(
-            Func<IRepository<ApiEntity, int>> parentRepositoryFunc, 
-            IRepository<ApiEntity, int> associatedEntityRepository,
+            Func<IAsyncRepository<ApiEntity, int>> parentRepositoryFunc, 
+            IAsyncRepository<ApiEntity, int> associatedEntityRepository,
             Func<ManyToManyQuery<ApiEntity, ApiEntity, LocationLinkDto>> queryFactory,
             IMapper mapper) 
             : base(associatedEntityRepository, queryFactory, mapper)
@@ -49,7 +50,7 @@ namespace BcsAdmin.BL.Facades
             parentEntity.Classifications = null;
         }
 
-        protected override IRepository<ApiEntity, int> GetParentRepository(string paentRepositoryName) =>
+        protected override IAsyncRepository<ApiEntity, int> GetParentRepository(string paentRepositoryName) =>
             parentRepositoryFunc();
     }
 }

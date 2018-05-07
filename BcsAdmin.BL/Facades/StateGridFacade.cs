@@ -10,15 +10,17 @@ using System.Linq;
 using BcsAdmin.BL.Facades.Defs;
 using DotVVM.Framework.Controls;
 using System.Threading.Tasks;
+using BcsAdmin.BL.Repositories.Api;
+using System.Threading;
 
 namespace BcsAdmin.BL.Facades
 {
     public class StateGridFacade : IGridFacade<string, StateEntityDto>
     {
         public Func<IFilteredQuery<StateEntityDto, IdFilter>> QueryFactory { get; }
-        private readonly IRepository<ApiEntity, int> entityRepository;
+        private readonly IAsyncRepository<ApiEntity, int> entityRepository;
 
-        public StateGridFacade(IRepository<ApiEntity, int> entityRepository, Func<OneToManyQuery<ApiEntity, StateEntityDto>> queryFactory)
+        public StateGridFacade(IAsyncRepository<ApiEntity, int> entityRepository, Func<OneToManyQuery<ApiEntity, StateEntityDto>> queryFactory)
         {
             this.entityRepository = entityRepository;
             QueryFactory = queryFactory;
@@ -29,9 +31,9 @@ namespace BcsAdmin.BL.Facades
             return new StateEntityDto();
         }
 
-        public StateEntityDto GetDetail(int parentId, string parentRepositoryName, string code)
+        public async Task<StateEntityDto> GetDetailAsync(int parentId, string parentRepositoryName, string code)
         {
-            var parent = entityRepository.GetById(parentId);
+            var parent = await entityRepository.GetByIdAsync(CancellationToken.None, parentId);
             var state = parent.States.SingleOrDefault(s => s.Code == code);
 
             return new StateEntityDto {
@@ -40,9 +42,9 @@ namespace BcsAdmin.BL.Facades
             };
         }
 
-        public StateEntityDto Save(int parentId, string parentRepositoryName, StateEntityDto data)
+        public async Task<StateEntityDto> SaveAsync(int parentId, string parentRepositoryName, StateEntityDto data)
         {
-            var parent = entityRepository.GetById(parentId);
+            var parent = await entityRepository.GetByIdAsync(CancellationToken.None, parentId);
             var state = parent.States.SingleOrDefault(s => s.Code == data.Id);
 
             var newState = new ApiState
@@ -58,18 +60,18 @@ namespace BcsAdmin.BL.Facades
             parent.States.Add(newState);
 
             ClearAll(parent);
-            entityRepository.Update(parent);
+            await entityRepository.UpdateAsync(parent);
             return data;
         }
 
-        public void Delete(int parentId, string parentRepositoryName, string code)
+        public async Task DeleteAsync(int parentId, string parentRepositoryName, string code)
         {
-            var parent = entityRepository.GetById(parentId);
+            var parent = await entityRepository.GetByIdAsync(CancellationToken.None, parentId);
             var state  = parent.States.SingleOrDefault(s => s.Code == code);
             parent.States.Remove(state);
 
             ClearAll(parent);
-            entityRepository.Update(parent);
+            await entityRepository.UpdateAsync(parent);
         }
 
         private static void ClearAll(ApiEntity parentEntity)

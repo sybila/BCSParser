@@ -8,14 +8,14 @@ namespace Bcs.Admin.Web.ViewModels
 {
     public class TabBase<TGridDto, TFilter> : AppViewModelBase
     {
-        private readonly IListFacade<TGridDto, TFilter> listFacade;
+        private readonly IQueryFacade<TGridDto, TFilter> listFacade;
 
         public GridViewDataSet<TGridDto> DataSet { get; set; }
         public TFilter Filter { get; set; }
 
         public string Name { get; set; }
 
-        public TabBase(IListFacade<TGridDto, TFilter> listFacade)
+        public TabBase(IQueryFacade<TGridDto, TFilter> listFacade)
         {
             this.listFacade = listFacade;
         }

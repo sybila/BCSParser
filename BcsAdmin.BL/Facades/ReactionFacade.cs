@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Bcs.Admin.BL.Dto;
 using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Filters;
+using BcsAdmin.BL.Repositories.Api;
 using BcsAdmin.BL.Services;
 using BcsAdmin.DAL.Api;
 using BcsResolver.File;
@@ -17,22 +18,18 @@ using Riganti.Utils.Infrastructure.Services.Facades;
 
 namespace BcsAdmin.BL.Facades
 {
-    public class ReactionFacade : FilteredCrudFacadeBase<ApiRule, int, ReactionRowDto, BiochemicalReactionDetailDto, ReactionFilter>, IListFacade<ReactionRowDto, ReactionFilter>
+    public class ReactionFacade : AsyncCrudFacadeBase<ApiRule, int, ReactionRowDto, BiochemicalReactionDetailDto, ReactionFilter>
     {
         private readonly IBcsWorkspace bcsWorkspace;
 
         public ReactionFacade(
             Func<IFilteredQuery<ReactionRowDto, ReactionFilter>> queryFactory,
-            IRepository<ApiRule, int> repository,
+            IAsyncRepository<ApiRule, int> repository,
             IEntityDTOMapper<ApiRule, BiochemicalReactionDetailDto> mapper,
-            IUnitOfWorkProvider unitOfWorkProvider,
             IBcsWorkspace bcsWorkspace)
             : base(queryFactory, repository, mapper)
         {
-            UnitOfWorkProvider = unitOfWorkProvider;
-
-            this.bcsWorkspace = bcsWorkspace;
-            
+            this.bcsWorkspace = bcsWorkspace;        
         }
 
         public List<StyleSpan> GetClassificationSpans(ReactionModel reactionModel)

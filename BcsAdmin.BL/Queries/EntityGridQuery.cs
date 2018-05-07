@@ -10,6 +10,7 @@ using BcsAdmin.BL.Filters;
 using Bcs.Admin.BL.Dto;
 using System.Threading;
 using System.Threading.Tasks;
+using BcsAdmin.BL.Repositories.Api;
 
 namespace BcsAdmin.BL.Queries
 {
@@ -18,9 +19,9 @@ namespace BcsAdmin.BL.Queries
 
         public BiochemicalEntityFilter Filter { get; set; }
 
-        private IRepository<ApiEntity, int> entityRepository;
+        private IAsyncRepository<ApiEntity, int> entityRepository;
 
-        public EntityGridQuery(IRepository<ApiEntity, int> repository)
+        public EntityGridQuery(IAsyncRepository<ApiEntity, int> repository)
         {
             this.entityRepository = repository;
         }

@@ -14,10 +14,10 @@ namespace BcsAdmin.BL.Facades
         where TEntityDto : IEntity<int>
     {
         Task FillDataSetAsync(GridViewDataSet<TEntityDto> dataSet, IdFilter filter);
-        void CreateAndLink(int detailId, string paentRepositoryName, TEntityDto entity);
-        void Edit(TEntityDto entityDto);
-        void Link(string paentRepositoryName, EntityLinkDto link);
-        void Unlink(string paentRepositoryName, EntityLinkDto link);
+        Task CreateAndLinkAsync(int detailId, string paentRepositoryName, TEntityDto entity);
+        Task EditAsync(TEntityDto entityDto);
+        Task LinkAsync(string paentRepositoryName, EntityLinkDto link);
+        Task UnlinkAsync(string paentRepositoryName, EntityLinkDto link);
         TEntityDto CreateAssociated();
     }
 }

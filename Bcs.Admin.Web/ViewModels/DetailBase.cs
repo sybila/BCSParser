@@ -19,7 +19,7 @@ namespace Bcs.Admin.Web.ViewModels
         protected IMapper Mapper { get; }
 
         [Bind(Direction.None)]
-        protected ICrudDetailFacade<TDto, int> Facade { get; }
+        protected IAsyncDetailFacade<TDto, int> Facade { get; }
 
         [Bind(Direction.None)]
         public Action UpdateGrid { get; set; }
@@ -50,7 +50,7 @@ namespace Bcs.Admin.Web.ViewModels
         public AlertViewModel Alert { get; set; }
 
         public DetailBase(
-            ICrudDetailFacade<TDto, int> facade,
+            IAsyncDetailFacade<TDto, int> facade,
             IMapper mapper,
             IEditableGrid<int, AnnotationDto> annotationGrid,
             IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> classificationGrid,
@@ -98,7 +98,9 @@ namespace Bcs.Admin.Web.ViewModels
             await ExecuteSafeAsync(async () =>
             {
                 var dto = Mapper.Map<TDto>(this);
-                Facade.Save(dto);
+                AfterMap(dto);
+
+                await Facade.SaveAsync(dto);
                 Mapper.Map(dto, this);
 
                 await PoputateGridsAsync();
@@ -106,11 +108,15 @@ namespace Bcs.Admin.Web.ViewModels
             }, "Changes saved.");
         }
 
+        protected virtual void AfterMap(TDto dto)
+        {
+        }
+
         public virtual async Task DeleteAsync()
         {
             await ExecuteSafeAsync(async () =>
             {
-                Facade.Delete(Id);
+                await Facade.DeleteAsync(Id);
                 Close();
                 UpdateGrid?.Invoke();
             }, "Entity deleted");
@@ -136,7 +142,7 @@ namespace Bcs.Admin.Web.ViewModels
         {
             await ExecuteSafeAsync(async () =>
             {
-                var dto = Facade.GetDetail(id);
+                var dto = await Facade.GetDetailAsync(id);
                 Mapper.Map(dto, this);
                 await PoputateGridsAsync();
                 CancelAllActions();

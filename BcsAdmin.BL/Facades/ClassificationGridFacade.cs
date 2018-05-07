@@ -11,11 +11,11 @@ namespace BcsAdmin.BL.Facades
 {
     public class ClassificationGridFacade : DependantLinkGridFacade<ClassificationArray, ApiClassification, ClassificationDto>
     {
-        private readonly Func<IRepository<ClassificationArray, int>> parentRepositoryFunc;
+        private readonly Func<IAsyncRepository<ClassificationArray, int>> parentRepositoryFunc;
 
         public ClassificationGridFacade(
-            Func<IRepository<ClassificationArray, int>> parentRepositoryFunc,
-            IRepository<ApiClassification, int> associatedEntityRepository, 
+            Func<IAsyncRepository<ClassificationArray, int>> parentRepositoryFunc,
+            IAsyncRepository<ApiClassification, int> associatedEntityRepository, 
             Func<ManyToManyQuery<ClassificationArray, ApiClassification, ClassificationDto>> queryFactory, 
             IUnitOfWorkProvider unitOfWorkProvider, 
             IMapper mapper) 
@@ -24,7 +24,7 @@ namespace BcsAdmin.BL.Facades
             this.parentRepositoryFunc = parentRepositoryFunc;
         }
 
-        protected override IRepository<ClassificationArray, int> GetParentRepository(string paentRepositoryName)
+        protected override IAsyncRepository<ClassificationArray, int> GetParentRepository(string paentRepositoryName)
         {
             var r = (ClassificationArrayRepository)parentRepositoryFunc();
             r.RepoName = paentRepositoryName;

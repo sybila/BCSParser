@@ -1,4 +1,5 @@
 ﻿using Bcs.Resolver.Common;
+using BcsAdmin.BL.Repositories.Api;
 using BcsAdmin.DAL.Api;
 using BcsResolver.Extensions;
 using BcsResolver.SemanticModel;
@@ -18,7 +19,7 @@ namespace BcsAdmin.BL.Services
     {
         private bool isInitialized;
 
-        private readonly IRepository<ApiEntity, int> entityRepositry;
+        private readonly IAsyncRepository<ApiEntity, int> entityRepositry;
 
         public IReadOnlyDictionary<string, BcsComplexSymbol> Complexes { get; private set; }
 
@@ -32,7 +33,7 @@ namespace BcsAdmin.BL.Services
 
         public IReadOnlyList<SemanticError> Errors { get; private set; }
 
-        public ApiWorkspace(IRepository<ApiEntity, int> entityRepositry)
+        public ApiWorkspace(IAsyncRepository<ApiEntity, int> entityRepositry)
         {
             this.entityRepositry = entityRepositry;
         }
@@ -99,7 +100,7 @@ namespace BcsAdmin.BL.Services
             var list = new ConcurrentBag<ApiEntity>();
             var tasks = ids.Split(1000).Select(async id =>
             {
-                var results = await entityRepositry.GetByIdsAsync(id) ?? new ApiEntity[] { };
+                var results = await entityRepositry.GetByIdsAsync(CancellationToken.None, id) ?? new ApiEntity[] { };
                 foreach (var item in results)
                 {
                     list.Add(item);

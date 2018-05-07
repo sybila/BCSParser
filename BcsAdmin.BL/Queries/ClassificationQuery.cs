@@ -13,9 +13,9 @@ namespace BcsAdmin.BL.Queries
 {
     public class ClassificationQuery : ManyToManyQuery<ClassificationArray, ApiClassification, ClassificationDto>
     {
-        private readonly Func<IRepository<ClassificationArray, int>> parentEntityRepositoryFunc;
+        private readonly Func<IAsyncRepository<ClassificationArray, int>> parentEntityRepositoryFunc;
 
-        public ClassificationQuery(Func<IRepository<ClassificationArray, int>> parentEntityRepositoryFunc, IRepository<ApiClassification, int> associatedEntityRepository)
+        public ClassificationQuery(Func<IAsyncRepository<ClassificationArray, int>> parentEntityRepositoryFunc, IAsyncRepository<ApiClassification, int> associatedEntityRepository)
             : base(associatedEntityRepository)
         {
             this.parentEntityRepositoryFunc = parentEntityRepositoryFunc;
@@ -39,7 +39,7 @@ namespace BcsAdmin.BL.Queries
             return parent.Classifications;
         }
 
-        protected override IRepository<ClassificationArray, int> GetParentRepository()
+        protected override IAsyncRepository<ClassificationArray, int> GetParentRepository()
         {
             var parentRepo = parentEntityRepositoryFunc().CastAs<ClassificationArrayRepository>();
             parentRepo.RepoName = Filter.ParentEntityType;

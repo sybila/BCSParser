@@ -1,6 +1,7 @@
 ﻿using Riganti.Utils.Infrastructure.Core;
 using BcsAdmin.BL.Filters;
 using System;
+using BcsAdmin.BL.Repositories.Api;
 
 namespace BcsAdmin.BL.Queries
 {
@@ -9,6 +10,6 @@ namespace BcsAdmin.BL.Queries
     {
         public IdFilter Filter { get; set; }
 
-        protected abstract IRepository<TParentEntity, int> GetParentRepository();
+        protected abstract IAsyncRepository<TParentEntity, int> GetParentRepository();
     }
 }
