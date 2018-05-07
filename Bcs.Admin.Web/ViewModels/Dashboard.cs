@@ -22,9 +22,9 @@ namespace Bcs.Admin.Web.ViewModels
         public bool EntitiesSelected => ActiveTabName == EntitiesTab.Name;
         public bool ReactionsSelected => ActiveTabName == ReactionsTab.Name;
 
+        public NewEntityWizard NewEntityWizard { get; set; }
         public BiochemicalEntityDetail EntityDetail { get; set; }
         public BiochemicalReactionDetail ReactionDetail { get; set; }
-        public SimilarEntitySearchPanel EntitySearchPanel { get; set; }
         public List<BiochemicalEntityTypeDto> HierarchyTypes { get; set; }
         public List<AnnotationTypeDto> AnnotationTypes { get; set; }
 
@@ -39,7 +39,7 @@ namespace Bcs.Admin.Web.ViewModels
             ReactionsTab rulesTab,
             BiochemicalEntityDetail entityDetail,
             BiochemicalReactionDetail reactionDetail,
-            SimilarEntitySearchPanel entitySearchPanel)
+            NewEntityWizard newEntityWizard)
         {
             this.basicListFacade = basicListFacade;
             this.dashboardFacade = dashboardFacade;
@@ -48,7 +48,8 @@ namespace Bcs.Admin.Web.ViewModels
 
             EntityDetail = entityDetail;
             ReactionDetail = reactionDetail;
-            EntitySearchPanel = entitySearchPanel;
+            NewEntityWizard = newEntityWizard;
+            NewEntityWizard.SetParent(this);
             Title = "Dashboard";
             EntitiesTab = entitiesTab;
             ReactionsTab = rulesTab;
@@ -56,6 +57,11 @@ namespace Bcs.Admin.Web.ViewModels
 
             EntityDetail.UpdateGrid = () => EntitiesTab.RefreshAsync();
             ReactionDetail.UpdateGrid = () => ReactionsTab.RefreshAsync();
+        }
+
+        public void NewEntity()
+        {
+            NewEntityWizard.StartNew();
         }
 
         public async Task EditEntityAsync(int entityId)

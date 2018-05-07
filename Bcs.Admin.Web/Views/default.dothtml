@@ -1,4 +1,4 @@
-﻿@viewModel Bcs.Admin.Web.ViewModels.Dashboard, Bcs.Admin.Web 
+﻿@viewModel Bcs.Admin.Web.ViewModels.Dashboard, Bcs.Admin.Web
 @masterPage Views/masterpage.dotmaster
 
 <dot:Content ContentPlaceHolderID="MainContent">
@@ -11,36 +11,35 @@
             <div DataContext="{value: EntitiesTab}" Visible="{value: _root.EntitiesSelected}">
                 <div class="col-md-12">
                     <h3>{{value: Name}}</h3>
-                    <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}"/>
+                    <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}" />
                 </div>
-                <div class="col-lg-6 col-md-12">
-                    <div class="input-group input-group-sm col-md-12">
+                <div class="col-lg-5 col-md-11">
+                    <div class="form-group form-group-sm col-md-12">
                         <dot:TextBox class="form-control" Text="{value: Filter.SearchText}" />
-                        <div class="input-group-btn">
-                            <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: RefreshAsync(true)}">
-                                <i class="glyphicon glyphicon-search"></i> Apply filters
-                            </dot:Button>
-                        </div>
                     </div>
                     <div class="col-md-12 row gap">
-                        There are 
-                        <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span> 
-                        results. Showing 
-                        <dot:TextBox class="form-control input-sm inline-control" Text="{value: DataSet.PagingOptions.PageSize}" /> 
+                        There are
+                        <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span>
+                        results. Showing
+                        <dot:TextBox class="form-control input-sm inline-control" Text="{value: DataSet.PagingOptions.PageSize}" />
                         items per page.
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-12">
+                <div class="col-lg-5 col-md-11">
                     <dot:Repeater class="row" DataSource="{value: EntityTypes}">
-                        <dot:CheckBox 
-                                      style="min-width:150px;" 
+                        <dot:CheckBox style="min-width:150px;"
                                       class="col-md-4" Text="{value: _this}"
-                                      CheckedItems="{value: _parent.Filter.EntityTypeFilter}" 
+                                      CheckedItems="{value: _parent.Filter.EntityTypeFilter}"
                                       CheckedValue="{value: _this}" />
                     </dot:Repeater>
                 </div>
+                <div class="col-sm-2">
+                    <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: RefreshAsync(true)}">
+                        <i class="glyphicon glyphicon-search"></i> Filter
+                    </dot:Button>
+                </div>
                 <div class="col-md-12">
-                    <dot:Button ButtonTagName="button" Click="{command: _root.EntityDetail.NewAsync()}" class="btn btn-success btn-sm pull-right">
+                    <dot:Button ButtonTagName="button" Click="{command: _root.NewEntity()}" class="btn btn-success btn-sm pull-right">
                         <i class="glyphicon glyphicon glyphicon-plus"></i> New
                     </dot:Button>
                 </div>
@@ -80,7 +79,7 @@
                     <h3>{{value: Name}}</h3>
                     <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}" />
                 </div>
-                <div class="col-lg-6 col-md-12">
+                <div class="col-md-12">
                     <div class="input-group input-group-sm col-md-12">
                         <dot:TextBox class="form-control" Text="{value: Filter.SearchText}" />
                         <div class="input-group-btn">
@@ -90,14 +89,12 @@
                         </div>
                     </div>
                     <div class="col-md-12 row gap">
-                        There are 
-                        <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span> 
+                        There are
+                        <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span>
                         results. Showing
                         <dot:TextBox class="form-control input-sm inline-control" Text="{value: DataSet.PagingOptions.PageSize}" />
                         items per page.
                     </div>
-                </div>
-                <div class="col-lg-6 col-md-12">
                 </div>
                 <div class="col-md-12">
                     <dot:Button ButtonTagName="button" Click="{command: _root.ReactionDetail.NewAsync()}" class="btn btn-success pull-right">
@@ -106,7 +103,7 @@
                 </div>
                 <div class="col-md-12">
                     <dot:GridView ShowHeaderWhenNoData class="col-md-12 table table-hover table-striped" DataSource="{value: DataSet}">
-                        <EmptyDataTemplate> 
+                        <EmptyDataTemplate>
                             No results
                         </EmptyDataTemplate>
                         <RowDecorators>
@@ -126,6 +123,71 @@
         </div>
     </div>
     <div class="col-lg-6 col-md-12">
+        <div class="col-md-12 sub-board" DataContext="{value: NewEntityWizard}" Visible="{value:IsVisible}">
+            <cc:PanelControl ColorStyle="Info" HeadingText="New entity wizard" CloseCommand="{command: Close()}">
+                <BodyTemplate>
+                    <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}" />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Code for the new entity:</label>
+                                <div class="input-group input-group-sm">
+                                    <dot:TextBox class="form-control" Text="{value: Code}" />
+                                    <div class="input-group-btn">
+                                        <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: Next()}">
+                                            <i class="glyphicon glyphicon-arrow-right"></i> Next
+                                        </dot:Button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <dot:Button ButtonTagName="button" class="btn btn-success pull-right" Click="{command: CreateNewBlank()}">
+                                    <i Class="glyphicon glyphicon-plus"></i> Crete blank entity
+                                </dot:Button>
+                            </div>
+                        </div>
+                    </div>
+                    <div Visible="{value: IsSearchDone }" class="row">
+                        <div class="col-md-12">
+                            <p>
+                                There are similar entities found:
+                            </p>
+                            <dot:GridView class="table table-striped table-bordered table-responsive" DataSource="{value: SimilarResults}">
+                                <dot:GridViewTemplateColumn HeaderText="">
+                                    <dot:Button Visible="{value: IsExternal}" class="btn btn-info" Click="{command: _parent.SelectEntity(_this)}">
+                                        New from row
+                                    </dot:Button>
+                                    <dot:Button Visible="{value: Id > 0}" class="btn btn-info" Click="{command: _parent2.EditEntityAsync(Id)}">
+                                        Go to detail
+                                    </dot:Button>
+                                </dot:GridViewTemplateColumn>
+                                <dot:GridViewTextColumn HeaderText="Name" ValueBinding="{value: Name}" />
+                                <dot:GridViewTextColumn HeaderText="Code" ValueBinding="{value: Code}" />
+                                <dot:GridViewTemplateColumn HeaderText="Source">
+                                    <a Visible="{value: IsExternal}" href="{value: Link}">
+                                        {{value: Database}}
+                                    </a>
+                                    <span Visible="{value: !IsExternal}">
+                                        Internal
+                                    </span>
+                                </dot:GridViewTemplateColumn>
+                            </dot:GridView>
+                            <dot:DataPager DataSet="{value: SimilarResults}" class="pagination" />
+                        </div>
+                    </div>
+                    <div Visible="{value: NewEntity != null}" class="row">
+                        <div class="col-md-12">
+                            <dd:DynamicEntity Validator.InvalidCssClass="has-error" FormBuilderName="v-bootstrap" DataContext="{value: NewEntity}" />
+                            <div class="form-group">
+                                <dot:Button Validation.Enabled="true" Validation.Target="{value: _this}" ButtonTagName="button" class="btn btn-success pull-right" Click="{command: SaveAsync() }">
+                                    <i Class="glyphicon glyphicon-save"></i> Save detail
+                                </dot:Button>
+                            </div>
+                        </div>
+                    </div>
+                </BodyTemplate>
+            </cc:PanelControl>
+        </div>
         <div class="col-md-12 sub-board" DataContext="{value: EntityDetail}" Visible="{value: Id != -1}">
             <cc:PanelControl ColorStyle="Info" HeadingText="Entity detail" CloseCommand="{command: Close()}">
                 <BodyTemplate>
@@ -166,105 +228,6 @@
                 </FooterTemplate>
             </cc:PanelControl>
             <dd:DynamicEntity GroupName="Grids" FormBuilderName="v-bootstrap" DataContext="{value: _this}" />
-        </div>
-        <div class="col-md-12 sub-board" DataContext="{value: EntitySearchPanel}">
-            <cc:PanelControl ColorStyle="Warning" class="panel-warning" HeadingText="Search for similiar entities">
-                <BodyTemplate>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h3>Entity search</h3>
-                        </div>
-                    </div>
-                    <div class="row section">
-                        <div class="col-sm-9">
-                            <label class="control-label">Entity name to find:</label>
-                            <div class="input-group">
-                                <dde:SearchDropDown DataContext="{value: EntityToCheckSearchSelect}" />
-                                <div class="input-group-btn">
-                                    <dot:Button class="btn btn-warning" ButtonTagName="button" Click="{command: Search()}">
-                                        Search for sililar enities
-                                    </dot:Button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <label class="control-label">Database name:</label>
-                            <dot:TextBox class="form-control" Text="{value: DatabaseName}" />
-                        </div>
-                    </div>
-                    <div class="row section">
-                        <div class="col-md-12">
-                            <dot:GridView class="table table-striped table-bordered table-responsive" DataSource="{value: DataSet}">
-                                <dot:GridViewTemplateColumn HeaderText="">
-                                    <dot:Button class="btn btn-info" Click="{command: _parent.CheckedEntity = _this}">
-                                        Select
-                                    </dot:Button>
-                                </dot:GridViewTemplateColumn>
-                                <dot:GridViewTextColumn HeaderText="Name" ValueBinding="{value: Name}" />
-                                <dot:GridViewTextColumn HeaderText="Code" ValueBinding="{value: Code}" />
-                                <dot:GridViewTemplateColumn HeaderText="Source">
-                                    <a Visible="{value: IsExternal}" href="{value: Link}">
-                                        {{value: Database}}
-                                    </a>
-                                    <span Visible="{value: !IsExternal}">
-                                        Internal
-                                    </span>
-                                </dot:GridViewTemplateColumn>
-                            </dot:GridView>
-                            <dot:DataPager DataSet="{value: DataSet}" class="pagination" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h3>Entity replacement</h3>
-                        </div>
-                    </div>
-                    <div class="row section">
-                        <div class="col-sm-5">
-                            <h4>Replace all occurences of entity:</h4>
-                            <div Visible="{value:  EntityToCheckSearchSelect.SelectedSuggestion == null}">
-                                Select entity to find similar entity for
-                            </div>
-                            <table class="table table-bordered" DataContext="{value: EntityToCheckSearchSelect.SelectedSuggestion}">
-                                <tbody>
-                                    <tr>
-                                        <td>Code:</td>
-                                        <td>{{value: Name}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Name:</td>
-                                        <td>{{value: Description}}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-sm-5">
-                            <h4>Entity to replace with:</h4>
-                            <div Visible="{value: CheckedEntity == null}">
-                                Select entity from search results
-                            </div>
-                            <table class="table table-bordered" DataContext="{value: CheckedEntity}">
-                                <tbody>
-                                    <tr>
-                                        <td>Code:</td>
-                                        <td>{{value: Code}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Name:</td>
-                                        <td>{{value: Name}}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12 margin-top">
-                            <dot:Button class="btn btn-warning" Click="{command: ReplaceEntyty()}" Enabled="{value: CheckedEntity != null && EntityToCheckSearchSelect.SelectedSuggestion != null}" Text="Replace" />
-                            <span class="label label-success">{{value: Message}}</span>
-                        </div>
-                    </div>
-                </BodyTemplate>
-            </cc:PanelControl>
         </div>
     </div>
 </dot:Content>

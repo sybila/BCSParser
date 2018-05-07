@@ -8,11 +8,17 @@ namespace BcsAdmin.BL.Dto
 {
     public class BiochemicalEntityDetailDto : IEntity<int>
     {
+        [Display(AutoGenerateField = false)]
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Code { get; set; }
-        public string Description { get; set; }
-        public bool IsValid { get; set; }
+        [Display(Name = "Type")]
         public int SelectedHierarchyType { get; set; }
+        [Required]
+        public string Code { get; set; }
+        [Required]
+        public string Name { get; set; }
+        public string Description { get; set; }
+        [Display(Name = "Valid")]
+        public bool IsValid { get; set; }
+        
     }
 }
