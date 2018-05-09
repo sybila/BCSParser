@@ -18,16 +18,6 @@ namespace Bcs.Admin.BL.Dto
 
         public string Type { get; set; }
 
-        public int? Active { get; set; }
-
         public string EntityTypeCss { get; set; }
-
-        public List<string> Children { get; set; }
-
-        public List<string> Locations { get; set; }
-
-        public IList<int> ChildIds { get; set; }
-
-        public IList<int> LocationIds { get; set; }
     }
 }

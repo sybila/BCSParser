@@ -34,13 +34,8 @@ namespace Bcs.Admin.Web.ViewModels
             }
             catch (InvalidInputException ex)
             {
-                Context.ModelState.Errors.Add(new ViewModelValidationError()
-                {
-                    PropertyPath = "Code",
-                    ErrorMessage = ex.Message
-                });
-
-                Context.FailOnInvalidModelState();
+                Errors.Add(ex.Message);
+                SuccessMessage = null;
             }
             catch (Exception ex)
             {

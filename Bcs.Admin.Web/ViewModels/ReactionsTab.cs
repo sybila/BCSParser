@@ -9,7 +9,7 @@ namespace Bcs.Admin.Web.ViewModels
         public ReactionsTab(ReactionFacade reactionFacade)
             : base(reactionFacade)
         {
-            Name = "Reactions";
+            Name = "Rules";
             Filter = new ReactionFilter();
         }
     }

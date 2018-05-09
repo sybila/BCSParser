@@ -34,7 +34,7 @@ namespace BcsAdmin.BL.Queries
             {
                 Id = e.Id,
                 Name = e.Name,
-                Code = e.Code,
+                Code = e.Code,              
                 Type = e.Type != null ? e.Type.Value.ToString("F") : "<null>",          
                 EntityTypeCss = $"entity-{(e.Type != null ? e.Type.Value.ToString("F") : "unknown")}".ToLower()
             });
@@ -51,37 +51,5 @@ namespace BcsAdmin.BL.Queries
             }
             return queriable;
         }
-
-        //protected async override Task<IList<BiochemicalEntityRowDto>> PostProcessResultsAsync(CancellationToken cancellationToken, IList<BiochemicalEntityRowDto> results)
-        //{
-        //    foreach (var item in results)
-        //    {
-        //        item.Locations = await GetLocations(item, cancellationToken);
-        //        item.Children = await CreateChildLabelsAsync(item, cancellationToken);
-        //    }
-        //    return results;
-        //}
-
-        //private async Task<List<string>> GetLocations(BiochemicalEntityRowDto parent, CancellationToken cancellationToken)
-        //{
-        //    var locs = await entityRepository.GetByIdsAsync(cancellationToken, parent.LocationIds);
-        //    return locs.Select(e => e.Code).ToList();
-        //}
-
-        //private async Task<List<string>> CreateChildLabelsAsync(BiochemicalEntityRowDto parent, CancellationToken cancellationToken)
-        //{
-        //    if (parent.ChildIds.Any())
-        //    {
-        //        var children = await entityRepository.GetByIdsAsync(cancellationToken, parent.ChildIds);
-        //        return children
-        //            .Select(e => $"{(e.Type != null ? e.Type.Value.ToString("F") : "")}: {e.Code}")
-        //            .ToList();
-        //    }
-        //    else
-        //    {
-        //        return parent.Children;
-        //    }
-        
-        //}
     }
 }

@@ -44,6 +44,13 @@ namespace Bcs.Admin.Web
                 EmptyItemText = "(select entity type)",
             });
 
+            conventions.Register(p => p.Name.Equals("Status"), new ComboBoxSettingsAttribute()
+            {
+                DataSourceBinding = $"_root.{nameof(Dashboard.BcsObjectStatuses)}",
+                DisplayMember = nameof(StatusDto.Name),
+                ValueMember = nameof(StatusDto.Id),
+                EmptyItemText = "(select entity type)",
+            });
 
             var provider = new ValidatedComboBoxProvider(conventions);
             var columnProvider = new ConventionComboBoxGridColumnProvider(conventions);

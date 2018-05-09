@@ -28,6 +28,7 @@ namespace BcsAdmin.BL.Mappers
                 Name = entity.Name,
                 Description = entity.Description,
                 SelectedHierarchyType = (int)entity.Type,
+                Status = (int)entity.Status
             };
         }
 
@@ -44,6 +45,8 @@ namespace BcsAdmin.BL.Mappers
             target.Name = source.Name;
             target.Description = source.Description;
             target.Type = (DAL.Api.ApiEntityType)source.SelectedHierarchyType;
+            target.Status = (DAL.Api.ApiEntityStatus)source.Status;
+
         }
     }
 }

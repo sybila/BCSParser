@@ -19,7 +19,7 @@
         var editor = new CodeEditor();
         editor.addKnockoutHandlers();
     </dot:InlineScript>
-    <div class="container-fluid">
+    <div class="container-fluid dashboard">
         <div class="col-md-12">
             <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}"/>
             <h1>{{value: Title}}</h1>

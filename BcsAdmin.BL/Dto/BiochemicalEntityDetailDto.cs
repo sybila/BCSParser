@@ -16,9 +16,7 @@ namespace BcsAdmin.BL.Dto
         public string Code { get; set; }
         [Required]
         public string Name { get; set; }
-        public string Description { get; set; }
-        [Display(Name = "Valid")]
-        public bool IsValid { get; set; }
-        
+        public string Description { get; set; }   
+        public int Status { get; set; }
     }
 }

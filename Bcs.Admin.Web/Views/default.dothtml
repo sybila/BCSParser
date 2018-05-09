@@ -6,7 +6,7 @@
         <div class="sub-board col-md-12">
             <ul class="nav nav nav-tabs">
                 <li Class-active="{value: EntitiesSelected}"><dot:LinkButton Click="{command: ActiveTabName = EntitiesTab.Name}">Entities</dot:LinkButton></li>
-                <li Class-active="{value: ReactionsSelected}"><dot:LinkButton Click="{command: ActiveTabName = ReactionsTab.Name}">Reactions</dot:LinkButton></li>
+                <li Class-active="{value: ReactionsSelected}"><dot:LinkButton Click="{command: ActiveTabName = ReactionsTab.Name}">Rules</dot:LinkButton></li>
             </ul>
             <div DataContext="{value: EntitiesTab}" Visible="{value: _root.EntitiesSelected}">
                 <div class="col-md-12">
@@ -20,8 +20,11 @@
                     <div class="col-md-12 row gap">
                         There are
                         <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span>
-                        results. Showing
-                        <dot:TextBox class="form-control input-sm inline-control" Text="{value: DataSet.PagingOptions.PageSize}" />
+                        results. Show
+                        <dot:ComboBox 
+                            class="form-control input-sm inline-control" 
+                            DataSource="{value: _root.PaginationOptions}" 
+                            SelectedValue="{value: DataSet.PagingOptions.PageSize}"/>
                         items per page.
                     </div>
                 </div>
@@ -55,18 +58,6 @@
                             <dot:GridViewTextColumn AllowSorting HeaderText="Code" ValueBinding="{value: Code}" />
                             <dot:GridViewTextColumn AllowSorting HeaderText="Type" ValueBinding="{value: Type}" />
                             <dot:GridViewTextColumn AllowSorting HeaderText="Name" ValueBinding="{value: Name}" />
-                            <dot:GridViewTemplateColumn HeaderText="Components/States">
-                                <dot:Repeater DataSource="{value: Children}">
-                                    <div class="entity entity-default">{{value: _this}}</div>
-                                </dot:Repeater>
-                            </dot:GridViewTemplateColumn>
-                            <dot:GridViewTemplateColumn HeaderText="Locations">
-                                <dot:Repeater DataSource="{value: Locations}">
-                                    <div class="entity entity-default">
-                                        {{value: _this}}
-                                    </div>
-                                </dot:Repeater>
-                            </dot:GridViewTemplateColumn>
                         </Columns>
                     </dot:GridView>
                 </div>
@@ -110,7 +101,6 @@
                             <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.ReactionDetail.Id}" Events.Click="{command: _root.EditReactionAsync(Id)}" />
                         </RowDecorators>
                         <Columns>
-                            <dot:GridViewTextColumn AllowSorting HeaderText="Code" ValueBinding="{value: Code}" />
                             <dot:GridViewTextColumn AllowSorting HeaderText="Equation" ValueBinding="{value: Equation}" />
                             <dot:GridViewTextColumn AllowSorting HeaderText="Modifier" ValueBinding="{value: Modifier}" />
                         </Columns>
@@ -211,7 +201,7 @@
             </cc:PanelControl>
         </div>
         <div class="col-md-12 sub-board" DataContext="{value: ReactionDetail}" Visible="{value: Id != -1}">
-            <cc:PanelControl ColorStyle="Info" HeadingText="Reaction detail" CloseCommand="{command: Close()}">
+            <cc:PanelControl ColorStyle="Info" HeadingText="Rule detail" CloseCommand="{command: Close()}">
                 <BodyTemplate>
                     <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}" />
                     <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="v-bootstrap" DataContext="{value: _this}" />
@@ -219,7 +209,7 @@
                 <FooterTemplate>
                     <div>
                         <dot:Button ButtonTagName="button" class="btn btn-danger" Click="{command: DeleteAsync()}">
-                            <i Class="glyphicon glyphicon-trash"></i> Delete reaction
+                            <i Class="glyphicon glyphicon-trash"></i> Delete rule
                         </dot:Button>
                         <dot:Button ButtonTagName="button" class="btn btn-success pull-right" Click="{command: SaveAsync()}">
                             <i Class="glyphicon glyphicon-save"></i> Save detail

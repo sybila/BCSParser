@@ -1,5 +1,6 @@
 ﻿using BcsAdmin.BL.Dto;
 using BcsAdmin.BL.Queries;
+using BcsAdmin.DAL.Api;
 using Riganti.Utils.Infrastructure.Core;
 using Riganti.Utils.Infrastructure.Services.Facades;
 using System;
@@ -52,6 +53,15 @@ namespace BcsAdmin.BL.Facades
                 .Cast<Dto.HierarchyType>()
                 .Select(CreateHierarchyTypeDto)
                 .ToList();
+        }
+
+        public List<StatusDto> GetBcsObjectStatuses()
+        {
+            return new List<StatusDto> {
+                new StatusDto { Id = (int)ApiEntityStatus.Active, Name = ApiEntityStatus.Active.ToString("F")},
+                new StatusDto { Id = (int)ApiEntityStatus.Pending, Name = ApiEntityStatus.Pending.ToString("F")},
+                new StatusDto { Id = (int)ApiEntityStatus.Inactive, Name = ApiEntityStatus.Inactive.ToString("F")}
+            };             
         }
 
         private static BiochemicalEntityTypeDto CreateHierarchyTypeDto(Dto.HierarchyType v)

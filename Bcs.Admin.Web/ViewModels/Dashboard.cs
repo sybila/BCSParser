@@ -25,8 +25,12 @@ namespace Bcs.Admin.Web.ViewModels
         public NewEntityWizard NewEntityWizard { get; set; }
         public BiochemicalEntityDetail EntityDetail { get; set; }
         public BiochemicalReactionDetail ReactionDetail { get; set; }
+
+
         public List<BiochemicalEntityTypeDto> HierarchyTypes { get; set; }
+        public List<StatusDto> BcsObjectStatuses { get; set; }
         public List<AnnotationTypeDto> AnnotationTypes { get; set; }
+        public List<int> PaginationOptions { get; set; } = new List<int> { 10, 30, 50, 100, 200 };
 
         public List<SuggestionDto> EntitySuggestions { get; set; }
 
@@ -85,6 +89,7 @@ namespace Bcs.Admin.Web.ViewModels
             {
                 HierarchyTypes = basicListFacade.GetEntityTypes();
                 AnnotationTypes = basicListFacade.GetAnnotationTypes();
+                BcsObjectStatuses = basicListFacade.GetBcsObjectStatuses();
             }
             return base.Load();
         }

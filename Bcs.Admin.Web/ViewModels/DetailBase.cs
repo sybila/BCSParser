@@ -32,13 +32,13 @@ namespace Bcs.Admin.Web.ViewModels
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        [Display(GroupName = "Fields", Name = "Valid")]
-        public bool IsValid { get; set; }
+        [Display(GroupName = "Fields", Name = "State")]
+        public int Status { get; set; }
 
         [Display(GroupName = "Grids")]
         public IEditableGrid<int, AnnotationDto> Annotations { get; set; }
 
-        [Display(GroupName = "Grids")]
+        [Display(GroupName = "Grids", Name = "Classification")]
         public IEditableLinkGrid<ClassificationDto, ClassificationSuggestionQuery> Classifications { get; set; }
 
         [Display(GroupName = "Grids")]

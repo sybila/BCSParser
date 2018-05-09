@@ -27,8 +27,10 @@ namespace BcsAdmin.BL
         public static void RegisterMapperBL(this IMapperConfigurationExpression cfg)
         {
             cfg.CreateMap<ApiRule, ReactionRowDto>();
-            cfg.CreateMap<ApiRule, BiochemicalReactionDetailDto>();
-            cfg.CreateMap<BiochemicalReactionDetailDto, ApiRule>();
+            cfg.CreateMap<ApiRule, BiochemicalReactionDetailDto>()
+                .ForMember(t=> t.Status, m=> m.MapFrom(s => (int)s.Status));
+            cfg.CreateMap<BiochemicalReactionDetailDto, ApiRule>()
+                .ForMember(t => t.Status, m => m.MapFrom(s => (ApiEntityStatus)s.Status));
 
             cfg.CreateMap<ApiClassification, ClassificationDto>();
             cfg.CreateMap<EpEntityNote, EntityNoteDto>();

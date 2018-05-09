@@ -5,10 +5,10 @@ namespace BcsAdmin.DAL.Api
     public enum ApiEntityStatus
     {
         [EnumMember(Value = "pending")]
-        Pending,
+        Pending = 0,
         [EnumMember(Value = "active")]
-        Active,
+        Active = 1,
         [EnumMember(Value = "inactive")]
-        Inactive
+        Inactive = 2
     }
 }

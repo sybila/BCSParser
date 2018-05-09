@@ -9,6 +9,6 @@ namespace Bcs.Admin.BL.Dto
         public string Description { get; set; }
         public string Equation { get; set; }
         public string Modifier { get; set; }
-        public bool IsValid { get; set; }
+        public int Status { get; set; }
     }
 }
