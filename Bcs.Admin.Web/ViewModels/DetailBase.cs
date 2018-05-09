@@ -22,7 +22,7 @@ namespace Bcs.Admin.Web.ViewModels
         protected IAsyncDetailFacade<TDto, int> Facade { get; }
 
         [Bind(Direction.None)]
-        public Action UpdateGrid { get; set; }
+        public Func<Task> UpdateGrid { get; set; }
 
         [Protect(ProtectMode.SignData)]
         [Display(AutoGenerateField = false)]
@@ -118,7 +118,7 @@ namespace Bcs.Admin.Web.ViewModels
             {
                 await Facade.DeleteAsync(Id);
                 Close();
-                UpdateGrid?.Invoke();
+                await UpdateGrid?.Invoke();
             }, "Entity deleted");
         }
 

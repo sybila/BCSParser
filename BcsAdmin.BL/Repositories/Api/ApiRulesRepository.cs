@@ -8,8 +8,8 @@ namespace BcsAdmin.BL.Repositories.Api
     {
         public class ApiRulesRepository : ApiGenericRepository<ApiRule>
         {
-            public ApiRulesRepository(IDateTimeProvider dateTimeProvider)
-                : base(dateTimeProvider)
+            public ApiRulesRepository()
+                : base()
             {
                 RepoName = "rules";
             }

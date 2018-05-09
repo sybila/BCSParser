@@ -96,7 +96,7 @@ namespace Bcs.Admin.Web.Controls.EditPanel
 
                 var selectBinding = CreateCommandBinding(h=> ((SearchSelect)h[1]).Select(((SuggestionDto)h[0])), "__$SearchSelect_Select");
                 //CreateCommandBinding(context, dcts, "_parent.Select(_this)");
-                var nameBinding = CreateValueBinding(h => $"()", dcts);
+                var nameBinding = CreateValueBinding(h => ((SuggestionDto)h[0]).Name, dcts);
                 //ControlCreationHelper.CreateValueBinding(context, dcts, $"{nameof(SuggestionDto.Name)}+\"(\"+{nameof(SuggestionDto.Description)}+\")\"");
 
                 var linkButton = new LinkButton();

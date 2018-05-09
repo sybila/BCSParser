@@ -47,7 +47,7 @@ namespace BcsAdmin.BL.Queries
             }
             if (Filter.EntityTypeFilter.Any())
             {
-                queriable = queriable.Where(e => Filter.EntityTypeFilter.Any(f => f.Equals(f, StringComparison.OrdinalIgnoreCase)));
+                queriable = queriable.Where(e => Filter.EntityTypeFilter.Any(f => f.Equals(e.Type, StringComparison.OrdinalIgnoreCase)));
             }
             return queriable;
         }

@@ -5,6 +5,7 @@
 
 div.code-editor{
     height:auto;
+    min-height: 30px;
 }
 
 div.col-panel {

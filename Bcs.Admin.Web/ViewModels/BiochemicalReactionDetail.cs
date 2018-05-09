@@ -22,6 +22,7 @@ namespace Bcs.Admin.Web.ViewModels
         [Bind(Direction.None)]
         protected ReactionFacade ReactionFacade => (ReactionFacade)Facade;
 
+        [Required]
         [CodeEditor(nameof(UpdateEquationAsync))]
         [Display(GroupName = "Fields")]
         public string Equation { get; set; }

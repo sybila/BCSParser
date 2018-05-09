@@ -50,10 +50,6 @@ namespace BcsAdmin.BL
                 .ForMember(t => t.Id, m => m.MapFrom(s => s.Id))
                 .ForAllOtherMembers(a => a.Ignore());
             cfg.CreateMap<ApiEntity, StateEntityDto>();
-            cfg.CreateMap<StateEntityDto, ApiEntity>()
-               .ForMember(t => t.Code, m => m.MapFrom(s => s.Id))
-                .ForMember(t => t.Type, m => m.MapFrom(s => (int)Dto.HierarchyType.State))
-                .ForAllOtherMembers(a => a.Ignore());
 
             cfg.CreateMap<ApiAnnotation, AnnotationDto>()
                 .ForMember(t => t.Code, m => m.MapFrom(s => s.TermId))

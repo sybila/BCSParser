@@ -12,17 +12,22 @@ namespace Bcs.Admin.Web.ViewModels
     {
         private readonly AdvancedEntitySearchFacade searchFacade;
         private readonly BiochemicalEntityFacade biochemicalEntityFacade;
+        private readonly AnnotationGridFacade annotationGridFacade;
 
         public string Code { get; set; }
         public BiochemicalEntityDetailDto NewEntity { get; set; }
         public bool IsVisible { get; set; }
+        public bool IsSearchDone { get; set; }
         public GridViewDataSet<SimilarEntityDto> SimilarResults { get; set; }
+        public SimilarEntityDto SelectedSimilarEntity { get; set; }
+
         private Dashboard parent;
 
-        public NewEntityWizard(AdvancedEntitySearchFacade searchFacade, BiochemicalEntityFacade biochemicalEntityFacade)
+        public NewEntityWizard(AdvancedEntitySearchFacade searchFacade, BiochemicalEntityFacade biochemicalEntityFacade, AnnotationGridFacade annotationGridFacade)
         {
             this.searchFacade = searchFacade;
             this.biochemicalEntityFacade = biochemicalEntityFacade;
+            this.annotationGridFacade = annotationGridFacade;
         }
 
         public void SetParent(Dashboard parent)
@@ -34,6 +39,7 @@ namespace Bcs.Admin.Web.ViewModels
         {
             IsVisible = true;
             IsSearchDone = false;
+            SelectedSimilarEntity = null;
         }
 
         public void Close()
@@ -41,17 +47,19 @@ namespace Bcs.Admin.Web.ViewModels
             IsVisible = false;
             IsSearchDone = false;
             NewEntity = null;
+            SelectedSimilarEntity = null;
             Code = "";
         }
 
-        public void Next()
+        public async Task NextAsync()
         {
-            searchFacade.FillSimilarEntitySearch(SimilarResults, new SimilarEntitySearchFilter { Name = Code });
+            await searchFacade.FillSimilarEntitySearchAsync(SimilarResults, new SimilarEntitySearchFilter { Code = Code });
             IsSearchDone = true;
         }
 
         public void CreateNewBlank()
         {
+            SelectedSimilarEntity = null;
             NewEntity = new BiochemicalEntityDetailDto
             {
                 Code = Code
@@ -60,6 +68,7 @@ namespace Bcs.Admin.Web.ViewModels
 
         public void SelectEntity(SimilarEntityDto similarEntityDto)
         {
+            SelectedSimilarEntity = similarEntityDto;
             NewEntity = new BiochemicalEntityDetailDto
             {
                 Code = similarEntityDto.Code,
@@ -72,6 +81,17 @@ namespace Bcs.Admin.Web.ViewModels
             await ExecuteSafeAsync(async () =>
             {
                 var entity = await biochemicalEntityFacade.SaveAsync(NewEntity);
+
+                if (SelectedSimilarEntity?.IsExternal == true)
+                {
+                    await annotationGridFacade.SaveAsync(
+                        entity.Id, 
+                        "entities",  
+                        new AnnotationDto {
+                            Code = SelectedSimilarEntity.Code,
+                            Type = SelectedSimilarEntity.Database
+                        });
+                }
                 Close();
                 await parent.EditEntityAsync(entity.Id);
             });
@@ -92,7 +112,5 @@ namespace Bcs.Admin.Web.ViewModels
             };
             return base.Init();
         }
-
-        public bool IsSearchDone { get; set; }
     }
 }

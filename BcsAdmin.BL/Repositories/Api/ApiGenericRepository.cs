@@ -19,26 +19,25 @@ namespace BcsAdmin.BL.Repositories.Api
 
     namespace BcsAdmin.BL.Repositories
     {
-        public abstract class ApiGenericRepository<TEntity> : IAsyncRepository<TEntity, int>, IRepository<TEntity, int>
-            where TEntity : class, IEntity<int>, new()
+        public abstract class ApiGenericReadonlyRepository<TEntity, TKey> : IAsyncReadonlyRepository<TEntity, TKey>
+            where TEntity : class, new()
         {
             public string AppUrl { get; set; } = "https://api.e-cyanobacterium.org";
             public string RepoName { get; set; }
-            protected virtual string GetFullUrl(IEnumerable<int> ids) => $"{AppUrl}/{RepoName}/{string.Join(",", ids)}";
-            protected virtual string GetFullUrl(int id) => $"{AppUrl}/{RepoName}/{id}";
+            protected virtual string GetFullUrl(IEnumerable<TKey> ids) => $"{AppUrl}/{RepoName}/{string.Join(",", ids)}";
+            protected virtual string GetFullUrl(TKey id) => $"{AppUrl}/{RepoName}/{id}";
             protected virtual string GetFullUrl() => $"{AppUrl}/{RepoName}";
-
             protected HttpClient HttpClient { get; set; } = new HttpClient();
             public JsonSerializerSettings JsonSerializerSettings { get; }
 
-            public ApiGenericRepository(IDateTimeProvider dateTimeProvider)
+            public ApiGenericReadonlyRepository()
             {
                 var contractResolver = new DefaultContractResolver
                 {
                     NamingStrategy = new CamelCaseNamingStrategy
                     {
                         OverrideSpecifiedNames = false,
-                        
+
                     }
                 };
 
@@ -50,47 +49,46 @@ namespace BcsAdmin.BL.Repositories.Api
                 };
             }
 
-            public virtual TEntity InitializeNew()
+            public abstract Task<TEntity> GetByIdAsync(CancellationToken cancellationToken, TKey id);           
+        }
+
+        public abstract class ApiGenericRepository<TEntity> : ApiGenericReadonlyRepository<TEntity, int>, IAsyncRepository<TEntity, int>
+            where TEntity : class, IEntity<int>, new()
+        {
+            public override async Task<TEntity> GetByIdAsync(CancellationToken cancellationToken, int id)
+            {
+                var r = await GetByIdsAsync(cancellationToken, new int[] { id });
+                return r?.FirstOrDefault();
+        }
+
+        public async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids)
+        {
+            if (!ids.Any()) { return new List<TEntity>(); };
+
+            var response = await HttpClient.GetAsync(GetFullUrl(ids), cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var responseData = JsonConvert.DeserializeObject<EntityResponseData<List<TEntity>>>(responseBody, JsonSerializerSettings);
+
+            return responseData.Data;
+        }
+
+        public virtual TEntity InitializeNew()
             {
                 return new TEntity();
-            }
-
-            public void Delete(TEntity entity)
-            {
-                Delete(entity.Id);
-            }
-
-            public void Delete(IEnumerable<TEntity> entities)
-            {
-                foreach (var entity in entities)
-                {
-                    Delete(entity);
-                }
-            }
-
-            public virtual void Delete(int id)
-            {
-                DeteleAsync(id).Wait();
             }
 
             public async Task DeteleAsync(int id)
             {
                 var response = await HttpClient.DeleteAsync(GetFullUrl(id));
                 await HandleResponseAsync(response);
-            }
-
-            public void Delete(IEnumerable<int> ids)
-            {
-                foreach (int id in ids)
-                {
-                    Delete(id);
-                }
-            }
-
-            public void Insert(TEntity entity)
-            {
-                InsertAsync(entity).Wait();
-            }
+            }        
 
             public async Task InsertAsync(TEntity entity)
             {
@@ -99,123 +97,10 @@ namespace BcsAdmin.BL.Repositories.Api
                 entity.Id = newId ?? 0;
             }
 
-            public void Insert(IEnumerable<TEntity> entities)
-            {
-                foreach (var entity in entities)
-                {
-                    Insert(entity);
-                }
-            }
-
-            public void Update(TEntity entity)
-            {
-                UpdateAsync(entity).Wait();
-            }
-
             public async Task UpdateAsync(TEntity entity)
             {
                 var response = await HttpClient.PutAsync(GetFullUrl(entity.Id), PrepareContent(entity));
                 await HandleResponseAsync(response);
-            }
-
-            public void Update(IEnumerable<TEntity> entities)
-            {
-                foreach (var entity in entities)
-                {
-                    Update(entity);
-                }
-            }
-
-            public TEntity GetById(int id, params Expression<Func<TEntity, object>>[] includes)
-            {
-                return GetByIdAsync(id).Result;
-            }
-
-            public TEntity GetById(int id, IIncludeDefinition<TEntity>[] includes)
-            {
-                return GetByIdAsync(id).Result;
-            }
-
-            public async Task<TEntity> GetByIdAsync(int id, params Expression<Func<TEntity, object>>[] includes)
-            {
-                var cancelationToken = new CancellationToken();
-                return await GetByIdAsync(cancelationToken, id, includes);
-            }
-
-            public async Task<TEntity> GetByIdAsync(CancellationToken cancellationToken, int id)
-            {
-                var r = await GetByIdsAsync(cancellationToken, new int[] { id });
-                return r?.FirstOrDefault();
-            }
-
-            public async Task<TEntity> GetByIdAsync(CancellationToken cancellationToken, int id, params Expression<Func<TEntity, object>>[] includes)
-            {
-                var r = await GetByIdsAsync(cancellationToken, new int[] { id });
-                return r?.FirstOrDefault();
-            }
-
-            public async Task<TEntity> GetByIdAsync(int id, IIncludeDefinition<TEntity>[] includes)
-            {
-                return await GetByIdAsync(id);
-            }
-
-            public async Task<TEntity> GetByIdAsync(CancellationToken cancellationToken, int id, IIncludeDefinition<TEntity>[] includes)
-            {
-                return await GetByIdAsync(cancellationToken, id);
-            }
-
-            public IList<TEntity> GetByIds(IEnumerable<int> ids, params Expression<Func<TEntity, object>>[] includes)
-            {
-                throw new NotImplementedException();
-            }
-
-            public IList<TEntity> GetByIds(IEnumerable<int> ids, IIncludeDefinition<TEntity>[] includes)
-            {
-                throw new NotImplementedException();
-            }
-
-            public async Task<IList<TEntity>> GetByIdsAsync(IEnumerable<int> ids, params Expression<Func<TEntity, object>>[] includes)
-            {
-                var token = new CancellationToken();
-                return await GetByIdsAsync(token, ids);
-            }
-
-            public virtual async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids, params Expression<Func<TEntity, object>>[] includes)
-            {
-                return await GetByIds(cancellationToken, ids);
-            }
-
-            public virtual async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids)
-            {
-                return await GetByIds(cancellationToken, ids);
-            }
-
-            public async Task<IList<TEntity>> GetByIds(CancellationToken cancellationToken, IEnumerable<int> ids)
-            {
-                if (!ids.Any()) { return new List<TEntity>(); };
-
-                var response = await HttpClient.GetAsync(GetFullUrl(ids), cancellationToken);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    return null;
-                }
-
-                string responseBody = await response.Content.ReadAsStringAsync();
-
-                var responseData = JsonConvert.DeserializeObject<EntityResponseData<List<TEntity>>>(responseBody, JsonSerializerSettings);
-
-                return responseData.Data;
-            }
-
-            public async Task<IList<TEntity>> GetByIdsAsync(IEnumerable<int> ids, IIncludeDefinition<TEntity>[] includes)
-            {
-                return await GetByIdsAsync(ids);
-            }
-
-            public async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids, IIncludeDefinition<TEntity>[] includes)
-            {
-                return await GetByIdsAsync(cancellationToken, ids);
             }
 
             private async Task<int?> HandleResponseAsync(HttpResponseMessage response)

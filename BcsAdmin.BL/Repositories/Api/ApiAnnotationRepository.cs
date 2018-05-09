@@ -7,7 +7,7 @@ namespace BcsAdmin.BL.Repositories.Api
     public class AnnotationRepository : ApiGenericRepository<ApiAnnotation>
     {
         public AnnotationRepository(IDateTimeProvider dateTimeProvider)
-            : base(dateTimeProvider)
+            : base()
         {
         }
     }
@@ -15,7 +15,7 @@ namespace BcsAdmin.BL.Repositories.Api
     public class OrganismArrayRepository : ApiGenericRepository<OrganismArray>
     {
         public OrganismArrayRepository(IDateTimeProvider dateTimeProvider)
-            : base(dateTimeProvider)
+            : base()
         {
         }
     }
@@ -23,7 +23,7 @@ namespace BcsAdmin.BL.Repositories.Api
     public class ClassificationArrayRepository : ApiGenericRepository<ClassificationArray>
     {
         public ClassificationArrayRepository(IDateTimeProvider dateTimeProvider)
-            : base(dateTimeProvider)
+            : base()
         {
         }
     }

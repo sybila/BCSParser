@@ -149,9 +149,7 @@ namespace Bcs.Admin.Web.ViewModels
 
         public IEnumerable<ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
         {
-            bool isPrimitive =
-                SelectedHierarchyType == (int)HierarchyType.State
-                || SelectedHierarchyType == (int)HierarchyType.Compartment;
+            bool isPrimitive = SelectedHierarchyType == (int)HierarchyType.Compartment;
 
             bool hasComponents = Components.ItemsCount != 0;
             bool hasStates = States.ItemsCount != 0;

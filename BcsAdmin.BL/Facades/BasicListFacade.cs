@@ -74,8 +74,6 @@ namespace BcsAdmin.BL.Facades
         {
             switch (t)
             {
-                case Dto.HierarchyType.State:
-                    yield break;
                 case Dto.HierarchyType.Compartment:
                     yield break;
                 case Dto.HierarchyType.Complex:
@@ -85,9 +83,6 @@ namespace BcsAdmin.BL.Facades
                     yield break;
                 case Dto.HierarchyType.Structure:
                     yield return CreateHierarchyTypeDto(Dto.HierarchyType.Atomic);
-                    break;
-                case Dto.HierarchyType.Atomic:
-                    yield return CreateHierarchyTypeDto(Dto.HierarchyType.State);
                     break;
                 default:
                     yield break;

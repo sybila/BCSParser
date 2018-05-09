@@ -8,8 +8,8 @@ namespace BcsAdmin.BL.Repositories.Api
     {
         public class ApiClassificationRepository : ApiGenericRepository<ApiClassification>
         {
-            public ApiClassificationRepository(IDateTimeProvider dateTimeProvider)
-                : base(dateTimeProvider)
+            public ApiClassificationRepository()
+                : base()
             {
                 RepoName = "classifications";
             }

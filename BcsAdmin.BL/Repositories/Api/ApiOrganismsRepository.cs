@@ -8,8 +8,8 @@ namespace BcsAdmin.BL.Repositories.Api
     {
         public class ApiOrganismsRepository : ApiGenericRepository<ApiOrganism>
         {
-            public ApiOrganismsRepository(IDateTimeProvider dateTimeProvider)
-                : base(dateTimeProvider)
+            public ApiOrganismsRepository()
+                : base()
             {
                 RepoName = "organisms";
             }

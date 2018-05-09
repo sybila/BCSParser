@@ -1,4 +1,5 @@
 ﻿using BcsAdmin.DAL.Api;
+using Newtonsoft.Json;
 using Riganti.Utils.Infrastructure.Core;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,8 @@ namespace BcsAdmin.BL.Repositories.Api
     {
         public class ApiEntityRepository : ApiGenericRepository<ApiEntity>
         {
-            public ApiEntityRepository(IDateTimeProvider dateTimeProvider)
-                : base(dateTimeProvider)
+            public ApiEntityRepository()
+                : base()
             {
                 RepoName = "entities";
             }
@@ -26,10 +27,28 @@ namespace BcsAdmin.BL.Repositories.Api
                 @new.Status = ApiEntityStatus.Inactive;
                 return @new;
             }
-
-            public override Task<IList<ApiEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids, params Expression<Func<ApiEntity, object>>[] includes)
+        }
+        public class ApiEntityCodeRepository : ApiGenericReadonlyRepository<ApiEntity, string>
+        {
+            public ApiEntityCodeRepository() : base()
             {
-                return base.GetByIdsAsync(cancellationToken, ids, includes);
+                RepoName = "entities";
+            }
+
+            public override async Task<ApiEntity> GetByIdAsync(CancellationToken cancellationToken, string key)
+            {
+                var response = await HttpClient.GetAsync(GetFullUrl(key), cancellationToken);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                var responseData = JsonConvert.DeserializeObject<EntityResponseData<ApiEntity>>(responseBody, JsonSerializerSettings);
+
+                return responseData.Data;
             }
         }
     }

@@ -11,8 +11,8 @@ namespace BcsAdmin.BL.Repositories.Api
 {
     public class ApiNoteRepository : ApiGenericRepository<ApiNote>
     {
-        public ApiNoteRepository(IDateTimeProvider dateTimeProvider)
-            : base(dateTimeProvider)
+        public ApiNoteRepository()
+            : base()
         {
         }
     }
