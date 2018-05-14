@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BcsAdmin.BL.Repositories.Api.Exceptions;
+using System.Diagnostics;
 
 namespace BcsAdmin.BL.Repositories.Api
 {
@@ -49,7 +50,7 @@ namespace BcsAdmin.BL.Repositories.Api
                 };
             }
 
-            public abstract Task<TEntity> GetByIdAsync(CancellationToken cancellationToken, TKey id);           
+            public abstract Task<TEntity> GetByIdAsync(CancellationToken cancellationToken, TKey id);
         }
 
         public abstract class ApiGenericRepository<TEntity> : ApiGenericReadonlyRepository<TEntity, int>, IAsyncRepository<TEntity, int>
@@ -59,27 +60,36 @@ namespace BcsAdmin.BL.Repositories.Api
             {
                 var r = await GetByIdsAsync(cancellationToken, new int[] { id });
                 return r?.FirstOrDefault();
-        }
-
-        public async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids)
-        {
-            if (!ids.Any()) { return new List<TEntity>(); };
-
-            var response = await HttpClient.GetAsync(GetFullUrl(ids), cancellationToken);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return null;
             }
 
-            string responseBody = await response.Content.ReadAsStringAsync();
+            public async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids)
+            {
+                var sw = new Stopwatch();
+                sw.Start();
+                if (!ids.Any()) { return new List<TEntity>(); };
 
-            var responseData = JsonConvert.DeserializeObject<EntityResponseData<List<TEntity>>>(responseBody, JsonSerializerSettings);
+                var sw2 = new Stopwatch();
+                sw2.Start();
+                var response = await HttpClient.GetAsync(GetFullUrl(ids), cancellationToken);
+                sw2.Stop();           
 
-            return responseData.Data;
-        }
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
 
-        public virtual TEntity InitializeNew()
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                var sw3 = new Stopwatch();
+                sw3.Start();
+                var responseData = JsonConvert.DeserializeObject<EntityResponseData<List<TEntity>>>(responseBody, JsonSerializerSettings);
+                sw3.Stop();
+                sw.Stop();
+                Console.Write($"Repo for: {typeof(TEntity).Name} Method: {sw.ElapsedMilliseconds}ms = API request: {sw2.ElapsedMilliseconds} + JSON: {sw3.ElapsedMilliseconds}ms, API claims: {(response.Headers.GetValues("X-Run-Time").FirstOrDefault() ?? "")}\n");
+                return responseData.Data;
+            }
+
+            public virtual TEntity InitializeNew()
             {
                 return new TEntity();
             }
@@ -88,7 +98,7 @@ namespace BcsAdmin.BL.Repositories.Api
             {
                 var response = await HttpClient.DeleteAsync(GetFullUrl(id));
                 await HandleResponseAsync(response);
-            }        
+            }
 
             public async Task InsertAsync(TEntity entity)
             {
@@ -126,7 +136,7 @@ namespace BcsAdmin.BL.Repositories.Api
 
             private HttpContent PrepareContent(TEntity entity)
             {
-                var content =  new StringContent(
+                var content = new StringContent(
                     JsonConvert.SerializeObject(entity, JsonSerializerSettings),
                     Encoding.UTF8, "application/json");
 

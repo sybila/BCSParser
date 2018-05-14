@@ -33,10 +33,7 @@ namespace BcsAdmin.BL.Queries
 
             if (!string.IsNullOrWhiteSpace(Filter?.SearchText))
             {
-                if (!string.IsNullOrWhiteSpace(Filter.SearchText))
-                {
-                    queriable = queriable.Where(e => (e.Name != null ? e.Name : "").IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1);
-                }
+                queriable = queriable.Where(e => (e.Equation ?? "").IndexOf(Filter.SearchText, StringComparison.OrdinalIgnoreCase) != -1);
             }
 
             return queriable.ProjectTo<ReactionRowDto>(mapper.ConfigurationProvider);

@@ -28,7 +28,7 @@ namespace Bcs.Analyzer.DemoWeb
             config.Markup.AddCodeControls("dde", "Bcs.Admin.Web.Controls.Dynamic", "Bcs.Admin.Web");
             config.Markup.AddCodeControls("dde", "Bcs.Admin.Web.Controls.EditPanel", "Bcs.Admin.Web");
             config.Markup.AddMarkupControl("cc", "ModalAlert", "Controls/ModalAlert.dotcontrol");
-            config.Markup.AddMarkupControl("cc", "StatusAlerts", "Controls/statusAlerts.dotcontrol");
+            //config.Markup.AddMarkupControl("cc", "StatusAlerts", "Controls/statusAlerts.dotcontrol");
             config.AddDynamicDataConfiguration();
         }
 

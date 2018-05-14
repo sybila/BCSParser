@@ -54,6 +54,8 @@ namespace BcsAdmin.BL.Queries.Base
         public int? Take { get; set; }
 
 
+        private IQueryable<TQueryableResult> queriable;
+
         /// <summary>
         ///     Gets a list of sort criteria applied on this query.
         /// </summary>
@@ -64,8 +66,8 @@ namespace BcsAdmin.BL.Queries.Base
         /// </summary>
         public void AddSortCriteria(string fieldName, SortDirection direction = SortDirection.Ascending)
         {
-           // create the expression
-           var prop = typeof(TQueryableResult).GetTypeInfo().GetProperty(fieldName);
+            // create the expression
+            var prop = typeof(TQueryableResult).GetTypeInfo().GetProperty(fieldName);
             var param = Expression.Parameter(typeof(TQueryableResult), "i");
             var expr = Expression.Lambda(Expression.Property(param, prop), param);
 
@@ -134,7 +136,14 @@ namespace BcsAdmin.BL.Queries.Base
         /// <summary>
         ///     Gets the total row count without respect to paging.
         /// </summary>
-        public abstract Task<int> GetTotalRowCountAsync(CancellationToken cancellationToken);
+        public async Task<int> GetTotalRowCountAsync(CancellationToken cancellationToken)
+        {
+            if (queriable == null)
+            {
+                queriable = await GetQueriableAsync(cancellationToken);
+            }
+            return queriable.Count();
+        }
 
         private void AddSortCriteriaCore<TKey>(Expression<Func<TQueryableResult, TKey>> sortExpression, SortDirection direction)
         {
@@ -146,7 +155,8 @@ namespace BcsAdmin.BL.Queries.Base
 
         private async Task<IQueryable<TQueryableResult>> PreProcessQueryAsync(CancellationToken cancellationToken)
         {
-            var query = await GetQueriableAsync(cancellationToken);
+            var query = queriable ?? await GetQueriableAsync(cancellationToken);
+            queriable = query;
 
             for (var i = SortCriteria.Count - 1; i >= 0; i--)
                 query = SortCriteria[i](query);

@@ -15,6 +15,7 @@ namespace BcsAdmin.BL.Dto
 
         [Required]
         public string Code { get; set; }
+        [Required]
         public string Name { get; set; }
         public string GeneGroup { get; set; }
     }

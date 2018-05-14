@@ -36,7 +36,7 @@ namespace Bcs.Admin.Web.Controls.Dynamic
             var cssClass = ControlHelpers.ConcatCssClasses(ControlCssClass, property.Styles?.FormControlCssClass);
             if (!string.IsNullOrEmpty(cssClass))
             {
-                grid.Attributes["class"] = cssClass;
+                grid.Attributes["class"] = cssClass + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
             }
 
             grid.SetBinding(DotvvmBindableObject.DataContextProperty, context.CreateValueBinding(property.PropertyInfo.Name));
@@ -66,11 +66,8 @@ namespace Bcs.Admin.Web.Controls.Dynamic
             }
             if (property.PropertyInfo.PropertyType.IsAssignableTo(typeof(IStatusReporter)))
             {
-                var statusAlerts = new StatusAlerts();
-                statusAlerts.SetBinding(StatusAlerts.ErrorsProperty, context.CreateValueBinding("Errors", gridDataContext));
-                statusAlerts.SetBinding(StatusAlerts.SuccessMessageProperty, context.CreateValueBinding("SuccessMessage", gridDataContext));
-
-                grid.Children.Add(statusAlerts);
+                grid.SuccessMessage = context.CreateValueBinding("SuccessMessage", gridDataContext);
+                grid.Errors = context.CreateValueBinding("Errors", gridDataContext);
             }
         }
 

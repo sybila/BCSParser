@@ -52,6 +52,14 @@ namespace Bcs.Admin.Web
                 EmptyItemText = "(select entity type)",
             });
 
+            conventions.Register(p => p.Name.Equals(nameof(ClassificationDto.Type)) && p.DeclaringType == typeof(ClassificationDto), new ComboBoxSettingsAttribute()
+            {
+                DataSourceBinding = $"_root.{nameof(Dashboard.ClassificationTypes)}",
+                DisplayMember = nameof(ClassificationDto.Name),
+                ValueMember = nameof(ClassificationDto.Id),
+                EmptyItemText = "(select entity type)",
+            });
+
             var provider = new ValidatedComboBoxProvider(conventions);
             var columnProvider = new ConventionComboBoxGridColumnProvider(conventions);
             FormEditorProviders.Insert(0, provider);

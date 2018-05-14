@@ -16,6 +16,8 @@ namespace BcsAdmin.BL.Dto
 
         [Required]
         public string Name { get; set; }
-        public ApiClassificationType Type { get; set; }
+
+        [Required]
+        public int Type { get; set; }
     }
 }

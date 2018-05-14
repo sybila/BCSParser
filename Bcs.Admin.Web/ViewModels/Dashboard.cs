@@ -29,6 +29,7 @@ namespace Bcs.Admin.Web.ViewModels
 
         public List<BiochemicalEntityTypeDto> HierarchyTypes { get; set; }
         public List<StatusDto> BcsObjectStatuses { get; set; }
+        public List<ClassificationTypeDto> ClassificationTypes { get; set; }
         public List<AnnotationTypeDto> AnnotationTypes { get; set; }
         public List<int> PaginationOptions { get; set; } = new List<int> { 10, 30, 50, 100, 200 };
 
@@ -90,6 +91,7 @@ namespace Bcs.Admin.Web.ViewModels
                 HierarchyTypes = basicListFacade.GetEntityTypes();
                 AnnotationTypes = basicListFacade.GetAnnotationTypes();
                 BcsObjectStatuses = basicListFacade.GetBcsObjectStatuses();
+                ClassificationTypes = basicListFacade.GetClassificationTypes();
             }
             return base.Load();
         }

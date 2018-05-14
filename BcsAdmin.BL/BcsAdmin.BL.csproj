@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.2.0" />
-    <PackageReference Include="DotVVM.Core" Version="2.0.0-preview06-final" />
+    <PackageReference Include="DotVVM.Core" Version="2.0.0-preview09-28091" />
     <PackageReference Include="Riganti.Utils.Infrastructure.AutoMapper.EntityFrameworkCore" Version="2.1.7" />
     <PackageReference Include="Riganti.Utils.Infrastructure.Core" Version="2.1.7" />
     <PackageReference Include="Riganti.Utils.Infrastructure.DotVVM" Version="2.1.7" />

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -15,11 +16,16 @@ namespace BcsAdmin.DAL.Api
         {
             using (var httpClient = new HttpClient())
             {
+                var sw1 = new Stopwatch();
+                sw1.Start();
                 var response = await httpClient.GetAsync($"{appUrl}/{repoName}", cancellationToken);
-                
+                sw1.Stop();
                 string responseBody = await response.Content.ReadAsStringAsync();
 
+                var sw2 = new Stopwatch();
+                sw2.Start();
                 var responseData = JsonConvert.DeserializeObject<EntityResponseData<TSourceEntity[]>>(responseBody);
+                sw2.Start();
 
                 if (!response.IsSuccessStatusCode)
                 {

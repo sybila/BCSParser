@@ -30,7 +30,7 @@
         <PackageReference Include="AngleSharp" Version="0.9.9" />
         <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />
         <PackageReference Include="AutoMapper" Version="6.2.0" />
-        <PackageReference Include="DotVVM.AspNetCore" Version="2.0.0-preview06-final" />
+        <PackageReference Include="DotVVM.AspNetCore" Version="2.0.0-preview09-28091" />
         <PackageReference Include="DotVVM.DynamicData" Version="2.0.0-preview06" />
         <PackageReference Include="DotVVM.DynamicData.Annotations" Version="2.0.0-preview06" />
         <PackageReference Include="Microsoft.AspNetCore" Version="2.0.1" />
@@ -45,6 +45,8 @@
       <ProjectReference Include="..\Bcs.Resolver.Data\Bcs.Resolver.File.csproj" />
       <ProjectReference Include="..\Bcs.Resolver\Bcs.Resolver.csproj" />
       <ProjectReference Include="..\BcsAdmin.BL\BcsAdmin.BL.csproj" />
+      <ProjectReference Include="D:\Code\dotvvm-dynamic-data\src\DotVVM.Framework.Controls.DynamicData.Annotations\DotVVM.Framework.Controls.DynamicData.Annotations.csproj" />
+      <ProjectReference Include="D:\Code\dotvvm-dynamic-data\src\DotVVM.Framework.Controls.DynamicData\DotVVM.Framework.Controls.DynamicData.csproj" />
       
     </ItemGroup>
     <ItemGroup>

@@ -6,6 +6,7 @@ using Riganti.Utils.Infrastructure.Core;
 using Riganti.Utils.Infrastructure.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -19,15 +20,13 @@ namespace BcsAdmin.BL.Queries
         public string AppUrl { get; set; } = "https://api.e-cyanobacterium.org";
         public string RepoName { get; set; }
 
-        public override async Task<int> GetTotalRowCountAsync(CancellationToken cancellationToken)
-        {
-            var q = await GetQueriableAsync(cancellationToken);
-            return q.Count();
-        }
-
         protected  async Task<IQueryable<TSourceEntity>> GetWebDataAsync<TSourceEntity>(CancellationToken cancellationToken, string repoName)
         {
-            var list =await ApiHelper.GetWebDataAsync<TSourceEntity>(cancellationToken, AppUrl, repoName);
+            var sw = new Stopwatch();
+            sw.Start();
+            var list = await ApiHelper.GetWebDataAsync<TSourceEntity>(cancellationToken, AppUrl, repoName);
+            sw.Stop();
+            Console.Write($"Query for: {typeof(TResult).Name} {sw.ElapsedMilliseconds}ms\n");
             return list.AsQueryable();
         }
 

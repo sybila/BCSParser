@@ -43,29 +43,32 @@ namespace Bcs.Admin.Web.ViewModels
 
         public override Task Init()
         {
-            DataSet = new GridViewDataSet<TGridDto>()
+            if (!Context.IsPostBack)
             {
-                PagingOptions =
+                DataSet = new GridViewDataSet<TGridDto>()
+                {
+                    PagingOptions =
                 {
                     PageSize = 10
                 },
-                SortingOptions = new SortingOptions
-                {
-                    SortExpression = "Name"
-                }
-            };
+                    SortingOptions = new SortingOptions
+                    {
+                        SortExpression = "Name"
+                    }
+                };
+            }
             return base.Init();
         }
 
-        public async override Task Load()
+        public override async Task PreRender()
         {
             await ExecuteSafeAsync(async () =>
             {
-                if (!Context.IsPostBack)
+                if (!Context.IsPostBack || DataSet?.IsRefreshRequired == true)
                 {
                     await ReloadDataAsync();
                 }
-                await base.Load();
+                await base.PreRender();
             });
         }
     }

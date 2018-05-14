@@ -24,15 +24,15 @@ namespace BcsResolver.Extensions
             }
         }
 
-        public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
-        {
-            TValue value;
-            if (!dictionary.TryGetValue(key, out value))
-            {
-                return default(TValue);
-            }
-            return value;
-        }
+        //public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
+        //{
+        //    TValue value;
+        //    if (!dictionary.TryGetValue(key, out value))
+        //    {
+        //        return default(TValue);
+        //    }
+        //    return value;
+        //}
 
         public static TTarget ApplyAction<TTarget>(this TTarget target, Action<TTarget> outerAction)
         {

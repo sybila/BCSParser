@@ -133,9 +133,37 @@ namespace Bcs.Admin.Web.Controls.EditPanel
         public static readonly DotvvmProperty NewEntityDtoProperty
             = DotvvmProperty.Register<IValueBinding, EditableDynamicGridPanel>(c => c.NewEntityDto, null);
 
+        [MarkupOptions(AllowHardCodedValue = false, Required = true)]
+        public IValueBinding Errors
+        {
+            get { return (IValueBinding)GetValue(ErrorsProperty); }
+            set { SetValue(ErrorsProperty, value); }
+        }
+        public static readonly DotvvmProperty ErrorsProperty
+            = DotvvmProperty.Register<IValueBinding, EditableDynamicGridPanel>(c => c.Errors, null);
+
+        [MarkupOptions(AllowHardCodedValue = false, Required = true)]
+        public IValueBinding SuccessMessage
+        {
+            get { return (IValueBinding)GetValue(SuccessMessageProperty); }
+            set { SetValue(SuccessMessageProperty, value); }
+        }
+        public static readonly DotvvmProperty SuccessMessageProperty
+            = DotvvmProperty.Register<IValueBinding, EditableDynamicGridPanel>(c => c.SuccessMessage, null);
+
+
         public EditableDynamicGridPanel(BindingCompilationService bindingCompilationService)
         {
             BindingCompilationService = bindingCompilationService;
+        }
+
+        protected override void CreateContent(IDotvvmRequestContext context, HtmlGenericControl bodyDiv, HtmlGenericControl footerDiv)
+        {
+            var statusAlerts = new StatusAlerts();
+            statusAlerts.SetBinding(StatusAlerts.ErrorsBindingProperty, Errors);
+            statusAlerts.SetBinding(StatusAlerts.SuccessMessageBindingProperty, SuccessMessage);
+            bodyDiv.Children.Add(statusAlerts);
+            base.CreateContent(context, bodyDiv, footerDiv);
         }
 
         protected override void SetUpToolColumn(GridViewTemplateColumn toolColumn)

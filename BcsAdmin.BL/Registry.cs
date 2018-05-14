@@ -6,7 +6,6 @@ using BcsAdmin.BL.Filters;
 using BcsAdmin.BL.Mappers;
 using BcsAdmin.BL.Queries;
 using BcsAdmin.BL.Repositories;
-using BcsAdmin.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Riganti.Utils.Infrastructure.Core;
@@ -28,12 +27,14 @@ namespace BcsAdmin.BL
         {
             cfg.CreateMap<ApiRule, ReactionRowDto>();
             cfg.CreateMap<ApiRule, BiochemicalReactionDetailDto>()
-                .ForMember(t=> t.Status, m=> m.MapFrom(s => (int)s.Status));
+                .ForMember(t=> t.Status, m=> m.MapFrom(s => (int)(s.Status ?? ApiEntityStatus.Inactive)));
             cfg.CreateMap<BiochemicalReactionDetailDto, ApiRule>()
                 .ForMember(t => t.Status, m => m.MapFrom(s => (ApiEntityStatus)s.Status));
 
-            cfg.CreateMap<ApiClassification, ClassificationDto>();
-            cfg.CreateMap<EpEntityNote, EntityNoteDto>();
+            cfg.CreateMap<ApiClassification, ClassificationDto>()
+                .ForMember(t => t.Type, m => m.MapFrom(s => (int)s.Type));
+            cfg.CreateMap<ClassificationDto, ApiClassification>()
+               .ForMember(t => t.Type, m => m.MapFrom(s => (ApiClassificationType)s.Type));
 
             //Entity mapped grid entities
             cfg.CreateMap<ApiEntity, ComponentLinkDto>();
@@ -63,7 +64,6 @@ namespace BcsAdmin.BL
             //other grid entities
             cfg.CreateMap<ApiOrganism, OrganismDto>()
                 .ForMember(m => m.GeneGroup, a => a.Ignore())
-                .ForMember(m => m.Code, a => a.Ignore())
                 .ForMember(m => m.IntermediateEntityId, a => a.Ignore());
 
             //Entity notes

@@ -9,105 +9,127 @@
                 <li Class-active="{value: ReactionsSelected}"><dot:LinkButton Click="{command: ActiveTabName = ReactionsTab.Name}">Rules</dot:LinkButton></li>
             </ul>
             <div DataContext="{value: EntitiesTab}" Visible="{value: _root.EntitiesSelected}">
-                <div class="col-md-12">
-                    <h3>{{value: Name}}</h3>
-                    <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}" />
-                </div>
-                <div class="col-lg-5 col-md-11">
-                    <div class="form-group form-group-sm col-md-12">
-                        <dot:TextBox class="form-control" Text="{value: Filter.SearchText}" />
-                    </div>
-                    <div class="col-md-12 row gap">
-                        There are
-                        <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span>
-                        results. Show
-                        <dot:ComboBox 
-                            class="form-control input-sm inline-control" 
-                            DataSource="{value: _root.PaginationOptions}" 
-                            SelectedValue="{value: DataSet.PagingOptions.PageSize}"/>
-                        items per page.
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>{{value: Name}}</h3>
+                        <cc:StatusAlerts ErrorsBinding="{value: Errors}" SuccessMessageBinding="{value: SuccessMessage}" />
                     </div>
                 </div>
-                <div class="col-lg-5 col-md-11">
-                    <dot:Repeater class="row" DataSource="{value: EntityTypes}">
-                        <dot:CheckBox style="min-width:150px;"
-                                      class="col-md-4" Text="{value: _this}"
-                                      CheckedItems="{value: _parent.Filter.EntityTypeFilter}"
-                                      CheckedValue="{value: _this}" />
-                    </dot:Repeater>
+                <div class="row">
+                    <div class="col-lg-6 col-md-12">
+                        <div class="form-group form-group-sm">
+                            <dot:TextBox class="form-control" Text="{value: Filter.SearchText}" />
+                        </div>
+                        <div class="col-md-12 row gap">
+                            There are
+                            <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span>
+                            results. Show
+                            <dot:ComboBox class="form-control input-sm inline-control"
+                                          DataSource="{value: _root.PaginationOptions}"
+                                          SelectedValue="{value: DataSet.PagingOptions.PageSize}" />
+                            items per page.
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        <dot:Repeater DataSource="{value: EntityTypes}">
+                            <dot:CheckBox style="min-width:150px;"
+                                          class="col-md-4" Text="{value: _this}"
+                                          CheckedItems="{value: _parent.Filter.EntityTypeFilter}"
+                                          CheckedValue="{value: _this}" />
+                        </dot:Repeater>
+                    </div>
                 </div>
-                <div class="col-sm-2">
-                    <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: RefreshAsync(true)}">
-                        <i class="glyphicon glyphicon-search"></i> Filter
-                    </dot:Button>
+                <div class="row gap">
+                    <div class="col-sm-6">
+                        <dot:Button class="btn btn-primary btn-sm" ButtonTagName="button" Click="{command: RefreshAsync(true)}">
+                            <i class="glyphicon glyphicon-search"></i> Filter
+                        </dot:Button>
+                    </div>
+                    <div class="col-sm-6">
+                        <dot:Button ButtonTagName="button" Click="{command: _root.NewEntity()}" class="btn btn-success btn-sm pull-right">
+                            <i class="glyphicon glyphicon glyphicon-plus"></i> New
+                        </dot:Button>
+                    </div>
                 </div>
-                <div class="col-md-12">
-                    <dot:Button ButtonTagName="button" Click="{command: _root.NewEntity()}" class="btn btn-success btn-sm pull-right">
-                        <i class="glyphicon glyphicon glyphicon-plus"></i> New
-                    </dot:Button>
+                <div class="row">
+                    <div class="col-md-12">
+                        <dot:GridView ShowHeaderWhenNoData class="col-md-12 table table-hover table-striped" DataSource="{value: DataSet}">
+                            <EmptyDataTemplate>
+                                No results
+                            </EmptyDataTemplate>
+                            <RowDecorators>
+                                <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.EntityDetail.Id}" Events.Click="{command: _root.EditEntityAsync(_this.Id)}" />
+                            </RowDecorators>
+                            <Columns>
+                                <dot:GridViewTextColumn AllowSorting HeaderText="Code" ValueBinding="{value: Code}" />
+                                <dot:GridViewTextColumn AllowSorting HeaderText="Type" ValueBinding="{value: Type}" />
+                                <dot:GridViewTextColumn AllowSorting HeaderText="Name" ValueBinding="{value: Name}" />
+                            </Columns>
+                        </dot:GridView>
+                    </div>
                 </div>
-                <div class="col-md-12">
-                    <dot:GridView ShowHeaderWhenNoData class="col-md-12 table table-hover table-striped" DataSource="{value: DataSet}">
-                        <EmptyDataTemplate>
-                            No results
-                        </EmptyDataTemplate>
-                        <RowDecorators>
-                            <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.EntityDetail.Id}" Events.Click="{command: _root.EditEntityAsync(_this.Id)}" />
-                        </RowDecorators>
-                        <Columns>
-                            <dot:GridViewTextColumn AllowSorting HeaderText="Code" ValueBinding="{value: Code}" />
-                            <dot:GridViewTextColumn AllowSorting HeaderText="Type" ValueBinding="{value: Type}" />
-                            <dot:GridViewTextColumn AllowSorting HeaderText="Name" ValueBinding="{value: Name}" />
-                        </Columns>
-                    </dot:GridView>
-                </div>
-                <div class="col-md-12">
-                    <dot:DataPager DataSet="{value: DataSet}" class="pagination" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <dot:DataPager DataSet="{value: DataSet}" class="pagination" />
+                    </div>
                 </div>
             </div>
             <div DataContext="{value: ReactionsTab}" Visible="{value: _root.ReactionsSelected}">
-                <div class="col-md-12">
-                    <h3>{{value: Name}}</h3>
-                    <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>{{value: Name}}</h3>
+                        <cc:StatusAlerts ErrorsBinding="{value: Errors}" SuccessMessageBinding="{value: SuccessMessage}" />
+                    </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="input-group input-group-sm col-md-12">
-                        <dot:TextBox class="form-control" Text="{value: Filter.SearchText}" />
-                        <div class="input-group-btn">
-                            <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: RefreshAsync(true)}">
-                                <i class="glyphicon glyphicon-search"></i> Apply filters
-                            </dot:Button>
+                <div class="row gap">
+                    <div class="col-md-12">
+                        <div class="form-group form-group-sm">
+                            <label>Equation substring:</label>
+                            <dot:TextBox class="form-control" Text="{value: Filter.SearchText}" />                           
+                        </div>
+                        <div class="col-md-12 row">
+                            There are
+                            <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span>
+                            results. Showing
+                            <dot:ComboBox class="form-control input-sm inline-control"
+                                          DataSource="{value: _root.PaginationOptions}"
+                                          SelectedValue="{value: DataSet.PagingOptions.PageSize}" />
+                            items per page.
                         </div>
                     </div>
-                    <div class="col-md-12 row gap">
-                        There are
-                        <span class="text-primary">{{value: DataSet.PagingOptions.TotalItemsCount}}</span>
-                        results. Showing
-                        <dot:TextBox class="form-control input-sm inline-control" Text="{value: DataSet.PagingOptions.PageSize}" />
-                        items per page.
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <dot:Button class="btn btn-primary btn-sm" ButtonTagName="button" Click="{command: RefreshAsync(true)}">
+                            <i class="glyphicon glyphicon-search"></i> Filter
+                        </dot:Button>
+                    </div>
+                    <div class="col-sm-6">
+                        <dot:Button ButtonTagName="button" Click="{command: _root.ReactionDetail.NewAsync()}" class="btn btn-success btn-sm pull-right">
+                            <i class="glyphicon glyphicon glyphicon-plus"></i> New
+                        </dot:Button>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <dot:Button ButtonTagName="button" Click="{command: _root.ReactionDetail.NewAsync()}" class="btn btn-success pull-right">
-                        <i class="glyphicon glyphicon glyphicon-plus"></i> New
-                    </dot:Button>
+                <div class="row gap">
+                    <div class="col-md-12">
+                        <dot:GridView ShowHeaderWhenNoData class="col-md-12 table table-hover table-striped" DataSource="{value: DataSet}">
+                            <EmptyDataTemplate>
+                                No results
+                            </EmptyDataTemplate>
+                            <RowDecorators>
+                                <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.ReactionDetail.Id}" Events.Click="{command: _root.EditReactionAsync(Id)}" />
+                            </RowDecorators>
+                            <Columns>
+                                <dot:GridViewTextColumn AllowSorting HeaderText="Equation" ValueBinding="{value: Equation}" />
+                                <dot:GridViewTextColumn AllowSorting HeaderText="Modifier" ValueBinding="{value: Modifier}" />
+                            </Columns>
+                        </dot:GridView>
+                    </div>
                 </div>
-                <div class="col-md-12">
-                    <dot:GridView ShowHeaderWhenNoData class="col-md-12 table table-hover table-striped" DataSource="{value: DataSet}">
-                        <EmptyDataTemplate>
-                            No results
-                        </EmptyDataTemplate>
-                        <RowDecorators>
-                            <dot:Decorator style="cursor: pointer; touch-action:manipulation;" Class-active="{value: Id == _root.ReactionDetail.Id}" Events.Click="{command: _root.EditReactionAsync(Id)}" />
-                        </RowDecorators>
-                        <Columns>
-                            <dot:GridViewTextColumn AllowSorting HeaderText="Equation" ValueBinding="{value: Equation}" />
-                            <dot:GridViewTextColumn AllowSorting HeaderText="Modifier" ValueBinding="{value: Modifier}" />
-                        </Columns>
-                    </dot:GridView>
-                </div>
-                <div class="col-md-12">
-                    <dot:DataPager DataSet="{value: DataSet}" class="pagination" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <dot:DataPager DataSet="{value: DataSet}" class="pagination" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -116,7 +138,7 @@
         <div class="col-md-12 sub-board" DataContext="{value: NewEntityWizard}" Visible="{value:IsVisible}">
             <cc:PanelControl ColorStyle="Info" HeadingText="New entity wizard" CloseCommand="{command: Close()}">
                 <BodyTemplate>
-                    <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}" />
+                    <cc:StatusAlerts ErrorsBinding="{value: Errors}" SuccessMessageBinding="{value: SuccessMessage}" />
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -181,7 +203,7 @@
         <div class="col-md-12 sub-board" DataContext="{value: EntityDetail}" Visible="{value: Id != -1}">
             <cc:PanelControl ColorStyle="Info" HeadingText="Entity detail" CloseCommand="{command: Close()}">
                 <BodyTemplate>
-                    <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}" />
+                    <cc:StatusAlerts ErrorsBinding="{value: Errors}" SuccessMessageBinding="{value: SuccessMessage}" />
                     <div class="col-md-12">
                         <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="v-bootstrap" DataContext="{value: _this}" />
                     </div>
@@ -203,7 +225,7 @@
         <div class="col-md-12 sub-board" DataContext="{value: ReactionDetail}" Visible="{value: Id != -1}">
             <cc:PanelControl ColorStyle="Info" HeadingText="Rule detail" CloseCommand="{command: Close()}">
                 <BodyTemplate>
-                    <cc:StatusAlerts Errors="{value: Errors}" SuccessMessage="{value: SuccessMessage}" />
+                    <cc:StatusAlerts ErrorsBinding="{value: Errors}" SuccessMessageBinding="{value: SuccessMessage}" />
                     <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="v-bootstrap" DataContext="{value: _this}" />
                 </BodyTemplate>
                 <FooterTemplate>

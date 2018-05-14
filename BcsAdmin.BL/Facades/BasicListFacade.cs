@@ -64,6 +64,15 @@ namespace BcsAdmin.BL.Facades
             };             
         }
 
+        public List<ClassificationTypeDto> GetClassificationTypes()
+        {
+            return new List<ClassificationTypeDto> {
+                new ClassificationTypeDto { Id = (int)ApiClassificationType.Entity, Name = ApiClassificationType.Entity.ToString("F")},
+                new ClassificationTypeDto { Id = (int)ApiClassificationType.Rule, Name = ApiClassificationType.Rule.ToString("F")},
+                new ClassificationTypeDto { Id = (int)ApiClassificationType.Reaction, Name = ApiClassificationType.Reaction.ToString("F")}
+            };
+        }
+
         private static BiochemicalEntityTypeDto CreateHierarchyTypeDto(Dto.HierarchyType v)
         {
             return new BiochemicalEntityTypeDto
