@@ -15,6 +15,7 @@ namespace Bcs.Admin.Web.ViewModels
         private readonly AnnotationGridFacade annotationGridFacade;
 
         public string Code { get; set; }
+        public string Name { get; set; }
         public BiochemicalEntityDetailDto NewEntity { get; set; }
         public bool IsVisible { get; set; }
         public bool IsSearchDone { get; set; }
@@ -49,11 +50,12 @@ namespace Bcs.Admin.Web.ViewModels
             NewEntity = null;
             SelectedSimilarEntity = null;
             Code = "";
+            Name = "";
         }
 
         public async Task NextAsync()
         {
-            await searchFacade.FillSimilarEntitySearchAsync(SimilarResults, new SimilarEntitySearchFilter { Code = Code });
+            await searchFacade.FillSimilarEntitySearchAsync(SimilarResults, new SimilarEntitySearchFilter { Code = Code, Name = Name });
             IsSearchDone = true;
         }
 
@@ -62,7 +64,8 @@ namespace Bcs.Admin.Web.ViewModels
             SelectedSimilarEntity = null;
             NewEntity = new BiochemicalEntityDetailDto
             {
-                Code = Code
+                Code = Code,
+                Name = Name
             };
         }
 
@@ -85,9 +88,10 @@ namespace Bcs.Admin.Web.ViewModels
                 if (SelectedSimilarEntity?.IsExternal == true)
                 {
                     await annotationGridFacade.SaveAsync(
-                        entity.Id, 
-                        "entities",  
-                        new AnnotationDto {
+                        entity.Id,
+                        "entities",
+                        new AnnotationDto
+                        {
                             Code = SelectedSimilarEntity.Code,
                             Type = SelectedSimilarEntity.Database
                         });

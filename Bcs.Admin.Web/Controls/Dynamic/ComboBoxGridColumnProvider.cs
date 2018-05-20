@@ -30,6 +30,7 @@ namespace Bcs.Admin.Web.Controls.Dynamic
 
             comboBox.SetBinding(GridViewComboBoxColumn.SelectedValueBindingProperty, context.CreateValueBinding(property.PropertyInfo.Name));
             comboBox.SetBinding(GridViewComboBoxColumn.DataSourceBindingProperty, GetDataSourceBinding(property, context, comboBox));
+            comboBox.SetValue(GridViewComboBoxColumn.IsEditableProperty, property.IsEditAllowed);
 
             return comboBox;
         }

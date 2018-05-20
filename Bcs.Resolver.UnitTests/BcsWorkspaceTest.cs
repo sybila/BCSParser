@@ -7,6 +7,8 @@ using BcsResolver.SemanticModel;
 using BcsResolver.SemanticModel.Tree;
 using BcsResolver.Tests.Helpers;
 using Moq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BcsResolver.Tests
 {
@@ -16,7 +18,7 @@ namespace BcsResolver.Tests
         private static Dictionary<string, BcsEntity> entityPool = TestCaseFactory.CreateValidEntityPool();
 
         [TestMethod]
-        public void SemanticModel_EmptyComplex_Valid()
+        public async Task SemanticModel_EmptyComplex_ValidAsync()
         {
             var mock = new Mock<IBcsEntityMetadataProvider>();
 
@@ -26,7 +28,7 @@ namespace BcsResolver.Tests
 
             var workspace = new BcsFileWorkspace(mock.Object);
 
-            workspace.CreateSemanticModelAsync();
+            await workspace.CreateSemanticModelAsync(CancellationToken.None);
 
             var complex = workspace.Complexes.First().Value;
             Assert.AreEqual(complex.Name, "cx1");
@@ -47,7 +49,7 @@ namespace BcsResolver.Tests
 
             var workspace = new BcsFileWorkspace(mock.Object);
 
-            workspace.CreateSemanticModelAsync();
+            workspace.CreateSemanticModelAsync(CancellationToken.None);
 
             var componentSymbol = workspace.StructuralAgents.First().Value;
             Assert.AreEqual(componentSymbol.Name, "ct1");
@@ -58,7 +60,7 @@ namespace BcsResolver.Tests
         }
 
         [TestMethod]
-        public void SemanticModel_AgentWithStates_Valid()
+        public async Task SemanticModel_AgentWithStates_ValidAsync()
         {
             var mock = new Mock<IBcsEntityMetadataProvider>();
 
@@ -68,7 +70,7 @@ namespace BcsResolver.Tests
 
             var workspace = new BcsFileWorkspace(mock.Object);
 
-            workspace.CreateSemanticModelAsync();
+            await workspace.CreateSemanticModelAsync(CancellationToken.None);
 
             var agentSymbol = workspace.AtomicAgents.First().Value;
             Assert.AreEqual("ag1", agentSymbol.Name);
@@ -83,7 +85,7 @@ namespace BcsResolver.Tests
         }
 
         [TestMethod]
-        public void SemanticModel_FullComplex_Valid()
+        public async Task SemanticModel_FullComplex_ValidAsync()
         {
             var mock = new Mock<IBcsEntityMetadataProvider>();
 
@@ -93,7 +95,7 @@ namespace BcsResolver.Tests
 
             var workspace = new BcsFileWorkspace(mock.Object);
 
-            workspace.CreateSemanticModelAsync();
+            await workspace.CreateSemanticModelAsync(CancellationToken.None);
 
             var complexSymbol = workspace.Complexes.First().Value;
             var cComponents = complexSymbol.StructuralAgents.AssertCount(2);
@@ -123,7 +125,7 @@ namespace BcsResolver.Tests
         }
 
         [TestMethod]
-        public void SemanticModel_UndefinedAgent_Error()
+        public async System.Threading.Tasks.Task SemanticModel_UndefinedAgent_ErrorAsync()
         {
             var mock = new Mock<IBcsEntityMetadataProvider>();
 
@@ -141,7 +143,7 @@ namespace BcsResolver.Tests
             mock.Setup(p => p.GetAvailableEntityIds()).Returns(() => new[] { "ctE" });
 
             var workspace = new BcsFileWorkspace(mock.Object);
-            workspace.CreateSemanticModelAsync();
+            await workspace.CreateSemanticModelAsync(CancellationToken.None);
 
             var componentSymbol = workspace.StructuralAgents.AssertCount(1).First().Value;
             var errorSymbol = componentSymbol.Parts.AssertCount(1).First().AssertCast<BcsErrorSymbol>();

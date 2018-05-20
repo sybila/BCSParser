@@ -71,12 +71,7 @@ namespace BcsAdmin.BL.Repositories.Api
                 var sw2 = new Stopwatch();
                 sw2.Start();
                 var response = await HttpClient.GetAsync(GetFullUrl(ids), cancellationToken);
-                sw2.Stop();           
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    return null;
-                }
+                sw2.Stop();
 
                 string responseBody = await response.Content.ReadAsStringAsync();
 
@@ -85,6 +80,20 @@ namespace BcsAdmin.BL.Repositories.Api
                 var responseData = JsonConvert.DeserializeObject<EntityResponseData<List<TEntity>>>(responseBody, JsonSerializerSettings);
                 sw3.Stop();
                 sw.Stop();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    if (responseData == null)
+                    {
+                        throw new ApiDownException("Empty response.");
+                    }
+                    if (responseData.Code == 500)
+                    {
+                        throw new ApiDownException($"{responseData.Code}: {responseData.Message}");
+                    }
+                    throw new InvalidInputException(responseData.Message);
+                }
+
                 Console.Write($"Repo for: {typeof(TEntity).Name} Method: {sw.ElapsedMilliseconds}ms = API request: {sw2.ElapsedMilliseconds} + JSON: {sw3.ElapsedMilliseconds}ms, API claims: {(response.Headers.GetValues("X-Run-Time").FirstOrDefault() ?? "")}\n");
                 return responseData.Data;
             }

@@ -11,16 +11,21 @@ namespace BcsAdmin.BL.Dto
         [Display(AutoGenerateField = false)]
         public int Id { get; set; }
 
-        [Editable(false)]
-        public string UserName { get; set; }
-
         [Required]
+        [DataType(DataType.MultilineText)]
         public string Text { get; set; }
 
         [Editable(false)]
-        public DateTime? Inserted { get; set; }
+        [DisplayFormat(NullDisplayText = "-")]
+        public string UserName { get; set; }
+
 
         [Editable(false)]
+        [DisplayFormat(NullDisplayText = "-")]
+        public DateTime? Inserted { get; set; } = null;
+
+        [Editable(false)]
+        [DisplayFormat(NullDisplayText = "-")]
         public DateTime? Updated { get; set; }
     }
 }

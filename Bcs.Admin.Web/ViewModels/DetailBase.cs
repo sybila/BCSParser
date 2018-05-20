@@ -140,13 +140,10 @@ namespace Bcs.Admin.Web.ViewModels
 
         public async Task EditAsync(int id)
         {
-            await ExecuteSafeAsync(async () =>
-            {
-                var dto = await Facade.GetDetailAsync(id);
-                Mapper.Map(dto, this);
-                await PoputateGridsAsync();
-                CancelAllActions();
-            });
+            var dto = await Facade.GetDetailAsync(id);
+            Mapper.Map(dto, this);
+            await PoputateGridsAsync();
+            CancelAllActions();
         }
     }
 }

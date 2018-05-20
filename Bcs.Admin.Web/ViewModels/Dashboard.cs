@@ -8,6 +8,12 @@ using Bcs.Admin.BL.Dto;
 
 namespace Bcs.Admin.Web.ViewModels
 {
+    public enum DetailTabType {
+        NewEntity = 1,
+        EntityDetail = 2,
+        RuleDetail = 3
+    }
+
     public class Dashboard : Masterpage
     {
         private readonly BasicListFacade basicListFacade;
@@ -25,6 +31,8 @@ namespace Bcs.Admin.Web.ViewModels
         public NewEntityWizard NewEntityWizard { get; set; }
         public BiochemicalEntityDetail EntityDetail { get; set; }
         public BiochemicalReactionDetail ReactionDetail { get; set; }
+
+        public DetailTabType SelectedDetailTab { get; set; } = DetailTabType.EntityDetail;
 
 
         public List<BiochemicalEntityTypeDto> HierarchyTypes { get; set; }
@@ -67,16 +75,25 @@ namespace Bcs.Admin.Web.ViewModels
         public void NewEntity()
         {
             NewEntityWizard.StartNew();
+            SelectedDetailTab = DetailTabType.NewEntity;
         }
 
         public async Task EditEntityAsync(int entityId)
         {
-            await EntityDetail.EditAsync(entityId);
+            await ExecuteSafeAsync(async () =>
+            {
+                await EntityDetail.EditAsync(entityId);
+                SelectedDetailTab = DetailTabType.EntityDetail;
+            });
         }
 
         public async Task EditReactionAsync(int reactionId)
         {
-            await ReactionDetail.EditAsync(reactionId);
+            await ExecuteSafeAsync(async () =>
+            {
+                await ReactionDetail.EditAsync(reactionId);
+                SelectedDetailTab = DetailTabType.RuleDetail;
+            });
         }
 
         public override Task Init()

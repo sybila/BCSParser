@@ -96,6 +96,7 @@ var CodeEditor = /** @class */ (function () {
                         console.log(_this.lastCaret);
                         element.innerHTML = value;
                         _this.setCaret(element, _this.lastCaret);
+                        $('[data-toggle="tooltip"]').tooltip();
                     }
                 }
             };

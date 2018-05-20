@@ -212,3 +212,4 @@ _Pvt_Extensions/
 ModelManifest.xml
 /TreeControl.Sample.zip
 /BcsAdmin.DAL/Models/ConnectionString.cs
+/Bcs.Admin.Web/deploy.ps1

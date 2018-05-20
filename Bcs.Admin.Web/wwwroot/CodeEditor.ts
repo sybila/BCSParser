@@ -116,6 +116,7 @@ class CodeEditor {
                     console.log(this.lastCaret);
                     element.innerHTML = value;
                     this.setCaret(element, this.lastCaret);
+                    $('[data-toggle="tooltip"]').tooltip();
                 }
 
             }

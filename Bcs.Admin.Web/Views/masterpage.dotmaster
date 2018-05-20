@@ -1,11 +1,11 @@
-﻿@viewModel Bcs.Admin.Web.ViewModels.Masterpage, Bcs.Admin.Web 
+﻿@viewModel Bcs.Admin.Web.ViewModels.Masterpage, Bcs.Admin.Web
 
 <!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <dot:RequiredResource Name="bootstrap"/>
+    <dot:RequiredResource Name="bootstrap" />
     <dot:RequiredResource Name="site" />
     <dot:RequiredResource Name="code-editor" />
     <title>{{value: Title}}</title>
@@ -14,6 +14,10 @@
     <dot:InlineScript>
         //this is to clear validation errors and not to prevent them from postback before even valudating the stuff (that may be valid)
         dotvvm.events.postbackHandlersStarted.subscribe(function () { dotvvm.validation.errors([]); });
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
     </dot:InlineScript>
     <dot:InlineScript Dependencies="knockout">
         var editor = new CodeEditor();
@@ -21,7 +25,7 @@
     </dot:InlineScript>
     <div class="container-fluid dashboard">
         <div class="col-md-12">
-            <cc:StatusAlerts ErrorsBinding="{value: Errors}" SuccessMessageBinding="{value: SuccessMessage}"/>
+            <cc:StatusAlerts ErrorsBinding="{value: Errors}" SuccessMessageBinding="{value: SuccessMessage}" />
             <h1>{{value: Title}}</h1>
         </div>
         <div class="col-md12">
