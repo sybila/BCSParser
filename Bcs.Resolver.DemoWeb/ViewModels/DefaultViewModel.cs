@@ -20,6 +20,8 @@ using Bcs.Analyzer.DemoWeb.Utils;
 using Bcs.Analyzer.DemoWeb.ViewModels;
 using BcsAdmin.BL.Services;
 using BcsAdmin.BL.Dto;
+using BcsAdmin.BL.Repositories.Api.BcsAdmin.BL.Repositories;
+using System.Threading;
 
 namespace BcsAnalysisWeb.ViewModels
 {
@@ -50,8 +52,8 @@ namespace BcsAnalysisWeb.ViewModels
             LoadBcsFile("D:\\yamada.txt");
             if (document != null)
             {
-                workspace = new DbWorkspace();
-                workspace.CreateSemanticModel();
+                workspace = new ApiWorkspace(new ApiEntityRepository());
+                workspace.CreateSemanticModelAsync(CancellationToken.None).Wait();
             }
         }
 

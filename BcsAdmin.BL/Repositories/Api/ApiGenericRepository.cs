@@ -62,8 +62,10 @@ namespace BcsAdmin.BL.Repositories.Api
                 return r?.FirstOrDefault();
             }
 
-            public async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> ids)
+            public async Task<IList<TEntity>> GetByIdsAsync(CancellationToken cancellationToken, IEnumerable<int> inputIds)
             {
+                var ids = inputIds.Where(id => id > 0).ToArray();
+
                 var sw = new Stopwatch();
                 sw.Start();
                 if (!ids.Any()) { return new List<TEntity>(); };

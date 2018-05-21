@@ -31,8 +31,8 @@
         <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />
         <PackageReference Include="AutoMapper" Version="6.2.0" />
         <PackageReference Include="DotVVM.AspNetCore" Version="2.0.0-preview09-28091" />
-        <PackageReference Include="DotVVM.DynamicData" Version="2.0.0-preview06" />
-        <PackageReference Include="DotVVM.DynamicData.Annotations" Version="2.0.0-preview06" />
+        <PackageReference Include="DotVVM.DynamicData" Version="2.0.0-preview09-1" />
+        <PackageReference Include="DotVVM.DynamicData.Annotations" Version="2.0.0-preview09-1" />
         <PackageReference Include="Microsoft.AspNetCore" Version="2.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.1" />
         <PackageReference Include="T4.TemplateFileManager" Version="2.2.1" />
@@ -44,10 +44,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Bcs.Resolver.Data\Bcs.Resolver.File.csproj" />
       <ProjectReference Include="..\Bcs.Resolver\Bcs.Resolver.csproj" />
-      <ProjectReference Include="..\BcsAdmin.BL\BcsAdmin.BL.csproj" />
-      <ProjectReference Include="D:\Code\dotvvm-dynamic-data\src\DotVVM.Framework.Controls.DynamicData.Annotations\DotVVM.Framework.Controls.DynamicData.Annotations.csproj" />
-      <ProjectReference Include="D:\Code\dotvvm-dynamic-data\src\DotVVM.Framework.Controls.DynamicData\DotVVM.Framework.Controls.DynamicData.csproj" />
-      
+      <ProjectReference Include="..\BcsAdmin.BL\BcsAdmin.BL.csproj" />    
     </ItemGroup>
     <ItemGroup>
       <TypeScriptCompile Include="wwwroot\CodeEditor.ts" />
