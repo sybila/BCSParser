@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Bcs.Admin.Web.Controls.EditPanel;
 using Bcs.Admin.Web.Utils;
@@ -16,6 +17,52 @@ using DotVVM.Framework.Controls.DynamicData.PropertyHandlers.FormEditors;
 
 namespace Bcs.Admin.Web.Controls.Dynamic
 {
+    public class PermanentViewBuilder {
+
+        private StringBuilder builder = new StringBuilder();
+
+        public void Control(DotvvmControl c)
+        {
+            if (c is HtmlGenericControl htmlGeneric)
+            {
+                PrintGeneric(htmlGeneric);
+            }
+            else {
+                DotvvmControl(c);
+            }
+        }
+
+        public void DotvvmControl(DotvvmControl c)
+        {
+            builder.Append($"<dot:{c.GetType().Name}>");
+
+            foreach (var child in c.Children)
+            {
+                Control(child);
+            }
+            builder.Append($"</dot:{c.GetType().Name}>");
+        }
+
+        public void PrintGeneric(HtmlGenericControl htmlGenericControl)
+        {
+            builder.Append($"<{htmlGenericControl.TagName}>");
+
+            foreach (var attribute in htmlGenericControl.Attributes)
+            {
+                builder.Append(attribute.Value);             
+            }
+
+            foreach (var child in htmlGenericControl.Children)
+            {
+                Control(child);
+            }
+
+            builder.Append($"<{htmlGenericControl.TagName}>");
+        }
+
+        public string GetView() => builder.ToString();
+    }
+
     public class EditableDynamicGridEditorProvider : FormEditorProviderBase
     {
         public override bool RenderDefaultLabel => false;
@@ -36,7 +83,7 @@ namespace Bcs.Admin.Web.Controls.Dynamic
             var cssClass = ControlHelpers.ConcatCssClasses(ControlCssClass, property.Styles?.FormControlCssClass);
             if (!string.IsNullOrEmpty(cssClass))
             {
-                grid.Attributes["class"] = cssClass + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+                grid.Attributes["class"] = cssClass;
             }
 
             grid.SetBinding(DotvvmBindableObject.DataContextProperty, context.CreateValueBinding(property.PropertyInfo.Name));
@@ -69,6 +116,10 @@ namespace Bcs.Admin.Web.Controls.Dynamic
                 grid.SuccessMessage = context.CreateValueBinding("SuccessMessage", gridDataContext);
                 grid.Errors = context.CreateValueBinding("Errors", gridDataContext);
             }
+
+            //var delf = new PermanentViewBuilder();
+            //delf.Control(grid);
+            //var a = delf.GetView();
         }
 
         //TODO: Merge when integrated with dynamic data

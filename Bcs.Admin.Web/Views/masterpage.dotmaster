@@ -21,7 +21,8 @@
     </dot:InlineScript>
     <dot:InlineScript Dependencies="knockout">
         var editor = new CodeEditor();
-        editor.addKnockoutHandlers();
+    editor.registerKeyHandle();
+        //editor.addKnockoutHandlers();
     </dot:InlineScript>
     <div class="container-fluid dashboard">
         <div class="col-md-12">

@@ -11,13 +11,13 @@ namespace Bcs.Admin.Web.Controls
 {
     public class CodeEditor : HtmlGenericControl
     {
-        public Command KeyUp
+        public Command KeyDown
         {
-            get { return (Command)GetValue(KeyUpProperty); }
-            set { SetValue(KeyUpProperty, value); }
+            get { return (Command)GetValue(KeyDownProperty); }
+            set { SetValue(KeyDownProperty, value); }
         }
-        public static readonly DotvvmProperty KeyUpProperty
-            = DotvvmProperty.Register<Command, CodeEditor>(c => c.KeyUp, null);
+        public static readonly DotvvmProperty KeyDownProperty
+            = DotvvmProperty.Register<Command, CodeEditor>(c => c.KeyDown, null);
 
         public string Html
         {
@@ -28,6 +28,15 @@ namespace Bcs.Admin.Web.Controls
             = DotvvmProperty.Register<string, CodeEditor>(c => c.Html, null);
 
 
+        public string Text
+        {
+            get { return (string)GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
+        }
+        public static readonly DotvvmProperty TextProperty
+            = DotvvmProperty.Register<string, CodeEditor>(c => c.Text, null);
+
+
         public CodeEditor()
             :base("div")
         {
@@ -36,13 +45,23 @@ namespace Bcs.Admin.Web.Controls
 
         protected override void AddAttributesToRender(IHtmlWriter writer, IDotvvmRequestContext context)
         {
-            writer.AddKnockoutDataBind("htmlLazy", this, HtmlProperty, null, null, false, false);
+            writer.AddKnockoutDataBind("html", this, HtmlProperty, null, null, false, false);
+            writer.AddKnockoutDataBind("htmlLazy", this, TextProperty, null, null, false, false);
             writer.AddKnockoutDataBind("contentEditable", "true");
 
-            var keyUpBinding = GetCommandBinding(KeyUpProperty);
-            if (keyUpBinding != null)
+            var keyDownBinding = GetCommandBinding(KeyDownProperty);
+            if (keyDownBinding != null)
+
             {
-                writer.AddAttribute("onkeyup", KnockoutHelper.GenerateClientPostBackScript(nameof(KeyUp), keyUpBinding, this, useWindowSetTimeout: true, isOnChange: true));
+                var expression = KnockoutHelper.GenerateClientPostBackExpression(
+                    nameof(KeyDown),
+                    keyDownBinding,
+                    this,
+                    new PostbackScriptOptions {
+                        IsOnChange = true
+                    });
+
+                //writer.AddAttribute("onkeydown", $"{expression}; return true;");
             }
 
             writer.AddAttribute("spellcheck", "false");

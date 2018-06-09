@@ -42,7 +42,7 @@ namespace Bcs.Admin.Web.Controls.Dynamic
 
             if (attribute.KeyUpMethodName != null)
             {
-                codeControl.SetBinding(CodeEditor.KeyUpProperty, context.CreateCommandBinding($"{attribute.KeyUpMethodName}()"));
+                codeControl.SetBinding(CodeEditor.KeyDownProperty, context.CreateCommandBinding($"{attribute.KeyUpMethodName}()"));
             }
         }
 
