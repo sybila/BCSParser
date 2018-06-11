@@ -107,7 +107,7 @@ class TextPresenter {
                 .filter(t => { return t.IsStart && t.TooltipText != null && t.TooltipText !== ""; })
                 .map(a => { return a.TooltipText; })
                 .reverse()
-                .join(" <br> ");
+                .join(" ");
 
         var tooltip =
             (point.TooltipText == null || point.TooltipText === "")
