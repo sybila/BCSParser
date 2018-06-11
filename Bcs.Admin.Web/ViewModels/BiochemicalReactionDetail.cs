@@ -31,8 +31,10 @@ namespace Bcs.Admin.Web.ViewModels
 
         [CodeEditor(nameof(UpdateModifierAsync))]
         [Display(GroupName = "Fields")]
-        [Bind(Direction.None)]
         public string Modifier { get; set; }
+
+        [Bind(Direction.ClientToServer)]
+        public string ModifierText { get; set; } = "";
 
         public List<StyleSpan> ModifierSpans { get; set; }
 
@@ -63,7 +65,6 @@ namespace Bcs.Admin.Web.ViewModels
             dto.Modifier = dto.Modifier;
         }
 
-        [AllowStaticCommand]
         public async Task<List<StyleSpan>> UpdateEquationAsync()
         {
             await ExecuteSafeAsync(async () =>
@@ -80,7 +81,7 @@ namespace Bcs.Admin.Web.ViewModels
         {
             await ExecuteSafeAsync(async () =>
             {
-                var model = await ReactionFacade.GetReactionModelAsync(Modifier);
+                var model = await ReactionFacade.GetReactionModelAsync(ModifierText ?? "");
                 ModifierSpans = ReactionFacade.GetClassificationSpans(model);
             });
         }

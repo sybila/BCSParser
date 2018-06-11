@@ -19,23 +19,31 @@ namespace Bcs.Admin.Web.Controls
         public static readonly DotvvmProperty KeyDownProperty
             = DotvvmProperty.Register<Command, CodeEditor>(c => c.KeyDown, null);
 
-        public string Html
+        public IValueBinding Html
         {
-            get { return (string)GetValue(HtmlProperty); }
+            get { return (IValueBinding)GetValue(HtmlProperty); }
             set { SetValue(HtmlProperty, value); }
         }
         public static readonly DotvvmProperty HtmlProperty
-            = DotvvmProperty.Register<string, CodeEditor>(c => c.Html, null);
+            = DotvvmProperty.Register<IValueBinding, CodeEditor>(c => c.Html, null);
 
-
-        public string Text
+        [MarkupOptions(AllowAttributeWithoutValue = false, AllowHardCodedValue = false)]
+        public IValueBinding Text
         {
-            get { return (string)GetValue(TextProperty); }
+            get { return (IValueBinding)GetValue(TextProperty); }
             set { SetValue(TextProperty, value); }
         }
         public static readonly DotvvmProperty TextProperty
-            = DotvvmProperty.Register<string, CodeEditor>(c => c.Text, null);
+            = DotvvmProperty.Register<IValueBinding, CodeEditor>(c => c.Text, null);
 
+        [MarkupOptions(AllowAttributeWithoutValue = false, AllowHardCodedValue = false)]
+        public IValueBinding StyleSpans
+        {
+            get { return (IValueBinding)GetValue(StyleSpansProperty); }
+            set { SetValue(StyleSpansProperty, value); }
+        }
+        public static readonly DotvvmProperty StyleSpansProperty
+            = DotvvmProperty.Register<IValueBinding, CodeEditor>(c => c.StyleSpans, null);
 
         public CodeEditor()
             :base("div")
@@ -43,15 +51,27 @@ namespace Bcs.Admin.Web.Controls
 
         }
 
+        protected override void RenderBeginTag(IHtmlWriter writer, IDotvvmRequestContext context)
+        {
+            writer.WriteKnockoutDataBindComment(
+                "dotvvm_introduceAlias",
+                $"{{ '$codeEditor': new CodeEditor(), '$editorText': {Text.GetKnockoutBindingExpression(this)}, '$editorSpans': {StyleSpans.GetKnockoutBindingExpression(this)}}}");
+            base.RenderBeginTag(writer, context);
+        }
+
+        protected override void RenderEndTag(IHtmlWriter writer, IDotvvmRequestContext context)
+        {
+            writer.RenderEndTag();
+            writer.WriteKnockoutDataBindEndComment();
+        }
+
         protected override void AddAttributesToRender(IHtmlWriter writer, IDotvvmRequestContext context)
         {
             writer.AddKnockoutDataBind("html", this, HtmlProperty, null, null, false, false);
-            writer.AddKnockoutDataBind("htmlLazy", this, TextProperty, null, null, false, false);
             writer.AddKnockoutDataBind("contentEditable", "true");
 
             var keyDownBinding = GetCommandBinding(KeyDownProperty);
             if (keyDownBinding != null)
-
             {
                 var expression = KnockoutHelper.GenerateClientPostBackExpression(
                     nameof(KeyDown),
@@ -61,7 +81,13 @@ namespace Bcs.Admin.Web.Controls
                         IsOnChange = true
                     });
 
-                //writer.AddAttribute("onkeydown", $"{expression}; return true;");
+                var getEditor = "ko.contextFor(this).$codeEditor()";
+
+                var handleBeforeKey = $"{getEditor}.handleBeforeKey(this)";
+                var handleAfterKey = $"{getEditor}.handleAfterKey(this, {expression})";
+
+
+                writer.AddAttribute("onkeyup", $"{handleBeforeKey}; {handleAfterKey}; return true;");
             }
 
             writer.AddAttribute("spellcheck", "false");

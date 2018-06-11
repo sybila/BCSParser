@@ -52,24 +52,24 @@ class TextPresenter {
                 var textChunk = rawText.substring(previousPosition, point.Position);
                 richTextBuilder.append(textChunk);
                 if (point.IsStart) {
-                    openSpans.push(point.CssClass);
-                    richTextBuilder.append(this.createHtmlStartTag(point));
+                    openSpans.push(point);
+                    richTextBuilder.append(this.createHtmlStartTag(point, openSpans));
                 }
                 else {
-                    if (openSpans[openSpans.length - 1] === point.CssClass) {
+                    if (openSpans[openSpans.length - 1].CssClass === point.CssClass) {
                         openSpans.pop();
                         richTextBuilder.append("</span>");
                     }
                     else {
                         var closedSpans = [];
-                        while (openSpans[openSpans.length - 1] != point.CssClass) {
+                        while (openSpans[openSpans.length - 1].CssClass !== point.CssClass) {
                             richTextBuilder.append("</span>");
                             closedSpans.push(openSpans.pop());
                         }
                         openSpans.pop();
                         richTextBuilder.append("</span>");
                         while (closedSpans.length > 0) {
-                            richTextBuilder.append(this.createHtmlStartTag(point));
+                            richTextBuilder.append(this.createHtmlStartTag(point, openSpans));
                             openSpans.push(closedSpans.pop());
                         }
                     }
@@ -80,10 +80,15 @@ class TextPresenter {
             richTextBuilder.append(lastChunk);
             return richTextBuilder.toString();
         };
-        this.createHtmlStartTag = (point) => {
+        this.createHtmlStartTag = (point, openTagStack) => {
+            var tooltipText = openTagStack
+                .filter(t => { return t.IsStart && t.TooltipText != null && t.TooltipText !== ""; })
+                .map(a => { return a.TooltipText; })
+                .reverse()
+                .join(" <br> ");
             var tooltip = (point.TooltipText == null || point.TooltipText === "")
                 ? ""
-                : "data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" + point.TooltipText + "\"";
+                : "data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" + tooltipText + "\"";
             return "<span " + tooltip + " class=\"" + point.CssClass + "\">";
         };
         this.spanPointComparison = (left, right) => {
@@ -152,6 +157,24 @@ class CodeEditor {
             this.carretSet = false;
             this.setCaretCore(e, cp);
         };
+        this.handleBeforeKey = (element) => {
+            ko.contextFor(element).$editorText(this.getEditorRawText(element));
+        };
+        this.handleAfterKey = (element, dotvvmPostBack) => {
+            dotvvmPostBack
+                .then(() => {
+                if (element.isContentEditable) {
+                    var styleSpans = this.getStyleSpans(element);
+                    var editorText = this.getEditorRawText(element);
+                    var lastCaret = CarretHelper.getCaretPosition(element);
+                    element.innerHTML = this.presenter.CreateRichText(editorText, styleSpans);
+                    this.setCaret(element, lastCaret);
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            }).catch(r => {
+                //We dont care, maybe it goes well next time
+            });
+        };
         this.setCaretCore = (element, caretPosition) => {
             var charsInNode = 0;
             element.childNodes.forEach((item, index) => {
@@ -187,12 +210,6 @@ class CodeEditor {
             sel.removeAllRanges();
             sel.addRange(range);
         };
-        this.registerKeyHandle = () => {
-            $(".code-editor").on("keydown", (e) => {
-                var elem = e.target;
-                this.handleKey(elem);
-            });
-        };
         this.getVisibleTextFromTree = (node) => {
             if (node.nodeType === Node.TEXT_NODE) {
                 return node.textContent;
@@ -214,47 +231,6 @@ class CodeEditor {
             }
             return text;
         };
-        this.handleKey = (element) => {
-            ko.dataFor(element).EquationText(this.getEditorRawText(element));
-            dotvvm.postBack("root", element, ["$parent.ReactionDetail", "$parent"], "QmlvY2hlbWljYWxSZWFjdGlvbkRldGFpbC5VcGRhdGVFcXVhdGlvbkFzeW5jKCk=", "", null, ["suppressOnUpdating"])
-                .then(() => {
-                if (element.isContentEditable) {
-                    var styleSpans = this.getStyleSpans(element);
-                    var editorText = this.getEditorRawText(element);
-                    var lastCaret = CarretHelper.getCaretPosition(element);
-                    element.innerHTML = this.presenter.CreateRichText(editorText, styleSpans);
-                    this.setCaret(element, lastCaret);
-                    $('[data-toggle="tooltip"]').tooltip();
-                }
-            }).catch(r => {
-                //We dont care, maybe it goes well next time
-            });
-        };
-        //public addKnockoutHandlers = () => {
-        //    ko.bindingHandlers.htmlLazy = {
-        //        update: (element, valueAccessor) => {
-        //        }
-        //    };
-        //    ko.bindingHandlers.contentEditable = {
-        //        init: (element, valueAccessor, allBindingsAccessor) => {
-        //            var value = ko.unwrap(valueAccessor()),
-        //                htmlLazy = allBindingsAccessor().htmlLazy;
-        //            $(element).on("input", function () {
-        //                if (this.isContentEditable && ko.isWriteableObservable(htmlLazy)) {
-        //                    htmlLazy(this.innerText);
-        //                }
-        //            }).on('change', function (e) {
-        //            });
-        //        },
-        //        update: function (element, valueAccessor) {
-        //            var value = ko.unwrap(valueAccessor());
-        //            element.contentEditable = value;
-        //            if (!element.isContentEditable) {
-        //                $(element).trigger("input");
-        //            }
-        //        }
-        //    };
-        //}
     }
     isTooltipElement(element) {
         return element.classList.contains("tooltip-inner");
@@ -267,11 +243,17 @@ class CodeEditor {
         return value;
     }
     getStyleSpans(element) {
-        var spans = ko.toJS(ko.dataFor(element).EquationSpans());
+        var spans = ko.toJS(ko.contextFor(element).$editorSpans());
         spans = spans == null
             ? []
             : spans;
         return spans;
     }
 }
+CodeEditor.registerKeyHandle = () => {
+    $(".code-editor")
+        .each((indec, element) => {
+        ko.applyBindingsToNode(element, { codeEditor: new CodeEditor() });
+    });
+};
 //# sourceMappingURL=CodeEditor.js.map

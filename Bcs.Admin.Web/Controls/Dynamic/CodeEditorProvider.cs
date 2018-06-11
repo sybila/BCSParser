@@ -39,6 +39,8 @@ namespace Bcs.Admin.Web.Controls.Dynamic
             var attribute = GetCodeEditorAttribute(property.PropertyInfo);
 
             codeControl.SetBinding(CodeEditor.HtmlProperty, context.CreateValueBinding(property.PropertyInfo.Name));
+            codeControl.SetBinding(CodeEditor.StyleSpansProperty, context.CreateValueBinding($"{property.PropertyInfo.Name}Spans"));
+            codeControl.SetBinding(CodeEditor.TextProperty, context.CreateValueBinding($"{property.PropertyInfo.Name}Text"));
 
             if (attribute.KeyUpMethodName != null)
             {

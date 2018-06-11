@@ -67,29 +67,29 @@ class TextPresenter {
 
         var previousPosition: number = 0;
         var richTextBuilder: StringBuilder = new StringBuilder();
-        var openSpans: string[] = [];
+        var openSpans: SpanPoint[] = [];
         spanPoints.forEach(point => {
             var textChunk = rawText.substring(previousPosition, point.Position);
             richTextBuilder.append(textChunk);
             if (point.IsStart) {
-                openSpans.push(point.CssClass);
-                richTextBuilder.append(this.createHtmlStartTag(point));
+                openSpans.push(point);
+                richTextBuilder.append(this.createHtmlStartTag(point, openSpans));
             }
             else {
-                if (openSpans[openSpans.length - 1] === point.CssClass) {
+                if (openSpans[openSpans.length - 1].CssClass === point.CssClass) {
                     openSpans.pop();
                     richTextBuilder.append("</span>");
                 }
                 else {
-                    var closedSpans: string[] = [];
-                    while (openSpans[openSpans.length - 1] != point.CssClass) {
+                    var closedSpans: SpanPoint[] = [];
+                    while (openSpans[openSpans.length - 1].CssClass !== point.CssClass) {
                         richTextBuilder.append("</span>");
                         closedSpans.push(openSpans.pop());
                     }
                     openSpans.pop();
                     richTextBuilder.append("</span>");
                     while (closedSpans.length > 0) {
-                        richTextBuilder.append(this.createHtmlStartTag(point));
+                        richTextBuilder.append(this.createHtmlStartTag(point, openSpans));
                         openSpans.push(closedSpans.pop());
                     }
                 }
@@ -101,11 +101,18 @@ class TextPresenter {
         return richTextBuilder.toString();
     }
 
-    private createHtmlStartTag = (point: SpanPoint): string => {
+    private createHtmlStartTag = (point: SpanPoint, openTagStack: SpanPoint[]): string => {
+        var tooltipText =
+            openTagStack
+                .filter(t => { return t.IsStart && t.TooltipText != null && t.TooltipText !== ""; })
+                .map(a => { return a.TooltipText; })
+                .reverse()
+                .join(" <br> ");
+
         var tooltip =
             (point.TooltipText == null || point.TooltipText === "")
                 ? ""
-                : "data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" + point.TooltipText + "\"";
+                : "data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" + tooltipText + "\"";
 
         return "<span " + tooltip + " class=\"" + point.CssClass + "\">";
     }
@@ -189,6 +196,35 @@ class CodeEditor {
         this.setCaretCore(e, cp);
     }
 
+    public static registerKeyHandle = () => {
+        $(".code-editor")
+            .each((indec, element) => {
+                ko.applyBindingsToNode(element, { codeEditor: new CodeEditor() });
+            });
+    }
+
+    public handleBeforeKey = (element: HTMLElement) => {
+        ko.contextFor(element).$editorText(this.getEditorRawText(element));
+    }
+
+    public handleAfterKey = (element: HTMLElement, dotvvmPostBack: Promise<DotvvmAfterPostBackEventArgs>) => {
+        dotvvmPostBack
+            .then(() => {
+                if (element.isContentEditable) {
+                    var styleSpans: StyleSpan[] = this.getStyleSpans(element);
+                    var editorText: string = this.getEditorRawText(element);
+
+                    var lastCaret = CarretHelper.getCaretPosition(element);
+                    element.innerHTML = this.presenter.CreateRichText(editorText, styleSpans);
+                    this.setCaret(element, lastCaret);
+
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            }).catch(r => {
+                //We dont care, maybe it goes well next time
+            });
+    }
+
     private setCaretCore = (element: Node, caretPosition: number) => {
         var charsInNode = 0;
 
@@ -232,19 +268,12 @@ class CodeEditor {
         sel.addRange(range);
     }
 
-    public registerKeyHandle = () => {
-        $(".code-editor").on("keydown", (e) => {
-            var elem: any = e.target;
-            this.handleKey(elem);
-        });
-    }
-
     private getVisibleTextFromTree = (node: Node) => {
         if (node.nodeType === Node.TEXT_NODE) { return node.textContent; }
 
-        if (node.nodeType !== Node.ELEMENT_NODE) { return "";}
+        if (node.nodeType !== Node.ELEMENT_NODE) { return ""; }
 
-        var element:Element =<any> node;
+        var element: Element = <any>node;
 
         var style = getComputedStyle(element);
 
@@ -259,33 +288,6 @@ class CodeEditor {
         return text;
     }
 
-    private handleKey = (element: HTMLElement) => {
-        ko.dataFor(element).EquationText(this.getEditorRawText(element));
-
-        dotvvm.postBack(
-            "root",
-            element,
-            ["$parent.ReactionDetail", "$parent"],
-            "QmlvY2hlbWljYWxSZWFjdGlvbkRldGFpbC5VcGRhdGVFcXVhdGlvbkFzeW5jKCk=",
-            "", null,
-            ["suppressOnUpdating"])
-            .then(() => {
-                if (element.isContentEditable) {
-                    var styleSpans: StyleSpan[] = this.getStyleSpans(element);
-                    var editorText: string = this.getEditorRawText(element);
-
-                    var lastCaret = CarretHelper.getCaretPosition(element);
-                    element.innerHTML = this.presenter.CreateRichText(editorText, styleSpans);
-                    this.setCaret(element, lastCaret);
-
-                    $('[data-toggle="tooltip"]').tooltip();
-                }
-            }).catch(r => {
-                //We dont care, maybe it goes well next time
-            });
-    }
-
-
     private isTooltipElement(element: Element) {
         return element.classList.contains("tooltip-inner");
     }
@@ -299,38 +301,10 @@ class CodeEditor {
     }
 
     private getStyleSpans(element: HTMLElement) {
-        var spans: StyleSpan[] = ko.toJS(ko.dataFor(element).EquationSpans());
+        var spans: StyleSpan[] = ko.toJS(ko.contextFor(element).$editorSpans());
         spans = spans == null
             ? []
             : spans;
         return spans;
     }
-    //public addKnockoutHandlers = () => {
-    //    ko.bindingHandlers.htmlLazy = {
-    //        update: (element, valueAccessor) => {
-    //        }
-    //    };
-    //    ko.bindingHandlers.contentEditable = {
-    //        init: (element, valueAccessor, allBindingsAccessor) => {
-    //            var value = ko.unwrap(valueAccessor()),
-    //                htmlLazy = allBindingsAccessor().htmlLazy;
-
-    //            $(element).on("input", function () {
-    //                if (this.isContentEditable && ko.isWriteableObservable(htmlLazy)) {
-    //                    htmlLazy(this.innerText);
-    //                }
-    //            }).on('change', function (e) {
-    //            });
-    //        },
-    //        update: function (element, valueAccessor) {
-    //            var value = ko.unwrap(valueAccessor());
-
-    //            element.contentEditable = value;
-
-    //            if (!element.isContentEditable) {
-    //                $(element).trigger("input");
-    //            }
-    //        }
-    //    };
-    //}
 }

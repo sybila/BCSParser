@@ -256,14 +256,7 @@
                 <cc:PanelControl ColorStyle="Info" HeadingText="Rule detail" CloseCommand="{command: Close()}">
                     <BodyTemplate>
                         <cc:StatusAlerts ErrorsBinding="{value: Errors}" SuccessMessageBinding="{value: SuccessMessage}" />
-                        <div class="form-group">
-                            <label>
-                                Equation
-                            </label>
-                            <cc:CodeEditor class="code-editor" Html="{value: Equation}" Text="{value: EquationText}" KeyDown="{command: UpdateEquationAsync()}" />
-                        </div>
                         <dd:DynamicEntity Validator.InvalidCssClass="has-error" GroupName="Fields" FormBuilderName="v-bootstrap" DataContext="{value: _this}" />
-                        <dot:Button Click="{staticCommand: EquationSpans = UpdateEquationAsync().Result}" />
                     </BodyTemplate>
                     <FooterTemplate>
                         <div>
