@@ -40,8 +40,8 @@ class TextPresenter {
                 if (!textRange.ContainsRange(span.Range)) {
                     return;
                 }
-                spanPoints.push({ Position: span.Range.Start, CssClass: span.CssClass, IsStart: true, Id: spanId, TooltipText: span.TooltipText });
-                spanPoints.push({ Position: span.Range.End, CssClass: span.CssClass, IsStart: false, Id: spanId, TooltipText: span.TooltipText });
+                spanPoints.push({ Position: span.Range.Start, Category: span.Category, CssClass: span.CssClass, IsStart: true, Id: spanId, TooltipText: span.TooltipText });
+                spanPoints.push({ Position: span.Range.End, Category: span.Category, CssClass: span.CssClass, IsStart: false, Id: spanId, TooltipText: span.TooltipText });
                 spanId++;
             }));
             spanPoints.sort(this.spanPointComparison);
@@ -52,6 +52,9 @@ class TextPresenter {
                 var textChunk = rawText.substring(previousPosition, point.Position);
                 richTextBuilder.append(textChunk);
                 if (point.IsStart) {
+                    if (openSpans.length > 0) {
+                        richTextBuilder.append("</span>");
+                    }
                     openSpans.push(point);
                     richTextBuilder.append(this.createHtmlStartTag(point, openSpans));
                 }
@@ -59,19 +62,12 @@ class TextPresenter {
                     if (openSpans[openSpans.length - 1].CssClass === point.CssClass) {
                         openSpans.pop();
                         richTextBuilder.append("</span>");
+                        if (openSpans.length > 0) {
+                            richTextBuilder.append(this.createHtmlStartTag(point, openSpans));
+                        }
                     }
                     else {
-                        var closedSpans = [];
-                        while (openSpans[openSpans.length - 1].CssClass !== point.CssClass) {
-                            richTextBuilder.append("</span>");
-                            closedSpans.push(openSpans.pop());
-                        }
-                        openSpans.pop();
-                        richTextBuilder.append("</span>");
-                        while (closedSpans.length > 0) {
-                            richTextBuilder.append(this.createHtmlStartTag(point, openSpans));
-                            openSpans.push(closedSpans.pop());
-                        }
+                        console.log("auch");
                     }
                 }
                 previousPosition = point.Position;
@@ -80,16 +76,29 @@ class TextPresenter {
             richTextBuilder.append(lastChunk);
             return richTextBuilder.toString();
         };
+        this.createTooltipTag = (tagPoint) => {
+            if (tagPoint.CssClass != null && tagPoint.CssClass !== "") {
+                var spanClass = tagPoint.Category == "semantic"
+                    ? tagPoint.CssClass
+                    : "error";
+                return "<span class=\'" + spanClass + "\'>" + tagPoint.TooltipText + "</span>";
+            }
+            return tagPoint.TooltipText;
+        };
         this.createHtmlStartTag = (point, openTagStack) => {
             var tooltipText = openTagStack
                 .filter(t => { return t.IsStart && t.TooltipText != null && t.TooltipText !== ""; })
-                .map(a => { return a.TooltipText; })
+                .map(this.createTooltipTag)
                 .reverse()
+                .join(" <br> ");
+            var classes = openTagStack
+                .filter(t => { return t.IsStart && t.CssClass != null && t.CssClass !== ""; })
+                .map(a => { return a.CssClass; })
                 .join(" ");
             var tooltip = (point.TooltipText == null || point.TooltipText === "")
                 ? ""
-                : "data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" + tooltipText + "\"";
-            return "<span " + tooltip + " class=\"" + point.CssClass + "\">";
+                : "data-toggle=\"tooltip\" data-html=\"true\" data-placement=\"bottom\" title=\"" + tooltipText + "\"";
+            return "<span " + tooltip + " class=\"" + classes + "\">";
         };
         this.spanPointComparison = (left, right) => {
             var position = this.intComparision(left.Position, right.Position);

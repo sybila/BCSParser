@@ -21,8 +21,18 @@
     </dot:InlineScript>
     <dot:InlineScript Dependencies="knockout">
         CodeEditor.registerKeyHandle();
-        //editor.addKnockoutHandlers();
+                    //editor.addKnockoutHandlers();
     </dot:InlineScript>
+    <dot:UpdateProgress Delay="500">
+        <div class="animation-overlay">
+            <div class="animation-container">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </dot:UpdateProgress>
+
     <div class="container-fluid dashboard">
         <div class="col-md-12">
             <cc:StatusAlerts ErrorsBinding="{value: Errors}" SuccessMessageBinding="{value: SuccessMessage}" />

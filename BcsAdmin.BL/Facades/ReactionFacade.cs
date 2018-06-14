@@ -47,7 +47,8 @@ namespace BcsAdmin.BL.Facades
                 {
                     Range = error.TextRange,
                     CssClass = "error-tag",
-                    TooltipText = error.Message
+                    TooltipText = error.Message,
+                    Category = "error"
                 };
 
                 spans.Add(errorTag);

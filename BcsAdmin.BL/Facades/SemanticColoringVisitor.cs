@@ -54,7 +54,8 @@ namespace BcsAdmin.BL.Facades
                 {
                     Range = namedNode.Identifier.NameRange,
                     CssClass = cssClass,
-                    TooltipText = boundSymbol.Symbol.ToDisplayString()
+                    TooltipText = boundSymbol.Symbol.ToDisplayString(),
+                    Category = "semantic"
                 });
             }
         }
