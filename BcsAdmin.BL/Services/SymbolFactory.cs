@@ -100,10 +100,10 @@ namespace BcsAdmin.BL.Services
         private List<BcsNamedSymbol> CreateParts(ApiEntity entity)
         {
             var list = new List<BcsNamedSymbol>();
-            foreach (var id in entity.Compartments)
+            foreach (var id in entity.Children)
             {
-                var location = CreateSymbol(id);
-                list.Add(location);
+                var child = CreateSymbol(id);
+                list.Add(child);
             }
             return list;
 
