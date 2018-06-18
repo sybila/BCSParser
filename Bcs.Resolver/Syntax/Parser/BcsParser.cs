@@ -62,6 +62,13 @@ namespace BcsResolver.Syntax.Parser
                     TargetExpression = reaction
                 };
 
+                SkipWhiteSpace();
+
+                if (IsPeekType(BcsExpresionTokenType.QuestionMark))
+                {
+                    Read();
+                }
+
                 var identifier = ReadIdentifier();
                 variableExpression.VariableName = identifier;
                 //TODO: Add Error if not
@@ -241,7 +248,7 @@ namespace BcsResolver.Syntax.Parser
                 {
                     Identifier = identifier,
                     Parts = ReadSet(
-                        BcsExpresionTokenType.Comma,
+                        BcsExpresionTokenType.AgentSeparatorOld,
                         ReadAtomicAgent, BcsExpresionTokenType.BracketBegin,
                         BcsExpresionTokenType.BracketEnd,
                         allowEmpty: true),
