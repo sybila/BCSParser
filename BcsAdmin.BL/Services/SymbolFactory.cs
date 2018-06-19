@@ -39,7 +39,7 @@ namespace BcsAdmin.BL.Services
                 case ApiEntityType.Atomic:
                     return CreateAtomicAgent(entity);
                 default:
-                    throw new NotSupportedException("Type is not supported");
+                    return CreateError(entity.Name, new NotSupportedException($"Entity of type {entity.Type} cannot be used as part of an agent."));
             };
         }
 
@@ -67,7 +67,7 @@ namespace BcsAdmin.BL.Services
             {
                 FullName = entity.Name,
                 Name = entity.Code,
-                Locations = CreateParts<BcsCompartmentSymbol>(entity),
+                Locations = CreateCompartment(entity),
                 Parts = entity.States.Select(s => CreateState(s).CastTo<BcsNamedSymbol>()).ToList(),
                 BcsSymbolType = BcsSymbolType.Agent
             };
@@ -79,7 +79,7 @@ namespace BcsAdmin.BL.Services
             {
                 FullName = entity.Name,
                 Name = entity.Code,
-                Locations = CreateParts<BcsCompartmentSymbol>(entity),
+                Locations = CreateCompartment(entity),
                 Parts = CreateParts<BcsAtomicAgentSymbol>(entity),
                 BcsSymbolType = BcsSymbolType.StructuralAgent
             };
@@ -91,36 +91,28 @@ namespace BcsAdmin.BL.Services
             {
                 FullName = entity.Name,
                 Name = entity.Code,
-                Locations = CreateParts<BcsCompartmentSymbol>(entity),
+                Locations = CreateCompartment(entity),
                 Parts = CreateParts(entity),
                 BcsSymbolType = BcsSymbolType.Complex
             };
         }
 
         private List<BcsNamedSymbol> CreateParts(ApiEntity entity)
-        {
-            var list = new List<BcsNamedSymbol>();
-            foreach (var id in entity.Children)
-            {
-                var child = CreateSymbol(id);
-                list.Add(child);
-            }
-            return list;
-
-        }
+            => entity.Children
+            .Select(CreateSymbol)
+            .ToList();
 
         private List<BcsNamedSymbol> CreateParts<TPart>(ApiEntity entity)
             where TPart : BcsNamedSymbol
-        {
-            var list = new List<BcsNamedSymbol>();
-            foreach (var id in entity.Compartments ?? new int[] { })
-            {
-                var location = CreateSymbol<TPart>(id);
-                list.Add(location);
-            }
-            return list;
+            => entity.Children
+            .Select(CreateSymbol<TPart>)
+            .ToList();
 
-        }
+        private List<BcsNamedSymbol> CreateCompartment(ApiEntity entity) 
+            => entity.Compartments
+            .Select(CreateSymbol<BcsCompartmentSymbol>)
+            .ToList();
+
 
         protected virtual BcsNamedSymbol CreateSymbol<TExpectedSymbol>(int id)
             where TExpectedSymbol : BcsNamedSymbol
